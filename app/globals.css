@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+@layer base {
+  html {
+    background-color: var(--color-midnight);
+    color: var(--color-ivory);
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100dvh;
+    overflow-x: clip;
+  }
+
+  /* Focus ring: claret on midnight, ivory on any burgundy surface. */
+  :focus-visible {
+    outline: var(--spacing-ring) solid var(--color-claret);
+    outline-offset: var(--spacing-ring-offset);
+  }
+
+  [data-surface="burgundy"] :focus-visible,
+  [data-surface="burgundy"]:focus-visible {
+    outline-color: var(--color-ivory);
+  }
+
+  ::selection {
+    background-color: var(--color-burgundy);
+    color: var(--color-ivory);
+  }
+}

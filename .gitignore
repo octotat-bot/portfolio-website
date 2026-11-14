@@ -1,0 +1,12 @@
+node_modules
+.next
+out
+.vercel
+.env*
+!.env.example
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+
+# generated from docs/tokens.json on every dev, build and typecheck
+styles/tokens.css
