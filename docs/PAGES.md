@@ -18,6 +18,7 @@ Seven routes. Each page has one idea, one or two burgundy moments, and at most t
 - **Takeover menu** (M21): full-screen, five poster-size links stacked at left (Home, Work, About, Lab, Contact), a claret dot marking the current page, a typed note on the right for the hovered link, small RollLinks for GitHub, LinkedIn and Email along the bottom. Full spec in `MOTION.md`.
 - **Floating contact pill** (M23), except on Contact. It fades out while the Home hero buttons, the Home closing button or the footer are on screen.
 - **Grain** (M22), **smooth scroll** (M25), **burgundy wipe** on navigation (M02).
+- **Nav zone**: tiles, cards and images fade out as they scroll into the top 120px, so nothing passes under the nav (see `MOTION.md`).
 - **Footer**: three columns on desktop, stacked on phones. Left: name in `poster-4` and one line. Middle: the four page links, numbered. Right: GitHub, LinkedIn, Email, Resume. Under them a hairline, then the copyright in `label`. Last, a full-width ghost marquee in `line` colour that speeds up with scroll (M20 variant).
 
 ## Home `/`
@@ -29,7 +30,7 @@ Seven routes. Each page has one idea, one or two burgundy moments, and at most t
 | 2 | Poster hero | At least 100dvh. Dither field fills the screen. Name in `monument`, bottom-left, edge to edge: MUKUND / MANGLA on two lines on phones, MUKUND MANGLA on one line from 810px. A mono status line top-left under the nav. Lede and two buttons in the open space above the name, at the right from 810px | M08 with pointer drift, M03 then M04 on the name, M05 on the status line (cycles every 3s; screen readers get the first line only), M09 on scroll, Button M07 |
 | 3 | Statement | 150vh tall with the sentence sticky at mid-screen, midnight. One sentence in `poster-3`, left-aligned, with one typed Note under it | M26, then M10 on the note |
 | 4 | What i build | Pinned split. Left 40%: `poster-4` heading, a short paragraph, a ghost button to Work. Right 60%: WordList | M12, M03 on the heading |
-| 5 | Selected work | Pinned title for 250vh. Headline in `poster-1` centred. Four ProjectTiles drift past | M13, M14, M15; one Note beside the first tile (M10) |
+| 5 | Selected work | From 810px: pinned title for 250vh, headline in `poster-1` centred, four ProjectTiles drift past, at most two over the headline at once. Below 810px: the headline on its own, the note, then the four tiles as a card stack. Text never sits on other text | M13 (desktop), M27 (phones), M14, M15; one Note beside the first tile on desktop, under the headline on phones (M10) |
 | 6 | Numbers | Full-bleed burgundy dither field. Three figures in a row (stacked on phones): number in `poster-1`, caption in `label`. Shown only when at least two figures have values; otherwise the whole section is left out. A single blank figure among them shows a dash | M08, M19 |
 | 7 | Closing | 90dvh, midnight. `poster-1` question, one line, primary button to Contact | M03, M11 on one word |
 | 8 | Footer | | |

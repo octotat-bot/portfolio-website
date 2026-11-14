@@ -331,31 +331,10 @@
   }
 }
 
-/* M13: each tile's x and width, for phones and for md up. */
+/* M13: each tile's x and width (desktop only; phones use the card stack). */
 .drift-tile {
-  left: var(--x);
-  width: var(--w);
-}
-
-@variant md {
-  .drift-tile {
-    left: var(--x-md);
-    width: var(--w-md);
-  }
-}
-
-/* Phones: the Home "things i've built" headline sits above the drifting
-   tiles; a midnight outline painted under the fill keeps the letters legible
-   where they cross a tile's ivory caption strip. */
-.headline-over-tiles {
-  paint-order: stroke fill;
-  -webkit-text-stroke: 0.06em var(--color-midnight);
-}
-
-@variant md {
-  .headline-over-tiles {
-    -webkit-text-stroke: 0;
-  }
+  left: var(--x-md);
+  width: var(--w-md);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -59,23 +59,20 @@ export const statusCycle = 3;
 export const statement = { offset: 40, rotate: 25, opacity: 0.3 } as const;
 
 /**
- * M13 pinned title with drifting tiles. The section is 250vh; tiles start
- * below the screen at different x positions and rise at 0.8x to 1.4x.
+ * M13 pinned title with drifting tiles, from 810px (phones use the card
+ * stack). The section is 250vh; tiles start below the screen at different x
+ * positions and rise at 0.8x to 1.4x.
  *
  * Timing: tile i's top passes the middle of the screen at `cross` of the
  * pin (25%, 45%, 65%, 85%). Its start is worked out from that and its speed,
  * so each spends about a fifth of the pin over the headline and at most two
  * are over it at once. Starts are in vh below the top of the screen.
- *
- * Size: about 20% smaller than before on desktop (16vw, never narrower than
- * the longest project name needs). On phones 40vw: 35% smaller would be
- * 32.5vw, too narrow for "MARGINALIA" at the smallest poster-4 size.
+ * Width: 16vw, never narrower than the longest project name needs.
  */
 const DRIFT_TRAVEL = 260;
 /** Where a tile's top sits when it is centred on the headline, in vh. */
 const DRIFT_CENTRE = 35;
-const driftTile = (x: string, xMd: string, speed: number, cross: number) => ({
-  x,
+const driftTile = (xMd: string, speed: number, cross: number) => ({
   xMd,
   speed,
   start: Math.round(DRIFT_CENTRE + cross * DRIFT_TRAVEL * speed),
@@ -84,13 +81,7 @@ const driftTile = (x: string, xMd: string, speed: number, cross: number) => ({
 export const driftTiles = {
   height: "250vh",
   travel: DRIFT_TRAVEL,
-  tiles: [
-    driftTile("4%", "10%", 1.0, 0.25),
-    driftTile("56%", "62%", 1.4, 0.45),
-    driftTile("6%", "30%", 0.8, 0.65),
-    driftTile("54%", "76%", 1.2, 0.85),
-  ],
-  width: "40vw",
+  tiles: [driftTile("10%", 1.0, 0.25), driftTile("62%", 1.4, 0.45), driftTile("30%", 0.8, 0.65), driftTile("76%", 1.2, 0.85)],
   widthMd: "max(16vw, 210px)",
 } as const;
 
@@ -137,3 +128,36 @@ export const dither = {
   /** The frame shown when the field is still. */
   stillFrame: 4000,
 } as const;
+
+/**
+ * Nav zone: a tile, card or image fades out as it scrolls into the top 120px,
+ * gone by the bottom of the nav, so nothing passes under the nav name or the
+ * menu button. In px from the top of the screen.
+ */
+export const navFade = { start: 120, end: 56 } as const;
+
+/** M27 card stack: where cards stick (below the nav zone) and how small the one beneath gets. */
+export const cardStack = { top: 136, scale: 0.92 } as const;
+
+/** M16 word wall: px of sideways drift per px scrolled. */
+export const wordWall = { drift: 0.25 } as const;
+
+/** M30 image cursor trail. */
+export const cursorTrail = {
+  /** A new picture each time the pointer has travelled this far, px. */
+  step: 80,
+  width: 160,
+  /** How long each picture stays after landing, s. */
+  stay: 0.6,
+  max: 5,
+  from: 0.9,
+  out: 0.85,
+  /** At least this many covers before the trail runs. */
+  minCovers: 2,
+} as const;
+
+/** M28 screen gallery: how far each column travels across the section, as a share of the screen height. */
+export const gallery = { columns: [0.35, -0.25, 0.5] } as const;
+
+/** M15 in case studies: a picture resolves once this much of it is in view. */
+export const resolveAt = 0.6;

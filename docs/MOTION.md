@@ -57,7 +57,7 @@ Default spring for anything that follows the pointer or scroll: stiffness 140, d
 | M08 | Dither field | Home hero, About opener, burgundy sections | Two-colour dither (`midnight` back, `burgundy` front), wave or warp shape, 4x4 pattern, pixel size 3, speed 0.25. In the hero its centre drifts up to 6% toward the pointer on a spring | Paper Shaders `Dithering`. Fallback: flat `burgundy` |
 | M09 | Hero lift-off | Home hero, while scrolling the first screen | The name scales from 1 to 1.35 and moves up 20%, its opacity falls to 0 by 80% of the screen; the dither field's bottom edge rises with a stepped clip | Motion `useScroll` + `useTransform` on the hero |
 | M12 | Pinned split, blur focus | Home "what i build"; About "what i work with" on desktop | Text block pins left for the length of the list. Poster words scroll past on the right. A word is sharp and full opacity when its centre is at mid-screen; away from it blur rises to 7px and opacity falls to 0.3 | Per word: `useScroll` with the word as target, map distance from centre to blur and opacity |
-| M13 | Pinned title, drifting tiles | Home selected work | Headline pins at centre for 250vh. Four tiles start below the screen at different x positions and travel up past the headline at different speeds (0.8x to 1.4x), each with its own tilt. They are timed so at most two are over the headline at any moment. On phones the headline sits above the tiles, so it is never covered | One `useScroll` on the section; a `useTransform` y range per tile |
+| M13 | Pinned title, drifting tiles | Home selected work, from 810px | Headline pins at centre for 250vh. Four tiles start below the screen at different x positions and travel up past the headline at different speeds (0.8x to 1.4x), each with its own tilt. They are timed so at most two are over the headline at any moment. Below 810px there is no drift: the headline stands alone and the tiles follow as a card stack (M27) | One `useScroll` on the section; a `useTransform` y range per tile |
 | M14 | Tile hop | Hover or focus on a ProjectTile | Tile rotates to 0 and lifts 10px, `dur-pop`, `ease-pop`. Its picture clears (M15) | Motion hover with a spring |
 | M15 | Dither resolve | Project pictures | Pictures rest as a two-colour dither. On hover (tiles) or when 60% in view (case studies) the dither cross-fades to the real image in 500ms | Paper Shaders `ImageDithering` layered over the real image |
 | M16 | Word wall | Work index | One word repeated to fill the screen in `poster-2`, fixed behind the tiles. Odd rows drift left and even rows right as you scroll. One row is replaced by the page's line in `claret`. As the first tile arrives the wall fades to the `line` colour | `useScroll` + x transforms per row |
@@ -66,7 +66,7 @@ Default spring for anything that follows the pointer or scroll: stiffness 140, d
 | M20 | Ticker | Top of Home | Text runs right to left at 60px a second, forever | CSS linear animation |
 | M24 | Perspective credits | Bottom of Contact | Credit lines in `poster-3` are tilted back about 50 degrees and crawl up and away as you scroll the last screen, with soft blurred edges at top and bottom | Start from Skiper `skiper28`, edges from `skiper41` |
 | M26 | Scroll-built statement | Home statement | The sentence starts with its letters scattered: offset up to 40px, rotated up to 25 degrees, 30% opacity. As the section scrolls through the screen they travel into place and reach full opacity by the middle | Start from Skiper `skiper31`; keep one variant |
-| M27 | Card stack | Work tiles below 810px | Each tile sticks near the top; the next slides over it while the one beneath scales down to 0.92 | Start from Skiper `skiper16` |
+| M27 | Card stack | Work tiles and Home selected work, below 810px | Each tile sticks near the top; the next slides over it while the one beneath scales down to 0.92 | Start from Skiper `skiper16` |
 | M28 | Screen gallery | Case study proof | Three or more screens sit in two or three columns that scroll at different speeds. Below 810px they become a swipe carousel with a clip-path change between slides | Skiper `skiper30` on desktop, `skiper54` on phones |
 | M29 | Reading progress | Case studies | A 2px `claret` line across the very top grows left to right with scroll | Skiper `skiper89` |
 | M30 | Image cursor trail | Work index, desktop with a fine pointer, only once at least two project covers exist | As the pointer moves over empty page area, project covers drop behind it: a new one each time the pointer has travelled 80px, cycling through the covers that exist. Each is 4:5, 160px wide, square-cornered, shown as the plain image (no shader, so the one-canvas rule holds). It lands with `ease-pop` (scale 0.9 to 1, `dur-pop`), stays 600ms, then fades and scales to 0.85 in `dur-fast`. At most five on screen. Not drawn while the pointer is over a tile, a link or a button. Decorative: hidden from screen readers | Built by hand with Motion: presence for each image, pointer distance from Motion's frame loop. Not Skiper `skiper18`, which is paid |
@@ -111,6 +111,10 @@ Closing
 - Esc closes. Focus is trapped while open and returns to the menu button on close.
 
 Reduced motion: the field appears and disappears at once, links are simply there, the dot jumps, colour still changes on hover.
+
+### Nav zone
+
+At every width, any tile, card or image fades out as its top edge scrolls into the top 120px of the screen, and is gone by the bottom of the nav (56px), so nothing passes under the nav name or the menu button. Stacked cards stick just below this zone. The fade is tied to scroll position and stays with reduced motion, since it is there to keep the nav readable.
 
 ## Performance
 
