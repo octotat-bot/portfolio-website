@@ -64,6 +64,7 @@ const beliefs: Belief[] = [
 export const about = {
   /** Below the md breakpoint this stacks one word per line. */
   opener: "MAKE THE THING.",
+  openerLines: ["MAKE", "THE", "THING."],
 
   bio: {
     heading: "HI, I'M MUKUND",
@@ -74,6 +75,8 @@ export const about = {
     ],
   },
 
+  /** Section heading: the CONTENT.md section name, as the tokens.json poster-3 sample. */
+  roadHeading: "THE ROAD SO FAR",
   road,
 
   skills: {
@@ -98,5 +101,7 @@ export const about = {
     separator: " / ",
   },
 
+  /** Section heading: the CONTENT.md section name. */
+  beliefsHeading: "THINGS I BELIEVE",
   beliefs,
 };

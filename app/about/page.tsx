@@ -1,11 +1,20 @@
 import type { Metadata } from "next";
-import { PlaceholderPage } from "@/components/shell/placeholder-page";
-import { about } from "@/content/about";
+import { Beliefs, Bio, Opener } from "@/components/sections/about/about-parts";
+import { SkillPile } from "@/components/sections/about/skill-pile";
+import { YearStrip } from "@/components/sections/about/year-strip";
 import { site } from "@/content/site";
 
 export const metadata: Metadata = { title: site.meta.about.title, description: site.meta.about.description };
 
-// Phase 1 placeholder. About is built in Phase 4.
+// About: the years as a strip you scroll sideways. Sections in PAGES.md order.
 export default function AboutPage() {
-  return <PlaceholderPage title={about.opener} />;
+  return (
+    <main id="main">
+      <Opener />
+      <Bio />
+      <YearStrip />
+      <SkillPile />
+      <Beliefs />
+    </main>
+  );
 }

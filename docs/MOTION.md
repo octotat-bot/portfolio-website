@@ -36,7 +36,7 @@ Default spring for anything that follows the pointer or scroll: stiffness 140, d
 | M22 | Grain | Always | Fixed full-screen noise layer jumps position five times a second | CSS `steps()` animation on a fixed, pointer-events-none layer |
 | M25 | Smooth scroll | Always | Scrolling is eased, same speed as native | Lenis at default settings, driven by Motion's frame loop. Off for touch and for reduced motion |
 | M21 | Takeover menu | Menu button | See "The takeover menu" below | Motion presence and clip-path; letter roll from Skiper `skiper58` |
-| M23 | Floating contact pill | Always, except on Contact, and hidden while the Home hero buttons, the Home closing button or the footer are on screen | Small ivory pill, bottom-right, "say hello". Bobs 4px over 3s. Leans up to 12px toward a nearby pointer and pops on hover | CSS loop for the bob; pointer spring for the lean |
+| M23 | Floating contact pill | Always, except on Contact, and hidden while the Home hero buttons, the Home closing button, the About stack lines or the footer are on screen | Small ivory pill, bottom-right, "say hello". Bobs 4px over 3s. Leans up to 12px toward a nearby pointer and pops on hover | CSS loop for the bob; pointer spring for the lean |
 
 ### Type
 

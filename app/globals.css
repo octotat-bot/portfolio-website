@@ -418,3 +418,39 @@
     transition: none;
   }
 }
+
+/* ---- About ---------------------------------------------------------------------- */
+/* M18: room for the pile; a finger on it scrolls the page; a mouse can grab. */
+.skill-area {
+  min-height: 40vh;
+  touch-action: pan-y;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .skill-area[data-phase] .skill-word {
+    cursor: grab;
+  }
+
+  .skill-area[data-dragging],
+  .skill-area[data-dragging] .skill-word {
+    cursor: grabbing;
+  }
+}
+
+/* M17: the strip starts and ends with a card in the middle of the screen. */
+.year-strip {
+  padding-inline: calc(50vw - var(--card) / 2);
+}
+
+.year-card {
+  width: var(--card);
+}
+
+.year-card .year-on {
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+/* The opener: the scribble style, centred. */
+.opener-height {
+  min-height: 100dvh;
+}

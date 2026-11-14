@@ -161,3 +161,20 @@ export const gallery = { columns: [0.35, -0.25, 0.5] } as const;
 
 /** M15 in case studies: a picture resolves once this much of it is in view. */
 export const resolveAt = 0.6;
+
+/** M17 year strip: the section pins for 300vh; each card is this wide on desktop. */
+export const yearStrip = { height: "300vh", cardWidth: 56, dim: 0.4 } as const;
+
+/** M18 skill pile. */
+export const skillPile = {
+  /** Start when this much of the area is in view. */
+  startAt: 0.3,
+  gravity: 1.4,
+  bounciness: 0.3,
+  /** Seconds between words leaving the top. */
+  stagger: 0.12,
+  /** How hard a fast pointer pushes the words. */
+  push: 0.5,
+  /** Fixed physics step, ms. */
+  step: 1000 / 120,
+} as const;
