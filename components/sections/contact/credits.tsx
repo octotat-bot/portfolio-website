@@ -8,6 +8,11 @@
 // the distance (opacity only: MOTION.md
 // allows blur only in M12, and the site has no gradients). It ends on the
 // typed note "thanks for scrolling" (M10, scrawl size, ivory on burgundy).
+// The small lines (TYPE, MOVEMENT …) are not on the tilted plane, where
+// perspective would shrink them below the 12px label size: each is drawn flat
+// at the real label size just above its credit line, and fades with it. The
+// copy on the plane stays invisible but keeps the layout and is what screen
+// readers read.
 //
 // Started from Skiper UI "skiper28" (3D perspective text, skiper-ui.com, free
 // with attribution): a sticky stage with perspective and a block whose
@@ -23,34 +28,53 @@ import { contact } from "@/content/pages";
 import { useReduced } from "@/lib/hooks";
 import { credits } from "@/lib/motion";
 
-function Lines({ refs }: { refs?: React.RefObject<(HTMLLIElement | null)[]> }) {
+type LineRefs = {
+  lines: React.RefObject<(HTMLLIElement | null)[]>;
+  bigs: React.RefObject<(HTMLSpanElement | null)[]>;
+};
+
+function Lines({ refs }: { refs?: LineRefs }) {
   return (
     <ol className="flex flex-col gap-16 text-center">
       {contact.credits.map((c, i) => (
         <li
           key={c.big}
           ref={(el) => {
-            if (refs) refs.current[i] = el;
+            if (refs) refs.lines.current[i] = el;
           }}
           className="flex flex-col gap-3"
         >
-          <span className="label text-ivory">{c.small}</span>
-          <span className="poster-3 text-ivory">{c.big}</span>
+          <span className={`label text-ivory ${refs ? "opacity-0" : ""}`}>{c.small}</span>
+          <span
+            ref={(el) => {
+              if (refs) refs.bigs.current[i] = el;
+            }}
+            className="poster-3 text-ivory"
+          >
+            {c.big}
+          </span>
         </li>
       ))}
     </ol>
   );
 }
 
+/** Space between a flat label and its credit line, px. */
+const LABEL_GAP = 6;
+
 function Crawl() {
   const section = useRef<HTMLElement>(null);
   const list = useRef<HTMLDivElement>(null);
   const lines = useRef<(HTMLLIElement | null)[]>([]);
+  const bigs = useRef<(HTMLSpanElement | null)[]>([]);
+  const flats = useRef<(HTMLSpanElement | null)[]>([]);
   const [noteOn, setNoteOn] = useState(false);
   const [travel, setTravel] = useState(0);
   const { scrollYProgress } = useScroll({ target: section, offset: ["start start", "end end"] });
   // From just below the plane's foot to past the horizon, in plane pixels.
   const y = useTransform(scrollYProgress, [0, credits.crawlEnd], [0, -travel]);
+  // The note is only on screen once the lines have gone, also when scrolling back up.
+  const noteOpacity = useTransform(scrollYProgress, [credits.crawlEnd, credits.noteAt], [0, 1]);
 
   useLayoutEffect(() => {
     const el = list.current;
@@ -74,8 +98,20 @@ function Crawl() {
       const bottom = Math.min(1, Math.max(0, (h - (r.top + r.height / 2)) / edge));
       const size = r.height / Math.max(1, el.offsetHeight);
       const far = Math.min(1, Math.max(0, (size - credits.fadeFrom) / (credits.fadeTo - credits.fadeFrom)));
-      el.style.opacity = String(Math.min(bottom, far));
+      const opacity = Math.min(bottom, far);
+      el.style.opacity = String(opacity);
     }
+    // Flat labels: real label size, centred just above each credit line.
+    lines.current.forEach((el, i) => {
+      const big = bigs.current[i];
+      const flat = flats.current[i];
+      if (!el || !big || !flat) return;
+      const r = big.getBoundingClientRect();
+      const x = r.left + r.width / 2 - flat.offsetWidth / 2;
+      const y = r.top - flat.offsetHeight - LABEL_GAP;
+      flat.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+      flat.style.opacity = el.style.opacity;
+    });
   };
 
   useMotionValueEvent(scrollYProgress, "change", (p) => {
@@ -90,13 +126,26 @@ function Crawl() {
           {/* The plane: as tall as the screen, hinged at its foot, leaning back. */}
           <div className="absolute inset-0" style={{ transform: `rotateX(${credits.tilt}deg)`, transformOrigin: "50% 100%", transformStyle: "preserve-3d" }}>
             <motion.div ref={list} className="absolute inset-x-0 top-full px-4 md:px-10" style={{ y }}>
-              <Lines refs={lines} />
+              <Lines refs={{ lines, bigs }} />
             </motion.div>
           </div>
         </div>
-        <div className="absolute inset-x-0 bottom-16 flex justify-center px-4">
-          <Note text={contact.finalNote} tone="ivory" size="scrawl" tilt={-3} when={noteOn} immediate />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          {contact.credits.map((c, i) => (
+            <span
+              key={c.big}
+              ref={(el) => {
+                flats.current[i] = el;
+              }}
+              className="label absolute left-0 top-0 whitespace-nowrap text-ivory opacity-0"
+            >
+              {c.small}
+            </span>
+          ))}
         </div>
+        <motion.div className="absolute inset-x-0 bottom-16 flex justify-center px-4" style={{ opacity: noteOpacity }}>
+          <Note text={contact.finalNote} tone="ivory" size="scrawl" tilt={-3} when={noteOn} immediate />
+        </motion.div>
       </DitherField>
     </section>
   );

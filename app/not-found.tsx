@@ -1,6 +1,10 @@
+import type { Metadata } from "next";
 import { RevealText } from "@/components/motion/reveal-text";
 import { Button } from "@/components/ui/button";
 import { notFound } from "@/content/pages";
+import { site } from "@/content/site";
+
+export const metadata: Metadata = { title: site.meta.notFound.title };
 
 // 404: midnight, the two-word headline in poster-1 (M03, M04), one line, and
 // the primary button home.

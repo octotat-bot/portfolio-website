@@ -333,3 +333,4 @@ Final typed note: thanks for scrolling
 | About | About · Mukund Mangla | Who Mukund Mangla is, what he has built so far and what he works with. |
 | Lab | Lab · Mukund Mangla | Experiments, old builds and unfinished ideas. |
 | Contact | Contact · Mukund Mangla | Get in touch with Mukund Mangla. |
+| 404 | Not found · Mukund Mangla | |

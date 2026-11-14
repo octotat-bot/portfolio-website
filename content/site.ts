@@ -72,5 +72,6 @@ export const site = {
       title: "Contact · Mukund Mangla",
       description: "Get in touch with Mukund Mangla.",
     },
+    notFound: { title: "Not found · Mukund Mangla" },
   },
 };
