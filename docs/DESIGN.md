@@ -68,11 +68,11 @@ Rules
 ## Layout
 
 - Spacing is a 4px scale, `space-1` to `space-32`.
-- Fixed sizes (nav, button, ticker, touch target, hairline, focus ring, progress line, tile minimum, reading measure) are the `size` tokens. Breakpoints are the `breakpoint` tokens.
+- Fixed sizes (nav, button, ticker, touch target, hairline, focus ring, menu-button stroke, progress line, tile minimum, reading measure) are the `size` tokens. Breakpoints are the `breakpoint` tokens.
 - Page side padding: `space-4` on phones, `space-10` from 810px up.
 - Section padding: `space-16` above and below.
 - Breakpoints: 810px and 1025px.
-- Nav is 56px: name at left, menu button (two ivory lines) at right. The menu is a full-screen takeover on `midnight-raised`: five poster-size links stacked at left, revealed by a circle that grows out of the menu button (M21 in `MOTION.md`).
+- Nav is 56px: name at left, menu button (two ivory lines, `stroke` thick) at right. The menu is a full-screen takeover on `midnight-raised`: five poster-size links stacked at left, revealed by a circle that grows out of the menu button (M21 in `MOTION.md`).
 - Content is full-bleed. Headlines run edge to edge. There is no centred column.
 - Two layouts repeat: **pinned split** (text stays on one side while big things scroll on the other) and **pinned title** (a headline stays centred while tiles drift past).
 - Below 810px every split is one column and nothing pins sideways.

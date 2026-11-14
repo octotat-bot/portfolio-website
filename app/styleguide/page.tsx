@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { caseStudies } from "@/content/projects";
+import { projectMedia } from "@/lib/media";
 import { tokens } from "@/lib/tokens";
-import { effectFaces } from "../fonts";
+import { ComponentsDemo } from "./components-demo";
 import { Summary, TokenProbe, TypeProbe } from "./probes";
 
 // A hidden development page: not linked from anywhere and not indexed.
@@ -40,20 +42,20 @@ function Section({ name, children }: { name: string; children: ReactNode }) {
 function Row({ name, value, usage, children }: { name: string; value: string; usage: string; children?: ReactNode }) {
   return (
     <div className="grid gap-4 border-t border-line pt-4 md:grid-cols-2 md:gap-10">
-      <div className="flex flex-col gap-2">
+      <div className="flex min-w-0 flex-col gap-2">
         <p className="label">
           {name} <span className="text-ash">{value}</span>
         </p>
         <p className="small max-w-measure text-ash">{usage}</p>
       </div>
-      <div>{children}</div>
+      <div className="min-w-0">{children}</div>
     </div>
   );
 }
 
 export default function StyleguidePage() {
   return (
-    <main className={`${effectFaces} px-4 pb-32 pt-16 md:px-10`}>
+    <main id="main" className="px-4 pb-32 pt-24 md:px-10">
       <header className="flex flex-col gap-3 pb-16">
         <h1 className="poster-3">{WORDS.title}</h1>
         <p className="label text-ash">
@@ -183,6 +185,16 @@ export default function StyleguidePage() {
           </Row>
         ))}
       </Section>
+
+      <ComponentsDemo
+        tiles={caseStudies.map((p) => ({
+          slug: p.slug,
+          name: p.name,
+          kind: p.kind,
+          caption: p.study.caption,
+          cover: projectMedia(p.slug).cover,
+        }))}
+      />
     </main>
   );
 }

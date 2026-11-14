@@ -24,6 +24,18 @@ export const menu = {
   credit: "designed and built by mukund mangla",
 };
 
+/**
+ * Text that is never shown but is read out by screen readers. CONTENT.md has
+ * no copy for these; they follow its rule that a control says what happens.
+ */
+export const a11y = {
+  openMenu: "open menu",
+  closeMenu: "close menu",
+  menu: "menu",
+  skipToContent: "skip to content",
+  home: "home",
+};
+
 export const footer = {
   /** The four page links, numbered: every menu item except Home. */
   pages: menuItems.filter((item) => item.href !== "/"),

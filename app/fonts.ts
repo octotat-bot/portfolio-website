@@ -31,14 +31,15 @@ export const reenieBeanie = Reenie_Beanie({
 });
 
 // The two effect faces. Files are cut down to capitals, digits and headline
-// punctuation by scripts/fetch-effect-fonts.mjs. They are not on <html>: a page
-// that uses the font shuffle or the scribble style adds `effectFaces` itself,
-// so pages that do not use them never download them.
+// punctuation by scripts/fetch-effect-fonts.mjs. They are not preloaded, so a
+// browser downloads them only on a page that sets text in them (the font
+// shuffle loads them just before it starts).
 export const rubikScribble = localFont({
   src: "./fonts/rubik-scribble-subset.woff2",
   weight: "400",
   display: "swap",
   variable: "--face-rubik-scribble",
+  preload: false,
   adjustFontFallback: false,
 });
 
@@ -47,6 +48,7 @@ export const rubikMarkerHatch = localFont({
   weight: "400",
   display: "swap",
   variable: "--face-rubik-marker-hatch",
+  preload: false,
   adjustFontFallback: false,
 });
 

@@ -43,6 +43,18 @@ export const dur = {
   staggerLetter: seconds("stagger-letter"),
 } as const;
 
+const length = (group: { tokens: { name: string; value: string }[] }, name: string): string => {
+  const value = group.tokens.find((t) => t.name === name)?.value;
+  if (!value) throw new Error(`tokens: "${name}" does not exist`);
+  return value;
+};
+
+/** Breakpoints for media queries in code. */
+export const breakpoint = {
+  md: length(raw.breakpoint, "md"),
+  lg: length(raw.breakpoint, "lg"),
+} as const;
+
 /** Colour values for canvases and shaders, which cannot read CSS variables. */
 export const color = {
   midnight: colour("midnight"),
