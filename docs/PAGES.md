@@ -39,7 +39,7 @@ Seven routes. Each page has one idea, one or two burgundy moments, and at most t
 
 | # | Section | Layout | Components and motion |
 | --- | --- | --- | --- |
-| 1 | Word wall | Fixed, full screen, behind everything | M16 |
+| 1 | Word wall | Fixed, behind everything, from 88px down (the top `nav-band` stays clear for the nav) to the bottom of the screen | M16 |
 | 1b | Cursor trail | Desktop only, once at least two covers exist. Project covers drop behind the pointer over empty page area | M30 |
 | 2 | Tiles | Starts one screen down. Two columns on desktop with the right column offset 30vh lower; one column on phones. Six ProjectTiles, larger than on Home (min 320px wide), each with a tag Label and year under it. Below 810px the tiles become a card stack | M14, M15, M03 on names, M27 on phones |
 | 3 | Also built | Hairline list on midnight: name in `poster-4`, one line in `body`, RollLink at right | M03 per row |
@@ -54,8 +54,8 @@ One template for Repetite, Marginalia, Trailboard and BumpFix. Generated statica
 | 0 | Progress | 2px line fixed at the very top | M29 |
 | 1 | Header band | 50dvh burgundy dither field. Tag Label top-left. Project name in `monument`, bottom-left, may run off the right edge | M08, M03, M04 |
 | 2 | Lede and facts | Two columns. Left 30%: facts as a mono definition list (kind, role, built with, when, status, links as RollLinks). Right: the lede in `lede` | M05 on the fact labels |
-| 3 | Story | Blocks of a `poster-4` heading with `body` text under it, max 60 characters wide, right-aligned column on desktop. One word per block may carry a highlight sweep | M03, M11 |
-| 4 | Proof | One or two screens: full-width, one per row with a `small` caption. Three or more: a parallax gallery. Media uses `radius-sm`. Until real media exists: empty frames with a hairline and the label "screens coming" | M15, M28 |
+| 3 | Story | Blocks of a `poster-4` heading with `body` text, max 60 characters wide. From 810px each block is two columns: the heading on the left stays pinned while its paragraph scrolls on the right. Phones: one column. One word per block may carry a highlight sweep | M03, M11 |
+| 4 | Proof | One or two screens: full-width, one per row with a `small` caption. Three or more: a parallax gallery. Media uses `radius-sm`. With no screens and no video the whole section is left out of the production site; in development it shows empty frames with a hairline and the label "screens coming" | M15, M28 |
 | 5 | One number, one mistake | Two cells side by side on a hairline grid: a figure in `poster-2` with a caption, and a short paragraph headed "what went wrong" | M19 |
 | 6 | Note | One typed Note | M10 |
 | 7 | Next project | Full-bleed link block: "next" label and the next project's name in `poster-1`; fills burgundy on hover | M07 scaled up |

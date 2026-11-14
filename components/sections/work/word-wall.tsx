@@ -6,6 +6,7 @@
 // not drift, so it stays readable and wraps on phones. As the first tile
 // arrives, the whole wall fades to the `line` colour: the ivory words and the
 // claret line fade out over `line` copies (opacity only, no colour animation).
+// The top nav-band (88px) stays clear so the nav name and menu button read.
 // With reduced motion the wall sits still in the first screen.
 
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
@@ -71,7 +72,7 @@ export function WordWall({ word, line }: { word: string; line: string }) {
   );
 
   return (
-    <div className={`${reduced ? "absolute" : "fixed"} inset-x-0 top-0 z-0 h-dvh overflow-hidden`}>
+    <div className={`${reduced ? "absolute" : "fixed"} wall-frame inset-x-0 z-0 overflow-hidden`}>
       <div className="relative">
         {layer("text-line")}
         <motion.div className="absolute inset-0" style={{ opacity: ivory }}>

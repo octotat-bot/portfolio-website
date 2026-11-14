@@ -338,6 +338,11 @@
 }
 
 /* ---- Work layout ------------------------------------------------------------ */
+/* M16: the wall fills the screen below the clear nav band. */
+.wall-frame {
+  top: var(--spacing-nav-band);
+  height: calc(100dvh - var(--spacing-nav-band));
+}
 /* Tiles start one screen down, below the word wall's first screen. */
 .work-start {
   padding-top: 100dvh;

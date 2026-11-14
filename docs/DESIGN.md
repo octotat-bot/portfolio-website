@@ -69,7 +69,7 @@ Rules
 ## Layout
 
 - Spacing is a 4px scale, `space-1` to `space-32`.
-- Fixed sizes (nav, button, ticker, touch target, hairline, focus ring, menu-button stroke, progress line, tile minimum, reading measure) are the `size` tokens. Breakpoints are the `breakpoint` tokens.
+- Fixed sizes (nav, the clear band under it on Work, button, ticker, touch target, hairline, focus ring, menu-button stroke, progress line, tile minimum, reading measure) are the `size` tokens. Breakpoints are the `breakpoint` tokens.
 - Page side padding: `space-4` on phones, `space-10` from 810px up. The `gutter` size token holds both values.
 - Section padding: `space-16` above and below.
 - Breakpoints: 810px and 1025px.

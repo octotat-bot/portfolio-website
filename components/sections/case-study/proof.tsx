@@ -1,7 +1,8 @@
 "use client";
 
 // Case study 4: proof.
-//   No screens yet: empty hairline frames labelled "screens coming".
+//   No screens yet: the section is left out in production; in development it
+//   shows empty hairline frames labelled "screens coming", as a reminder.
 //   One or two: full width, one per row, with an optional small caption.
 //   Three or more: M28 gallery. From 810px, columns that scroll at different
 //   speeds; below 810px, a swipe carousel whose other slides are clipped.
@@ -106,6 +107,7 @@ export function Proof({ name, shots, captions = [], video }: Props) {
   const alt = (i: number) => captions[i] ?? `${name} ${i + 1}`;
 
   if (shots.length === 0 && !video) {
+    if (process.env.NODE_ENV === "production") return null;
     return (
       <section className="grid gap-6 px-4 py-16 md:grid-cols-2 md:px-10">
         {[0, 1].map((i) => (
