@@ -2,7 +2,9 @@
 
 // M23 floating contact pill. A small ivory pill, bottom-right, "say hello".
 // It bobs 4px over 3s (CSS), leans up to 12px toward a nearby pointer on the
-// default spring, and pops on hover (ease-pop). Not shown on Contact.
+// default spring, and pops on hover (ease-pop). Not shown on Contact, and it
+// steps aside (fades out, unfocusable) while anything marked data-hide-pill is
+// on screen: the hero buttons, the closing button, the footer.
 // Still with reduced motion.
 //
 // The lean started from React Bits "Magnet" (reactbits.dev, MIT + Commons
@@ -11,7 +13,7 @@
 
 import { motion, useSpring } from "motion/react";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { site } from "@/content/site";
 import { HOVER_QUERY, useMedia, useReduced } from "@/lib/hooks";
 import { dur, ease, pill, spring } from "@/lib/motion";
@@ -29,6 +31,31 @@ export function ContactPill() {
   const ref = useRef<HTMLDivElement>(null);
   const x = useSpring(0, spring);
   const y = useSpring(0, spring);
+  const [blocked, setBlocked] = useState(false);
+
+  // Watch every element that asks the pill to step aside, on each page.
+  useEffect(() => {
+    let observer: IntersectionObserver | undefined;
+    const frame = requestAnimationFrame(() => {
+      const targets = Array.from(document.querySelectorAll("[data-hide-pill]"));
+      const visible = new Set<Element>();
+      observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) visible.add(entry.target);
+          else visible.delete(entry.target);
+        }
+        setBlocked(visible.size > 0);
+        // A target only counts once it is a little way into view, not when it
+        // merely touches the bottom edge.
+      }, { rootMargin: "0px 0px -24px 0px" });
+      targets.forEach((el) => observer?.observe(el));
+      if (targets.length === 0) setBlocked(false);
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+    };
+  }, [pathname]);
 
   useEffect(() => {
     if (reduced || !canHover) return;
@@ -56,7 +83,16 @@ export function ContactPill() {
   if (pathname === "/contact") return null;
 
   return (
-    <div ref={ref} className="fixed bottom-4 right-4 z-30 md:bottom-10 md:right-10">
+    <motion.div
+      ref={ref}
+      className="fixed bottom-4 right-4 z-30 md:bottom-10 md:right-10"
+      aria-hidden={blocked || undefined}
+      inert={blocked}
+      initial={false}
+      animate={{ opacity: blocked ? 0 : 1 }}
+      transition={{ duration: reduced ? 0 : dur.fast, ease: ease.out }}
+      style={{ pointerEvents: blocked ? "none" : undefined }}
+    >
       <motion.div style={{ x, y }}>
         <div className="pill-bob">
           <motion.div
@@ -72,6 +108,6 @@ export function ContactPill() {
           </motion.div>
         </div>
       </motion.div>
-    </div>
+    </motion.div>
   );
 }

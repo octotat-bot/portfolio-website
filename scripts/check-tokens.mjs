@@ -67,6 +67,7 @@ const expect = (name, value) => {
 for (const t of tokens.color.tokens) expect(`--color-${t.name}`, t.value);
 for (const t of tokens.spacing.tokens) expect(`--spacing-${t.name.replace(/^space-/, "")}`, t.value);
 for (const t of tokens.size.tokens) expect(`--spacing-${t.name}`, t.value);
+for (const t of tokens.size.tokens.filter((t) => t.valueMd)) expect(`--spacing-${t.name}`, t.valueMd);
 for (const t of tokens.radius.tokens) expect(`--radius-${t.name.replace(/^radius-/, "")}`, t.value);
 for (const t of tokens.breakpoint.tokens) expect(`--breakpoint-${t.name}`, t.value);
 for (const t of tokens.easing.tokens) expect(`--${t.name}`, t.value);
@@ -74,12 +75,15 @@ for (const t of tokens.duration.tokens) expect(`--${t.name}`, t.value);
 for (const group of tokens.type.groups) {
   for (const style of group.styles) {
     const block = css.slice(css.indexOf(`.${style.name} {`));
-    const rule = block.slice(0, block.indexOf("}"));
+    // The rule may hold one nested @media block, so read to its second closing brace.
+    const first = block.indexOf("}");
+    const rule = style.fluidMd ? block.slice(0, block.indexOf("}", first + 1)) : block.slice(0, first);
     const want = [
       `font-size: ${style.fluid ?? style.fontSize}`,
       `line-height: ${style.lineHeight}`,
       `font-weight: ${style.fontWeight}`,
       ...(style.letterSpacing ? [`letter-spacing: ${style.letterSpacing}`] : []),
+      ...(style.fluidMd ? [`font-size: ${style.fluidMd}`] : []),
     ];
     for (const decl of want) {
       if (!rule.includes(decl)) failures.push(`theme: .${style.name} is missing "${decl}"`);

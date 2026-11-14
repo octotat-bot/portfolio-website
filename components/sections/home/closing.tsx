@@ -28,7 +28,7 @@ export function Closing() {
           </>
         )}
       </p>
-      <div className="pt-6">
+      <div data-hide-pill className="pt-6">
         <Button href={button.href}>{button.label}</Button>
       </div>
     </section>

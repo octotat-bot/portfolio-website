@@ -61,25 +61,37 @@ export const statement = { offset: 40, rotate: 25, opacity: 0.3 } as const;
 /**
  * M13 pinned title with drifting tiles. The section is 250vh; tiles start
  * below the screen at different x positions and rise at 0.8x to 1.4x.
- * x and width are CSS lengths for phones and for md up; start is in vh
- * below the top of the screen; speed multiplies the shared travel.
+ *
+ * Timing: tile i's top passes the middle of the screen at `cross` of the
+ * pin (25%, 45%, 65%, 85%). Its start is worked out from that and its speed,
+ * so each spends about a fifth of the pin over the headline and at most two
+ * are over it at once. Starts are in vh below the top of the screen.
+ *
+ * Size: about 20% smaller than before on desktop (16vw, never narrower than
+ * the longest project name needs). On phones 40vw: 35% smaller would be
+ * 32.5vw, too narrow for "MARGINALIA" at the smallest poster-4 size.
  */
+const DRIFT_TRAVEL = 260;
+/** Where a tile's top sits when it is centred on the headline, in vh. */
+const DRIFT_CENTRE = 35;
+const driftTile = (x: string, xMd: string, speed: number, cross: number) => ({
+  x,
+  xMd,
+  speed,
+  start: Math.round(DRIFT_CENTRE + cross * DRIFT_TRAVEL * speed),
+});
+
 export const driftTiles = {
   height: "250vh",
-  /**
-   * Phones: narrower tiles, timed so each crosses the middle of the screen in
-   * turn (at about 25%, 45%, 65% and 85% of the pin), about two on screen at once.
-   */
-  travel: 260,
-  travelMd: 220,
+  travel: DRIFT_TRAVEL,
   tiles: [
-    { x: "4%", xMd: "8%", start: 100, startMd: 100, speed: 1.0 },
-    { x: "46%", xMd: "58%", start: 195, startMd: 135, speed: 1.4 },
-    { x: "4%", xMd: "30%", start: 170, startMd: 115, speed: 0.8 },
-    { x: "46%", xMd: "74%", start: 300, startMd: 155, speed: 1.2 },
+    driftTile("4%", "10%", 1.0, 0.25),
+    driftTile("56%", "62%", 1.4, 0.45),
+    driftTile("6%", "30%", 0.8, 0.65),
+    driftTile("54%", "76%", 1.2, 0.85),
   ],
-  width: "50vw",
-  widthMd: "20vw",
+  width: "40vw",
+  widthMd: "max(16vw, 210px)",
 } as const;
 
 /** M12 blur focus. */

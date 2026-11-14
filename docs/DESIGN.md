@@ -59,6 +59,7 @@ Rules
 | `scribble` | Rubik Scribble, with Rubik Marker Hatch | Only inside the font-shuffle effect and one scribbled line on About |
 
 - Poster sizes are fluid. Each style's `fluid` value in `tokens.json` gives its `clamp()`. The px value is the desktop maximum. The same goes for `scrawl` and `scribble`.
+- `monument` is the exception: it fills the content width. Below 810px it is sized so MUKUND / MANGLA spans the width on two lines; from 810px (`fluidMd`) so MUKUND MANGLA spans it on one line. Its px value is the size at 1440px. Any other text set in `monument` must fit that size or be allowed to run off the edge.
 - The takeover menu has its own poster size, the `menu` style. It is used for the five menu links and nothing else.
 - Poster line-height is 0.9 to 0.95.
 - Reading text: 16px, line-height 1.5, at most 60 characters a line, never below 14px.
@@ -69,7 +70,7 @@ Rules
 
 - Spacing is a 4px scale, `space-1` to `space-32`.
 - Fixed sizes (nav, button, ticker, touch target, hairline, focus ring, menu-button stroke, progress line, tile minimum, reading measure) are the `size` tokens. Breakpoints are the `breakpoint` tokens.
-- Page side padding: `space-4` on phones, `space-10` from 810px up.
+- Page side padding: `space-4` on phones, `space-10` from 810px up. The `gutter` size token holds both values.
 - Section padding: `space-16` above and below.
 - Breakpoints: 810px and 1025px.
 - Nav is 56px: name at left, menu button (two ivory lines, `stroke` thick) at right. The menu is a full-screen takeover on `midnight-raised`: five poster-size links stacked at left, revealed by a circle that grows out of the menu button (M21 in `MOTION.md`).

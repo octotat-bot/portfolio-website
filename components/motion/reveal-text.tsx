@@ -29,6 +29,8 @@ type Props = {
   className?: string;
   /** Force line breaks, e.g. ["MUKUND", "MANGLA"]. Otherwise lines are measured. */
   lines?: string[];
+  /** Class for each forced line. "block" by default; "block md:inline" joins them from md. */
+  lineClassName?: string;
   reveal?: boolean;
   shuffle?: boolean;
   /** A word to sweep with the highlight bar. Matched without punctuation or case. */
@@ -54,6 +56,7 @@ export function RevealText({
   as: Tag = "p",
   className,
   lines,
+  lineClassName = "block",
   reveal = true,
   shuffle = false,
   highlight,
@@ -180,7 +183,9 @@ export function RevealText({
       <span className="sr-only">{text}</span>
       <span aria-hidden="true">
         {groups.map((group, g) => (
-          <span key={g} className={lines ? "block" : undefined}>
+          <Fragment key={g}>
+          {g > 0 ? " " : null}
+          <span className={lines ? lineClassName : undefined}>
             {group.map((word, i) => {
               const indexed = { ...word, index: w++ };
               return (
@@ -191,6 +196,7 @@ export function RevealText({
               );
             })}
           </span>
+          </Fragment>
         ))}
       </span>
     </Tag>

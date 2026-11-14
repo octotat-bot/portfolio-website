@@ -105,6 +105,7 @@ export default function StyleguidePage() {
                       sample: style.sample,
                       fontSize: style.fontSize,
                       fluid: "fluid" in style ? style.fluid : undefined,
+                      fluidMd: "fluidMd" in style ? style.fluidMd : undefined,
                       lineHeight: style.lineHeight,
                       fontWeight: style.fontWeight,
                       letterSpacing: "letterSpacing" in style ? style.letterSpacing : undefined,
@@ -129,8 +130,13 @@ export default function StyleguidePage() {
 
       <Section name="size">
         {tokens.size.tokens.map((t) => (
-          <Row key={t.name} name={t.name} value={t.value} usage={t.usage}>
-            <TokenProbe variant="length" cssVar={spacingVar(t.name)} expected={t.value} />
+          <Row key={t.name} name={t.name} value={"valueMd" in t && t.valueMd ? `${t.value} / ${t.valueMd} from md` : t.value} usage={t.usage}>
+            <TokenProbe
+              variant="length"
+              cssVar={spacingVar(t.name)}
+              expected={t.value}
+              expectedMd={"valueMd" in t ? t.valueMd : undefined}
+            />
           </Row>
         ))}
       </Section>

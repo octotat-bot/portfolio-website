@@ -2,13 +2,18 @@
 
 // Home 6: numbers. A full-bleed burgundy dither field (M08) with three figures
 // in a row, stacked on phones: the number in poster-1 counting up (M19) and
-// its caption in `label`. A figure that is still a blank shows a dash.
+// its caption in `label`. The section is left out until at least two figures
+// have values; a single remaining blank shows a dash.
 
 import { CountUp } from "@/components/motion/count-up";
 import { DitherField } from "@/components/motion/dither-field";
 import { site } from "@/content/site";
 
+/** Fewer figures than this and the section is not shown. */
+const MIN_FIGURES = 2;
+
 export function Numbers() {
+  if (site.numbers.filter((n) => n.value !== null).length < MIN_FIGURES) return null;
   return (
     <DitherField className="px-4 py-32 md:px-10">
       {/* On phones the dithered crest is taller relative to the width; keep the first figure below it. */}

@@ -309,9 +309,10 @@
 }
 
 /* ---- Home layout ----------------------------------------------------------- */
-/* The hero fills the first screen under the 40px ticker. */
+/* The hero fills at least the first screen under the 40px ticker; it grows
+   rather than clip on short landscape screens. */
 .hero-height {
-  height: calc(100dvh - var(--spacing-ticker));
+  min-height: calc(100dvh - var(--spacing-ticker));
 }
 
 .statement-height {
@@ -340,6 +341,20 @@
   .drift-tile {
     left: var(--x-md);
     width: var(--w-md);
+  }
+}
+
+/* Phones: the Home "things i've built" headline sits above the drifting
+   tiles; a midnight outline painted under the fill keeps the letters legible
+   where they cross a tile's ivory caption strip. */
+.headline-over-tiles {
+  paint-order: stroke fill;
+  -webkit-text-stroke: 0.06em var(--color-midnight);
+}
+
+@variant md {
+  .headline-over-tiles {
+    -webkit-text-stroke: 0;
   }
 }
 

@@ -24,7 +24,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t border-line pt-16">
+    <footer data-hide-pill className="border-t border-line pt-16">
       <div className="grid gap-10 px-4 md:grid-cols-3 md:px-10">
         <div className="flex flex-col gap-3">
           <p className="poster-4">{site.name}</p>

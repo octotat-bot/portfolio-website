@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { MD_QUERY } from "@/lib/hooks";
 
 // Each probe renders a token the way the site will use it (through the
 // generated CSS), reads back what the browser actually computed, and compares
@@ -54,11 +55,14 @@ function useOnLayout(run: () => void) {
 export function TokenProbe({
   variant,
   cssVar,
-  expected,
+  expected: expectedBase,
+  expectedMd,
 }: {
   variant: "colour" | "length" | "radius";
   cssVar: string;
   expected: string;
+  /** The value from the md breakpoint up, if it changes there. */
+  expectedMd?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<{ verdict: Verdict; computed: string }>({ verdict: "pending", computed: "" });
@@ -66,6 +70,7 @@ export function TokenProbe({
   useOnLayout(() => {
     const el = ref.current;
     if (!el) return;
+    const expected = (expectedMd && window.matchMedia(MD_QUERY).matches && expectedMd) || expectedBase;
     const style = getComputedStyle(el);
     const computed =
       variant === "colour" ? toHex(style.backgroundColor) : variant === "length" ? style.width : style.borderTopLeftRadius;
@@ -98,6 +103,8 @@ export type TypeProbeStyle = {
   sample: string;
   fontSize: string;
   fluid?: string;
+  /** From the md breakpoint up, if the style changes there. */
+  fluidMd?: string;
   lineHeight: number;
   fontWeight: number;
   letterSpacing?: string;
@@ -106,17 +113,19 @@ export type TypeProbeStyle = {
   face: string;
 };
 
-// Works out what a `clamp(min, preferred, max)` from tokens.json should be at
-// this viewport width. `preferred` is a sum of vw and px terms.
+// The size tokens.json says this style should have at this width: the
+// browser resolves the token's own expression (clamp or calc, with vw and
+// CSS variables) as a width on a throwaway element, independently of the
+// generated font-size rule being checked.
 const expectedSize = (style: TypeProbeStyle) => {
-  if (!style.fluid) return Number.parseFloat(style.fontSize);
-  const inner = style.fluid.slice(style.fluid.indexOf("(") + 1, style.fluid.lastIndexOf(")"));
-  const [min, preferred, max] = inner.split(",").map((part) => part.trim());
-  const value = preferred
-    .split("+")
-    .map((term) => term.trim())
-    .reduce((sum, term) => sum + (term.endsWith("vw") ? (Number.parseFloat(term) / 100) * window.innerWidth : Number.parseFloat(term)), 0);
-  return Math.min(Math.max(value, Number.parseFloat(min)), Number.parseFloat(max));
+  const expression = (window.matchMedia(MD_QUERY).matches && style.fluidMd) || style.fluid || style.fontSize;
+  const probe = document.createElement("div");
+  probe.style.cssText = "position:absolute;visibility:hidden;height:0";
+  probe.style.width = expression;
+  document.body.append(probe);
+  const width = probe.getBoundingClientRect().width;
+  probe.remove();
+  return width;
 };
 
 const letters = (value: string) => value.toLowerCase().replace(/[^a-z]/g, "");

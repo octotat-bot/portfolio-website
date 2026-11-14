@@ -53,7 +53,7 @@ export function ProjectTile({ href, name, caption, cover, index, sizes = "(min-w
       >
         <DitherField still seed={index} className="block aspect-4/5">
           {cover ? <DitherImage src={cover} alt="" resolved={active} back="burgundy-deep" sizes={sizes} /> : null}
-          <span className="poster-4 absolute bottom-4 left-4 right-4 text-ivory">{name}</span>
+          <span className="poster-4 absolute bottom-3 left-3 right-3 text-ivory">{name}</span>
         </DitherField>
         <span className="meta block bg-ivory px-3 py-2 text-midnight">{caption}</span>
       </motion.span>

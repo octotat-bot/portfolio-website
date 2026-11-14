@@ -56,6 +56,17 @@ out();
 for (const d of tokens.duration.tokens) out(`  --${d.name}: ${d.value};`);
 out("}");
 out();
+// Size tokens that change from the md breakpoint up.
+const mdOverrides = tokens.size.tokens.filter((s) => s.valueMd);
+if (mdOverrides.length) {
+  out(`@media (width >= ${tokens.breakpoint.tokens.find((b) => b.name === "md").value}) {`);
+  out("  :root {");
+  for (const s of mdOverrides) out(`    --spacing-${s.name}: ${s.valueMd};`);
+  out("  }");
+  out("}");
+  out();
+}
+
 out("@theme inline {");
 for (const [name, value] of Object.entries(tokens.type.families)) out(`  --font-${name}: ${stack(value)};`);
 out("}");
@@ -73,6 +84,11 @@ for (const group of tokens.type.groups) {
     out(`  font-weight: ${style.fontWeight};`);
     if (style.letterSpacing) out(`  letter-spacing: ${style.letterSpacing};`);
     if (style.textTransform) out(`  text-transform: ${style.textTransform};`);
+    if (style.fluidMd) {
+      out(`  @media (width >= ${tokens.breakpoint.tokens.find((b) => b.name === "md").value}) {`);
+      out(`    font-size: ${style.fluidMd};`);
+      out("  }");
+    }
     out("}");
     out();
   }

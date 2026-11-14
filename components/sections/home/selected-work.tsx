@@ -2,7 +2,10 @@
 
 // Home 5: selected work. M13 pinned title: the headline stays centred for
 // 250vh while four ProjectTiles start below the screen at different x
-// positions and rise past it at 0.8x to 1.4x, each with its own tilt.
+// positions and rise past it at 0.8x to 1.4x, each with its own tilt, timed so
+// at most two are over the headline at once. On phones the headline sits
+// above the tiles so it is never covered; a midnight outline keeps it legible
+// where it crosses a tile's ivory caption strip.
 // Tiles hop and clear on hover (M14, M15). A typed note sits beside the first.
 // With reduced motion: the headline, then the tiles in a plain grid.
 
@@ -12,19 +15,16 @@ import { RevealText } from "@/components/motion/reveal-text";
 import { Note } from "@/components/ui/note";
 import { ProjectTile } from "@/components/ui/project-tile";
 import { home } from "@/content/pages";
-import { MD_QUERY, useMedia, useReduced } from "@/lib/hooks";
+import { useReduced } from "@/lib/hooks";
 import { driftTiles } from "@/lib/motion";
 
 export type HomeTile = { slug: string; name: string; caption: string; cover: string | null };
 
-const SIZES = `(min-width: 810px) ${driftTiles.widthMd}, ${driftTiles.width}`;
+const SIZES = "(min-width: 810px) 16vw, 40vw";
 
 function DriftTile({ tile, index, progress }: { tile: HomeTile; index: number; progress: MotionValue<number> }) {
   const spec = driftTiles.tiles[index % driftTiles.tiles.length];
-  const desktop = useMedia(MD_QUERY);
-  const start = desktop ? spec.startMd : spec.start;
-  const travel = desktop ? driftTiles.travelMd : driftTiles.travel;
-  const y = useTransform(progress, (p) => `${start - p * travel * spec.speed}vh`);
+  const y = useTransform(progress, (p) => `${spec.start - p * driftTiles.travel * spec.speed}vh`);
   const style = {
     "--x": spec.x,
     "--x-md": spec.xMd,
@@ -68,8 +68,8 @@ export function SelectedWork({ tiles }: { tiles: HomeTile[] }) {
   return (
     <section ref={ref} className="relative" style={{ height: driftTiles.height }}>
       <div className="sticky top-0 h-dvh overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center px-4 md:px-10">
-          <RevealText as="h2" text={headline} className="poster-1 text-center" />
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-4 md:z-0 md:px-10">
+          <RevealText as="h2" text={headline} className="poster-1 headline-over-tiles text-center" />
         </div>
         {tiles.map((tile, i) => (
           <DriftTile key={tile.slug} tile={tile} index={i} progress={scrollYProgress} />
