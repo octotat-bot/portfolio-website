@@ -67,7 +67,7 @@ export function CardStack({ items, className = "" }: { items: { key: string; nod
           style={{ top: cardStack.top }}
         >
           <NavFade>
-            <motion.div className="origin-top" style={{ scale: scales.current[i] }}>
+            <motion.div className="origin-top bg-midnight" style={{ scale: scales.current[i] }}>
               {item.node}
             </motion.div>
           </NavFade>

@@ -5,6 +5,8 @@ import type { Maybe } from "./types";
 //
 // Pictures need no entry here. Drop files into public/projects/<slug>/
 // (cover.jpg, shot-01.jpg …, demo.mp4) and they are picked up at build time.
+// A screen's caption, if it should have one, goes in `screenCaptions` in the
+// same order as the files (shot-01 first).
 
 export type StoryBlock = {
   heading: string;
@@ -29,6 +31,8 @@ export type CaseStudy = {
   /** The "what went wrong" paragraph. */
   mistake: Maybe<string>;
   note: string;
+  /** Optional captions for shot-01, shot-02 … in order. */
+  screenCaptions?: Maybe<string>[];
   /**
    * False while a project has nothing to show yet. The case study then shows
    * only its lede and the story block named in `showWhileBuilding`.

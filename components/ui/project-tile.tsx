@@ -7,11 +7,14 @@
 // M14 tile hop: on hover or focus it rotates to 0 and lifts 10px (dur-pop,
 // ease-pop) and its picture clears (M15).
 // Without a cover it shows the dither field with the project name only.
+// The name sits on a solid burgundy band at the foot of the picture, so it
+// never lies over text inside a cover image.
 
 import { motion } from "motion/react";
 import { useState } from "react";
 import { DitherField } from "@/components/motion/dither-field";
 import { DitherImage } from "@/components/motion/dither-image";
+import { RevealText } from "@/components/motion/reveal-text";
 import { TransitionLink } from "@/components/shell/wipe";
 import { tileHop } from "@/lib/motion";
 
@@ -28,9 +31,21 @@ type Props = {
   className?: string;
   /** Show the hover state without interaction (styleguide). */
   forceActive?: boolean;
+  /** The name rises in when it enters view (M03). */
+  revealName?: boolean;
 };
 
-export function ProjectTile({ href, name, caption, cover, index, sizes = "(min-width: 810px) 33vw, 90vw", className = "", forceActive }: Props) {
+export function ProjectTile({
+  href,
+  name,
+  caption,
+  cover,
+  index,
+  sizes = "(min-width: 810px) 33vw, 90vw",
+  className = "",
+  forceActive,
+  revealName = false,
+}: Props) {
   const [hover, setHover] = useState(false);
   const [focus, setFocus] = useState(false);
   const active = forceActive ?? (hover || focus);
@@ -53,7 +68,13 @@ export function ProjectTile({ href, name, caption, cover, index, sizes = "(min-w
       >
         <DitherField still seed={index} className="block aspect-4/5">
           {cover ? <DitherImage src={cover} alt="" resolved={active} back="burgundy-deep" sizes={sizes} /> : null}
-          <span className="poster-4 absolute bottom-3 left-3 right-3 text-ivory">{name}</span>
+          <span className="absolute inset-x-0 bottom-0 block bg-burgundy px-3 pb-3 pt-2">
+            {revealName ? (
+              <RevealText as="span" text={name} className="poster-4 block text-ivory" />
+            ) : (
+              <span className="poster-4 block text-ivory">{name}</span>
+            )}
+          </span>
         </DitherField>
         <span className="meta block bg-ivory px-3 py-2 text-midnight">{caption}</span>
       </motion.span>

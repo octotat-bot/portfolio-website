@@ -337,8 +337,79 @@
   width: var(--w-md);
 }
 
+/* ---- Work layout ------------------------------------------------------------ */
+/* Tiles start one screen down, below the word wall's first screen. */
+.work-start {
+  padding-top: 100dvh;
+}
+
+/* The right column of tiles sits 30vh lower. */
+.work-offset {
+  padding-top: 30vh;
+}
+
+/* Work tiles are larger than Home's: about a third of the screen, never under 320px. */
+.work-tile {
+  width: max(32vw, var(--spacing-tile-min));
+}
+
 @media (prefers-reduced-motion: reduce) {
   .statement-height {
     height: auto;
+  }
+}
+
+/* ---- Case study ---------------------------------------------------------------- */
+.case-header {
+  min-height: 50dvh;
+}
+
+/* Next project: fills burgundy from the left on hover or focus (M07, scaled up). */
+.next-project {
+  isolation: isolate;
+}
+
+.next-project::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--color-burgundy);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-roll) var(--ease-out);
+}
+
+.next-project .next-label {
+  color: var(--color-ash);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.next-project:focus-visible {
+  outline-color: var(--color-ivory);
+  outline-offset: calc(-1 * var(--spacing-ring-offset));
+}
+
+.next-project:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.next-project:focus-visible .next-label {
+  color: var(--color-ivory);
+}
+
+@media (hover: hover) {
+  .next-project:hover::before {
+    transform: scaleX(1);
+  }
+
+  .next-project:hover .next-label {
+    color: var(--color-ivory);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .next-project::before {
+    transition: none;
   }
 }

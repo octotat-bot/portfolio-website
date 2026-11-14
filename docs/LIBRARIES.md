@@ -39,11 +39,11 @@ After copying a Skiper file:
 | `skiper28` | 3D perspective text | The Contact end credits, tilted back and crawling up | M24 |
 | `skiper16` | Card stack scroll | Work tiles on phones: each tile sticks and the next slides over it | M27 |
 | `skiper30` | Oliver parallax | Case study screens when there are three or more | M28 |
-| `skiper54` | Shadcn clipPath carousel | Case study screens on phones | M28 |
-| `skiper89` | Scroll progress 001 | Reading progress line on case studies | M29 |
-| `skiper37` | Animated number | The Numbers section and the intro counter | M19, M01 |
+| `skiper54` | Shadcn clipPath carousel | Case study screens on phones | M28. Idea only: the file needs Embla, the shadcn carousel and an icon library, so the phone gallery is native scroll-snap with Motion clip-paths |
+| `skiper89` | Scroll progress 001 | Reading progress line on case studies | M29. Idea only: the file needs Number Flow; the line is a Motion scaleX |
+| `skiper37` | Animated number | The Numbers section and the intro counter | M19, M01. Idea only: the file needs Number Flow, an icon library and an observer package; the count uses Motion's `animate()` |
 | `skiper66` | SVG clip path mask | Media revealing as it enters view | M15 |
-| `skiper41` | Progressive blur | Soft top and bottom edges on the credits and the word wall | M24, M16 |
+| `skiper41` | Progressive blur | Soft top and bottom edges on the credits and the word wall | M24, M16. Not used on the word wall: `MOTION.md` allows blur only in M12, and the wall's edges are the screen's. Decide for the credits in Phase 5 |
 | `skiper67` | Video player 001 | Demo videos in case studies | |
 | `skiper65`, `skiper102` | Breakpoint indicator, Debug panel | Development only. Remove before release | |
 

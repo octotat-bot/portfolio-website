@@ -68,7 +68,7 @@ export function SelectedWork({ tiles }: { tiles: HomeTile[] }) {
   return (
     <>
       {/* Below 810px: headline, note, card stack. */}
-      <section className="flex flex-col gap-10 px-4 py-32 md:hidden">
+      <section className="flex flex-col gap-10 overflow-x-clip px-4 py-32 md:hidden">
         <RevealText as="h2" text={headline} className="poster-1" />
         <Note text={note} tilt={4} />
         <CardStack

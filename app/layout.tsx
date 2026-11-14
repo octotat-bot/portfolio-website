@@ -35,6 +35,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             {a11y.skipToContent}
           </a>
           <Nav />
+          {/* Straight after the nav name in tab order; fixed, so its place in the markup is not visible. */}
+          <MenuButton />
           <PageFrame>
             {children}
             <Footer />
@@ -42,7 +44,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           </PageFrame>
           <div aria-hidden="true" className="grain" />
           <Menu />
-          <MenuButton />
           <Intro />
         </Providers>
       </body>

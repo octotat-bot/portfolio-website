@@ -96,7 +96,7 @@ Seven building blocks. Build these first; every page is made from them.
 | **Button** | Square block, mono label | 48px tall, `space-6` side padding. Primary: burgundy field, ivory label. Ghost: 1px ivory line. On burgundy: ivory field, midnight label. Hover fills from the left (M07). One primary per screen |
 | **RollLink** | Text link whose letters roll | Every text link that is not a button. Letters roll up one line and return in `claret` (M06). In the menu: the `menu` style with a mono number |
 | **Label** | Small mono text | `label` style. Numbers only where things are really in order. Tag variant: label in a 1px ivory box |
-| **ProjectTile** | Tilted poster card for a project | 4:5. Dithered burgundy field, dithered picture, caption on an ivory strip in `meta`, name in `poster-4`. Tilt 3 to 5 degrees, alternating. Straightens and lifts on hover (M14) |
+| **ProjectTile** | Tilted poster card for a project | 4:5. Dithered burgundy field, dithered picture, caption on an ivory strip in `meta`, name in `poster-4` on a solid burgundy band at the foot of the picture (so it never lies over text in a cover). Tilt 3 to 5 degrees, alternating. Straightens and lifts on hover (M14) |
 | **WordList** | Column of poster words, one sharp | `poster-2`, one per line. Only the word at the reading line is sharp (M12). Five to eight words |
 | **Note** | A typed margin note | `note` style in `claret` on midnight or `ivory` on burgundy, tilted 2 to 5 degrees. Types itself with a caret when it enters view (M10). At most three on a screen. Never carries information a visitor needs |
 | **Ticker** | Thin burgundy band of running mono text | 40px, ivory `label` text, small ivory squares between items. Home only |
