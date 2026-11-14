@@ -23,6 +23,8 @@ type Props = {
   className?: string;
   /** "view" scrambles once when it enters view; "hover" on pointer or focus; "both". */
   trigger?: "view" | "hover" | "both" | "none";
+  /** What screen readers get, if not `text` (e.g. every line of a cycling label). */
+  srText?: string;
 };
 
 const isBlank = (char: string) => /\s/.test(char);
@@ -34,7 +36,7 @@ function scrambled(text: string, resolved: number): string {
     .join("");
 }
 
-export function Scramble({ text, as: Tag = "span", className, trigger = "view" }: Props) {
+export function Scramble({ text, as: Tag = "span", className, trigger = "view", srText }: Props) {
   const ref = useRef<HTMLElement>(null);
   const visual = useRef<HTMLSpanElement>(null);
   const reduced = useReduced();
@@ -105,7 +107,7 @@ export function Scramble({ text, as: Tag = "span", className, trigger = "view" }
       onMouseEnter={hoverable ? replay : undefined}
       onFocus={hoverable ? replay : undefined}
     >
-      <span className="sr-only">{text}</span>
+      <span className="sr-only">{srText ?? text}</span>
       <span ref={visual} aria-hidden="true">
         {text}
       </span>

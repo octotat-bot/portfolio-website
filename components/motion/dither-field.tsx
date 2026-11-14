@@ -100,9 +100,9 @@ export function DitherField({ shape = "wave", still = false, drift = false, seed
   const speed = running && !reduced && !still ? dither.speed : 0;
 
   return (
-    <div ref={rootRef} data-surface="burgundy" className={`relative overflow-hidden bg-burgundy ${className}`}>
+    <div ref={rootRef} data-surface="burgundy" className={`relative isolate overflow-hidden bg-burgundy ${className}`}>
       {near && supported ? (
-        <div aria-hidden="true" className="absolute inset-0">
+        <div aria-hidden="true" className="absolute inset-0 -z-10">
           <DitherCanvas shape={shape} speed={speed} frame={dither.stillFrame + seed * 1500} shaderRef={shaderRef} />
         </div>
       ) : null}

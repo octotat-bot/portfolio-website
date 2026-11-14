@@ -49,6 +49,39 @@ export const letterRoll = { duration: dur.roll, ease: ease.out, stagger: dur.sta
 /** M10 typed note. */
 export const typedNote = { perChar: 0.035 } as const;
 
+/** M09 hero lift-off: over the first screen of scroll. */
+export const heroLift = { scale: 1.35, rise: -20, fadeBy: 0.8, clipSteps: 8 } as const;
+
+/** Home status line: one line every three seconds. */
+export const statusCycle = 3;
+
+/** M26 scroll-built statement. Letters start scattered and are in place by the middle. */
+export const statement = { offset: 40, rotate: 25, opacity: 0.3 } as const;
+
+/**
+ * M13 pinned title with drifting tiles. The section is 250vh; tiles start
+ * below the screen at different x positions and rise at 0.8x to 1.4x.
+ * x and width are CSS lengths for phones and for md up; start is in vh
+ * below the top of the screen; speed multiplies the shared travel.
+ */
+export const driftTiles = {
+  height: "250vh",
+  /**
+   * Phones: narrower tiles, timed so each crosses the middle of the screen in
+   * turn (at about 25%, 45%, 65% and 85% of the pin), about two on screen at once.
+   */
+  travel: 260,
+  travelMd: 220,
+  tiles: [
+    { x: "4%", xMd: "8%", start: 100, startMd: 100, speed: 1.0 },
+    { x: "46%", xMd: "58%", start: 195, startMd: 135, speed: 1.4 },
+    { x: "4%", xMd: "30%", start: 170, startMd: 115, speed: 0.8 },
+    { x: "46%", xMd: "74%", start: 300, startMd: 155, speed: 1.2 },
+  ],
+  width: "50vw",
+  widthMd: "20vw",
+} as const;
+
 /** M12 blur focus. */
 export const blurFocus = { maxBlur: 7, minOpacity: 0.3 } as const;
 

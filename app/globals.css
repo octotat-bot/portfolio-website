@@ -38,6 +38,7 @@
 .reveal-mask {
   display: inline-block;
   overflow: clip;
+  white-space: nowrap;
   padding-block: 0.12em;
   margin-block: -0.12em;
 }
@@ -304,5 +305,46 @@
   .note-tilt[data-boil="true"],
   .note-caret[data-blink="true"] {
     animation: none;
+  }
+}
+
+/* ---- Home layout ----------------------------------------------------------- */
+/* The hero fills the first screen under the 40px ticker. */
+.hero-height {
+  height: calc(100dvh - var(--spacing-ticker));
+}
+
+.statement-height {
+  height: 150vh;
+}
+
+.closing-height {
+  min-height: 90dvh;
+}
+
+/* Room above and below the word list so the first and last words reach the
+   middle of the screen. */
+@variant md {
+  .word-runway {
+    padding-block: 40vh;
+  }
+}
+
+/* M13: each tile's x and width, for phones and for md up. */
+.drift-tile {
+  left: var(--x);
+  width: var(--w);
+}
+
+@variant md {
+  .drift-tile {
+    left: var(--x-md);
+    width: var(--w-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .statement-height {
+    height: auto;
   }
 }

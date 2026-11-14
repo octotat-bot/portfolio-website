@@ -24,18 +24,20 @@ type Props = {
   className?: string;
   /** Start typing on mount instead of on entering view. */
   immediate?: boolean;
+  /** Extra gate: the note waits for this as well, e.g. until a sentence has assembled. */
+  when?: boolean;
 };
 
 type Phase = "idle" | "typing" | "blinking" | "boiling";
 
-export function Note({ text, tone = "claret", tilt = -3, size = "note", className = "", immediate = false }: Props) {
+export function Note({ text, tone = "claret", tilt = -3, size = "note", className = "", immediate = false, when = true }: Props) {
   const ref = useRef<HTMLParagraphElement>(null);
   const typed = useRef<HTMLSpanElement>(null);
   const reduced = useReduced();
   const clear = useStageClear();
   const inView = useInView(ref, { once: true, amount: 0.8 });
   const [phase, setPhase] = useState<Phase>("idle");
-  const go = (immediate || inView) && clear;
+  const go = (immediate || inView) && clear && when;
 
   useEffect(() => {
     const node = typed.current;
