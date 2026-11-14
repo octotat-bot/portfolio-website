@@ -83,7 +83,7 @@ The menu is a full-screen takeover with poster-size links. This is the one place
 Layout
 
 - Field: `midnight-raised`, full screen, above everything including the grain.
-- Left: five links stacked flush left, one per line: HOME, WORK, ABOUT, LAB, CONTACT. Anton, uppercase, size `clamp(56px, 9vw, 150px)`, line-height 0.9.
+- Left: five links stacked flush left, one per line: HOME, WORK, ABOUT, LAB, CONTACT. The `menu` type style: Anton, uppercase, `clamp(56px, 9vw, 150px)`, line-height 0.9.
 - A `claret` dot, 0.15em across, sits to the left of the link for the page you are on. That link is pushed right by the dot's width plus `space-3`.
 - Right half, desktop only: for the link being hovered, its number in the `label` style and one typed Note describing the page (see `CONTENT.md` → Menu). Nothing here on phones.
 - Bottom row: GitHub, LinkedIn and Email as small RollLinks at left; one `label` line at right.

@@ -63,7 +63,7 @@ One template for Repetite, Marginalia, Trailboard and BumpFix. Generated statica
 
 | # | Section | Layout | Components and motion |
 | --- | --- | --- | --- |
-| 1 | Opener | 100dvh burgundy dither field. One line in the `scribble` style, centred, three words | M08, M03 |
+| 1 | Opener | 100dvh burgundy dither field. One line in the `scribble` style, centred, three words. Below 810px, one word per line | M08, M03 |
 | 2 | Bio | Midnight. Left: `poster-3` heading. Right: three short paragraphs in `lede` then `body` | M03 |
 | 3 | The road so far | Pinned year strip, six cards. Each card: year in `poster-1`, title in `poster-4`, two lines of `body`, a mono place label | M17 |
 | 4 | What i work with | Burgundy dither field, 100dvh. `poster-4` heading top-left. Skill words drop and pile. Under the pile area on desktop, four mono stack lines (one per group) | M18 |

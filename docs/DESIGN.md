@@ -58,7 +58,8 @@ Rules
 | `hand` | Reenie Beanie | Typed notes: your own comments on your own work |
 | `scribble` | Rubik Scribble, with Rubik Marker Hatch | Only inside the font-shuffle effect and one scribbled line on About |
 
-- Poster sizes are fluid. Each style's `usage` in `tokens.json` gives its `clamp()`. The px value is the desktop maximum.
+- Poster sizes are fluid. Each style's `fluid` value in `tokens.json` gives its `clamp()`. The px value is the desktop maximum. The same goes for `scrawl` and `scribble`.
+- The takeover menu has its own poster size, the `menu` style. It is used for the five menu links and nothing else.
 - Poster line-height is 0.9 to 0.95.
 - Reading text: 16px, line-height 1.5, at most 60 characters a line, never below 14px.
 - At most two poster sizes on one screen.
@@ -67,6 +68,7 @@ Rules
 ## Layout
 
 - Spacing is a 4px scale, `space-1` to `space-32`.
+- Fixed sizes (nav, button, ticker, touch target, hairline, focus ring, progress line, tile minimum, reading measure) are the `size` tokens. Breakpoints are the `breakpoint` tokens.
 - Page side padding: `space-4` on phones, `space-10` from 810px up.
 - Section padding: `space-16` above and below.
 - Breakpoints: 810px and 1025px.
@@ -91,7 +93,7 @@ Seven building blocks. Build these first; every page is made from them.
 | Component | What it is | Key rules |
 | --- | --- | --- |
 | **Button** | Square block, mono label | 48px tall, `space-6` side padding. Primary: burgundy field, ivory label. Ghost: 1px ivory line. On burgundy: ivory field, midnight label. Hover fills from the left (M07). One primary per screen |
-| **RollLink** | Text link whose letters roll | Every text link that is not a button. Letters roll up one line and return in `claret` (M06). In the menu: `poster-3` with a mono number |
+| **RollLink** | Text link whose letters roll | Every text link that is not a button. Letters roll up one line and return in `claret` (M06). In the menu: the `menu` style with a mono number |
 | **Label** | Small mono text | `label` style. Numbers only where things are really in order. Tag variant: label in a 1px ivory box |
 | **ProjectTile** | Tilted poster card for a project | 4:5. Dithered burgundy field, dithered picture, caption on an ivory strip in `meta`, name in `poster-4`. Tilt 3 to 5 degrees, alternating. Straightens and lifts on hover (M14) |
 | **WordList** | Column of poster words, one sharp | `poster-2`, one per line. Only the word at the reading line is sharp (M12). Five to eight words |
