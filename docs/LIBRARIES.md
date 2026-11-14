@@ -43,7 +43,7 @@ After copying a Skiper file:
 | `skiper89` | Scroll progress 001 | Reading progress line on case studies | M29. Idea only: the file needs Number Flow; the line is a Motion scaleX |
 | `skiper37` | Animated number | The Numbers section and the intro counter | M19, M01. Idea only: the file needs Number Flow, an icon library and an observer package; the count uses Motion's `animate()` |
 | `skiper66` | SVG clip path mask | Media revealing as it enters view | M15 |
-| `skiper41` | Progressive blur | Soft top and bottom edges on the credits and the word wall | M24, M16. Not used on the word wall: `MOTION.md` allows blur only in M12, and the wall's edges are the screen's. Decide for the credits in Phase 5 |
+| `skiper41` | Progressive blur | Not used | `MOTION.md` allows blur only in M12. The credits' soft edges are a per-line opacity fade; the word wall's edges are the screen's |
 | `skiper67` | Video player 001 | Demo videos in case studies | |
 | `skiper65`, `skiper102` | Breakpoint indicator, Debug panel | Development only. Remove before release | |
 

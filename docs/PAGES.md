@@ -65,10 +65,10 @@ One template for Repetite, Marginalia, Trailboard and BumpFix. Generated statica
 
 | # | Section | Layout | Components and motion |
 | --- | --- | --- | --- |
-| 1 | Opener | 100dvh burgundy dither field. One line in the `scribble` style, centred, three words. Below 810px, one word per line | M08, M03 |
+| 1 | Opener | 100dvh burgundy dither field. MAKE THE / THING. in `poster-1`, centred, on two lines at every width | M08, M03, then M04 (shuffles through the scribble faces and settles on Anton) |
 | 2 | Bio | Midnight. Left: `poster-3` heading. Right: three short paragraphs in `lede` then `body` | M03 |
 | 3 | The road so far | Pinned year strip, six cards. Each card: year in `poster-1`, title in `poster-4`, two lines of `body`, a mono place label | M17 |
-| 4 | What i work with | Burgundy dither field, 100dvh. `poster-4` heading top-left. Skill words drop and pile. Under the pile area on desktop, four mono stack lines (one per group) | M18 |
+| 4 | What i work with | Burgundy dither field, at least 100dvh. `poster-4` heading top-left. Skill words in `poster-3` drop and pile, filling about the lower 40% on desktop. Under the pile area on desktop, four mono stack lines (one per group), never covered by the floating pill | M18 |
 | 5 | Things i believe | Midnight. Numbered hairline list, number in `label`, line in `poster-4` | M03 per row, M11 on one word in two of the rows |
 | 6 | Footer | | |
 
@@ -77,20 +77,20 @@ One template for Repetite, Marginalia, Trailboard and BumpFix. Generated statica
 | # | Section | Layout | Components and motion |
 | --- | --- | --- | --- |
 | 1 | Title | `monument` word, a `lede` line under it, a Note | M03, M04, M10 |
-| 2 | Shelf | Loose grid of small cards (three across desktop, one on phones), slightly different tilts. Each: status tag (Label), name in `poster-4`, one line, optional RollLink. Card fields alternate `midnight-raised` and `burgundy-deep` | M14, M05 on tags |
+| 2 | Shelf | Loose grid of small cards (three across from 1025px, two from 810px, one on phones), slightly different tilts. Each: status tag (Label), name in `poster-4`, one line, optional RollLink; blanks are left out. Card fields alternate `midnight-raised` and `burgundy-deep`. Only items marked `confirmed` in `content/lab.ts` appear in production; with none confirmed the shelf is left out | M14, M05 on tags |
 | 3 | Footer | | |
 
 ## Contact `/contact`
 
 | # | Section | Layout | Components and motion |
 | --- | --- | --- | --- |
-| 1 | The question | 100dvh, midnight. `monument` question on two lines. Under it one `lede` line, the email address as selectable text in `poster-4`, a primary button, three RollLinks | M03, M04, M07, M06 |
-| 2 | Credits | Burgundy dither field, 100dvh, pinned. Credit lines crawl up and away in perspective; ends on a typed Note | M08, M24, M10 |
+| 1 | The question | 100dvh, midnight. `poster-1` question on two lines (WHERE TO / NEXT?). Under it one `lede` line, the email address as selectable text in `poster-4`, a primary button, and RollLinks for GitHub, LinkedIn and Resume. The email text and button are absent while the email is blank; the resume link is absent while its URL is blank | M03, M04, M07, M06 |
+| 2 | Credits | Burgundy dither field, pinned for 300vh. Credit lines crawl up and away in perspective; lines fade out near the top and bottom of the screen (opacity, no blur); ends on a typed Note | M08, M24, M10 |
 | 3 | Footer (short) | Copyright line only | |
 
 ## 404
 
-Midnight. `monument` two-word headline, one `body` line, a primary button home. M03, M04.
+Midnight. `poster-1` two-word headline, one `body` line, a primary button home. M03, M04.
 
 ## Page titles and descriptions
 

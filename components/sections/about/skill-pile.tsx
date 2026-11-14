@@ -2,7 +2,8 @@
 
 // About 4: what i work with. A 100dvh burgundy dither field (M08). The
 // heading top-left; below it the skill words drop from the top one after
-// another, bounce and pile up at the bottom (M18). With a mouse they can be
+// another, bounce and pile up at the bottom (M18). Words are poster-3, so the
+// settled pile fills about the lower 40% of the section on desktop. With a mouse they can be
 // dragged and thrown; on touch screens they cannot, so a finger scrolls the
 // page. On desktop, the four stack lines sit under the pile.
 //
@@ -264,9 +265,9 @@ export function SkillPile() {
     <DitherField className="flex min-h-dvh flex-col gap-6 px-4 pb-10 pt-32 md:px-10">
       <RevealText as="h2" text={heading} className="poster-4 text-ivory" />
       <div ref={area} className="skill-area relative min-h-0 flex-1 select-none">
-        <ul ref={list} className="flex flex-wrap gap-x-6 gap-y-2">
+        <ul ref={list} className="flex flex-wrap gap-x-6 gap-y-1">
           {words.map((word) => (
-            <li key={word} data-piece className="poster-4 skill-word whitespace-nowrap text-ivory">
+            <li key={word} data-piece className="poster-3 skill-word whitespace-nowrap text-ivory">
               {word}
             </li>
           ))}

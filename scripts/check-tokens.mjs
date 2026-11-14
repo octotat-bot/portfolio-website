@@ -42,7 +42,7 @@ const mustExist = [
   "ease-out", "ease-pop", "ease-in-out", "dur-fast", "dur-roll", "dur-pop", "dur-page",
   "font-display", "font-sans", "font-mono", "font-hand", "font-scribble",
   "monument", "poster-1", "poster-2", "poster-3", "poster-4", "menu", "lede", "body", "small", "label", "meta",
-  "note", "scrawl", "scribble",
+  "note", "scrawl",
   "md:px-10", "lg:block",
 ];
 

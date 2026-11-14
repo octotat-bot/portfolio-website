@@ -1,9 +1,9 @@
 "use client";
 
 // About 1, 2 and 5.
-//   Opener: a 100dvh burgundy dither field (M08) with one line in the
-//   scribble style, centred, rising in (M03): one line from 810px, one word
-//   per line below.
+//   Opener: a 100dvh burgundy dither field (M08) with MAKE THE / THING. in
+//   poster-1 on two lines, centred, rising in (M03), then shuffling through
+//   the scribble faces before settling on Anton (M04).
 //   Bio: the page's h1 in poster-3 at left (M03); at right three short
 //   paragraphs, the first in `lede`, then `body`.
 //   Things i believe: a numbered hairline list, the number in `label`, the
@@ -20,8 +20,8 @@ export function Opener() {
         as="p"
         text={about.opener}
         lines={about.openerLines}
-        lineClassName="block md:inline"
-        className="scribble text-center text-ivory"
+        shuffle
+        className="poster-1 text-center text-ivory"
       />
     </DitherField>
   );

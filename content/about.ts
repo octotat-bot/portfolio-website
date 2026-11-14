@@ -62,9 +62,9 @@ const beliefs: Belief[] = [
 ];
 
 export const about = {
-  /** Below the md breakpoint this stacks one word per line. */
+  /** Two lines at every width. */
   opener: "MAKE THE THING.",
-  openerLines: ["MAKE", "THE", "THING."],
+  openerLines: ["MAKE THE", "THING."],
 
   bio: {
     heading: "HI, I'M MUKUND",

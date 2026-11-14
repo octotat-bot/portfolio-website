@@ -178,3 +178,27 @@ export const skillPile = {
   /** Fixed physics step, ms. */
   step: 1000 / 120,
 } as const;
+
+/** Lab shelf: each card's resting tilt, in degrees, by position. */
+export const shelfTilts = [-2, 1.5, -1, 2, -1.5, 1] as const;
+
+/**
+ * M24 perspective credits. The section pins for `height`. The credits sit on
+ * a plane leaning back `tilt` degrees from the bottom of the screen; across
+ * the pin up to `crawlEnd` they travel from below the screen, up the plane
+ * and away into the distance (`beyond` extra screen heights past their own
+ * length). A line fades in over the bottom `edge` of the screen and fades
+ * out as it recedes: fully drawn at `fadeTo` of its real height, gone at
+ * `fadeFrom`. Opacity only. The note types at `noteAt`.
+ */
+export const credits = {
+  height: "300vh",
+  tilt: 50,
+  perspective: 700,
+  crawlEnd: 0.8,
+  beyond: 1.2,
+  edge: 0.18,
+  fadeFrom: 0.3,
+  fadeTo: 0.55,
+  noteAt: 0.82,
+} as const;

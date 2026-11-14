@@ -20,10 +20,13 @@ import { useReduced } from "@/lib/hooks";
 import { statement } from "@/lib/motion";
 import { splitWords } from "@/lib/split";
 
-/** A stable pseudo-random number in -1..1 for a letter and a channel. */
+/**
+ * A stable pseudo-random number in -1..1 for a letter and a channel, rounded
+ * so the server and the browser write the same starting transform.
+ */
 const scatter = (index: number, channel: number) => {
   const s = Math.sin(index * 12.9898 + channel * 78.233) * 43758.5453;
-  return (s - Math.floor(s)) * 2 - 1;
+  return Math.round(((s - Math.floor(s)) * 2 - 1) * 100) / 100;
 };
 
 function Letter({ char, index, progress }: { char: string; index: number; progress: MotionValue<number> }) {

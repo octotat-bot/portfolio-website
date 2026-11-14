@@ -56,10 +56,10 @@ Rules
 | `sans` | Geist | Everything you read |
 | `mono` | Geist Mono | Labels, numbers, tags, buttons |
 | `hand` | Reenie Beanie | Typed notes: your own comments on your own work |
-| `scribble` | Rubik Scribble, with Rubik Marker Hatch | Only inside the font-shuffle effect and one scribbled line on About |
+| `scribble` | Rubik Scribble, with Rubik Marker Hatch | Only as the in-between faces of the font-shuffle effect (M04). No text rests in them, so there is no `scribble` type style |
 
-- Poster sizes are fluid. Each style's `fluid` value in `tokens.json` gives its `clamp()`. The px value is the desktop maximum. The same goes for `scrawl` and `scribble`.
-- `monument` is the exception: it fills the content width. Below 810px it is sized so MUKUND / MANGLA spans the width on two lines; from 810px (`fluidMd`) so MUKUND MANGLA spans it on one line. Its px value is the size at 1440px. Any other text set in `monument` must fit that size or be allowed to run off the edge.
+- Poster sizes are fluid. Each style's `fluid` value in `tokens.json` gives its `clamp()`. The px value is the desktop maximum. The same goes for `scrawl`.
+- `monument` is the exception: it fills the content width. Below 810px it is sized so MUKUND / MANGLA spans the width on two lines; from 810px (`fluidMd`) so MUKUND MANGLA spans it on one line. Its px value is the size at 1440px. `monument` is for single title words (LAB, project names). Longer headlines such as Contact's and the 404's use `poster-1`. A long project name may run off the edge.
 - The takeover menu has its own poster size, the `menu` style. It is used for the five menu links and nothing else.
 - Poster line-height is 0.9 to 0.95.
 - Reading text: 16px, line-height 1.5, at most 60 characters a line, never below 14px.
