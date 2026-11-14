@@ -69,6 +69,7 @@ Default spring for anything that follows the pointer or scroll: stiffness 140, d
 | M27 | Card stack | Work tiles below 810px | Each tile sticks near the top; the next slides over it while the one beneath scales down to 0.92 | Start from Skiper `skiper16` |
 | M28 | Screen gallery | Case study proof | Three or more screens sit in two or three columns that scroll at different speeds. Below 810px they become a swipe carousel with a clip-path change between slides | Skiper `skiper30` on desktop, `skiper54` on phones |
 | M29 | Reading progress | Case studies | A 2px `claret` line across the very top grows left to right with scroll | Skiper `skiper89` |
+| M30 | Image cursor trail | Work index, desktop with a fine pointer, only once at least one project cover exists | As the pointer moves over empty page area, project covers drop behind it: a new one each time the pointer has travelled 80px, cycling through the covers that exist. Each is 4:5, 160px wide, square-cornered, shown as the plain image (no shader, so the one-canvas rule holds). It lands with `ease-pop` (scale 0.9 to 1, `dur-pop`), stays 600ms, then fades and scales to 0.85 in `dur-fast`. At most five on screen. Not drawn while the pointer is over a tile, a link or a button. Decorative: hidden from screen readers | Built by hand with Motion: presence for each image, pointer distance from Motion's frame loop. Not Skiper `skiper18`, which is paid |
 
 ### Controls
 
@@ -133,7 +134,7 @@ When `prefers-reduced-motion: reduce` is set:
 | M08 | One still frame of the dither |
 | M09, M12, M13, M16, M17 | Normal scrolling layout, nothing pinned, everything sharp |
 | M18 | A static wrapped list of the words |
-| M20, M22, M23, M25 | Off or still |
+| M20, M22, M23, M25, M30 | Off or still |
 | M24, M26 | Flat, readable text in place |
 | M27, M28 | Plain vertical list of tiles or screens |
 | M21 | See the takeover menu section |

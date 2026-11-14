@@ -47,7 +47,7 @@ After copying a Skiper file:
 | `skiper67` | Video player 001 | Demo videos in case studies | |
 | `skiper65`, `skiper102` | Breakpoint indicator, Debug panel | Development only. Remove before release | |
 
-Paid components that match this design, only if a licence is bought: `skiper9` or `skiper10` (stairs preloader, the same idea as the burgundy wipe), `skiper27` (rolling text), `skiper18` (image cursor trail, for Work once photos exist), `skiper80` (projects showcase). None is required: `MOTION.md` describes each effect well enough to build it with Motion.
+Paid components that match this design, only if a licence is bought: `skiper9` or `skiper10` (stairs preloader, the same idea as the burgundy wipe), `skiper27` (rolling text), `skiper18` (image cursor trail, for Work once photos exist), `skiper80` (projects showcase). None is required: `MOTION.md` describes each effect well enough to build it with Motion. The cursor trail is M30 and is built by hand.
 
 ## Copy in, do not install: React Bits
 
@@ -66,7 +66,7 @@ Every copied component must be restyled to the tokens. Remove any gradient, glow
 
 ## Build by hand with Motion
 
-These are specific to this site and small enough to write directly: line reveal, button fill, font shuffle, typed note, highlight sweep, takeover menu, pinned split with blur focus, pinned title with drifting tiles, word wall, year strip, burgundy stairs wipe. Specs are in `MOTION.md`.
+These are specific to this site and small enough to write directly: line reveal, button fill, font shuffle, typed note, highlight sweep, takeover menu, pinned split with blur focus, pinned title with drifting tiles, word wall, image cursor trail, year strip, burgundy stairs wipe. Specs are in `MOTION.md`.
 
 For splitting headlines into lines, words and letters, use Motion's own split-text utility if the installed free package exports one. If it does not, write a small splitter. Do not buy Motion+.
 
