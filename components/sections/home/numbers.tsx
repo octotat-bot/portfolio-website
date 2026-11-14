@@ -11,6 +11,8 @@ import { site } from "@/content/site";
 export function Numbers() {
   return (
     <DitherField className="px-4 py-32 md:px-10">
+      {/* On phones the dithered crest is taller relative to the width; keep the first figure below it. */}
+      <div aria-hidden="true" className="h-24 md:hidden" />
       <ul className="grid gap-16 md:grid-cols-3 md:gap-10">
         {site.numbers.map((n) => (
           <li key={n.caption} className="flex flex-col gap-3">
