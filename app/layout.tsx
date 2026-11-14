@@ -10,12 +10,16 @@ import { PageFrame } from "@/components/shell/page-frame";
 import { Providers } from "@/components/shell/providers";
 import { a11y } from "@/content/pages";
 import { site } from "@/content/site";
+import { siteUrl } from "@/lib/site-url";
 import { baseFaces, effectFaces } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: siteUrl(),
   title: site.meta.home.title,
   description: site.meta.home.description,
+  openGraph: { siteName: site.name, type: "website", locale: "en" },
+  twitter: { card: "summary_large_image" },
 };
 
 // Stacking, bottom to top: page 0, pill 30, nav 40, grain 50, menu 60,

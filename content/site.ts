@@ -23,6 +23,9 @@ const numbers: SiteNumber[] = [
 
 export const site = {
   name: "Mukund Mangla",
+
+  /** Blank: the site's live address, e.g. "https://mukundmangla.com". Used for share links and the sitemap. */
+  url: null as Maybe<string>,
   navName: "MUKUND MANGLA",
 
   /** Shown wherever a figure or fact is still a blank. */
