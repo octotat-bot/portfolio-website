@@ -32,7 +32,18 @@ export function Question() {
       <p className="lede max-w-measure">{contact.line}</p>
       {email ? (
         <>
-          <p className="poster-4 select-all break-all normal-case">{email}</p>
+          {/* On narrow screens the address breaks after the @, never inside the domain. */}
+          <p className="poster-4 select-all wrap-anywhere normal-case">
+            {email.includes("@") ? (
+              <>
+                {email.slice(0, email.indexOf("@") + 1)}
+                <wbr />
+                {email.slice(email.indexOf("@") + 1)}
+              </>
+            ) : (
+              email
+            )}
+          </p>
           <div className="pt-3">
             <Button href={`mailto:${email}`}>{contact.button}</Button>
           </div>

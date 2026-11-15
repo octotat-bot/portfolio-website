@@ -28,7 +28,7 @@ Every blank is `null` in `content/`. While a value is `null`, the site hides it 
 
 | To set | File | Field |
 | --- | --- | --- |
-| Email address | `content/site.ts` | `links.email.value`, for example `"you@example.com"` (no `mailto:`) |
+| Email address | `content/site.ts` | `links.email.value`, the address only (no `mailto:`). Already set |
 | Resume link | `content/site.ts` | `links.resume.value`, a full URL to the PDF |
 | Site address | `content/site.ts` | `url`, for example `"https://mukundmangla.com"` |
 
@@ -39,8 +39,10 @@ Setting the email makes the Email link appear in the menu and footer, and the ad
 The numbers are in `content/site.ts`, in `numbers`. Each entry has a whole-number `value` and a `caption`:
 
 ```ts
-{ value: 412, caption: "contributions on github this year" },
+{ value: 2, caption: "ai internships in 2026" },
 ```
+
+The GitHub and LeetCode figures are fetched live. Their `value` stays `null`, and a `live` entry names the account (`octotat-bot`, `Hakka123`). Home is rebuilt in the background at most once a day with fresh counts, by `lib/live-numbers.ts`. If GitHub or LeetCode can't be reached, the `lastKnown` count shows instead; update it now and then. To fix a figure by hand, give it a `value`.
 
 The Numbers section on Home only appears once at least two of its figures have a value. If just one is still blank, that figure shows a dash.
 

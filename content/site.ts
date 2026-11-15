@@ -2,22 +2,41 @@ import type { ExternalLink, Maybe } from "./types";
 
 export type LinkId = "github" | "linkedin" | "email" | "resume";
 
-export type SiteNumber = { value: Maybe<number>; caption: string };
+/**
+ * A number that is fetched live. `lastKnown` is a real count taken on `on`;
+ * it is shown whenever the live fetch fails.
+ */
+export type LiveSource = {
+  source: "github-contributions-this-year" | "leetcode-solved";
+  user: string;
+  lastKnown: { value: number; on: string };
+};
+
+export type SiteNumber = { value: Maybe<number>; caption: string; live?: LiveSource };
 
 const links: Record<LinkId, ExternalLink> = {
   github: { label: "GitHub", value: "https://github.com/octotat-bot", kind: "url" },
-  linkedin: { label: "LinkedIn", value: "https://linkedin.com/in/mukundmangla", kind: "url" },
-  // Blank: the email address, e.g. "you@example.com" (no "mailto:").
-  email: { label: "Email", value: null, kind: "email" },
+  linkedin: { label: "LinkedIn", value: "https://www.linkedin.com/in/mukund-mangla/", kind: "url" },
+  // The address only, no "mailto:".
+  email: { label: "Email", value: "manglamukund123@gmail.com", kind: "email" },
   // Blank: a URL to the resume PDF.
   resume: { label: "Resume", value: null, kind: "url" },
 };
 
+// The first two are fetched live (lib/live-numbers.ts) and refreshed at most
+// once a day. Leave `value` as null for a live number; set it to a whole
+// number to fix a figure by hand.
 const numbers: SiteNumber[] = [
-  // Blank: GitHub contributions this year, a whole number.
-  { value: null, caption: "contributions on github this year" },
-  // Blank: LeetCode problems solved, a whole number.
-  { value: null, caption: "leetcode problems solved" },
+  {
+    value: null,
+    caption: "contributions on github this year",
+    live: { source: "github-contributions-this-year", user: "octotat-bot", lastKnown: { value: 386, on: "2026-11-15" } },
+  },
+  {
+    value: null,
+    caption: "leetcode problems solved",
+    live: { source: "leetcode-solved", user: "Hakka123", lastKnown: { value: 254, on: "2026-11-15" } },
+  },
   { value: 2, caption: "ai internships in 2026" },
 ];
 

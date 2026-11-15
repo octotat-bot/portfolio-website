@@ -25,8 +25,8 @@ Links
 | Item | Value |
 | --- | --- |
 | GitHub | https://github.com/octotat-bot |
-| LinkedIn | https://linkedin.com/in/mukundmangla |
-| Email | [EMAIL] |
+| LinkedIn | https://www.linkedin.com/in/mukund-mangla/ |
+| Email | (in `content/site.ts`) |
 | Resume | [RESUME_PDF_URL] |
 
 ## Menu
@@ -82,8 +82,8 @@ Bottom-right label: designed and built by mukund mangla
 
 | Figure | Caption |
 | --- | --- |
-| [GITHUB_CONTRIBUTIONS] | contributions on github this year |
-| [LEETCODE_SOLVED] | leetcode problems solved |
+| Live: GitHub contributions this calendar year for octotat-bot | contributions on github this year |
+| Live: LeetCode problems solved (all difficulties) for Hakka123 | leetcode problems solved |
 | 2 | ai internships in 2026 |
 
 **Closing**
@@ -301,7 +301,7 @@ Items. Mukund must confirm each one exists and that he wants it public before la
 
 - Headline, two lines: WHERE TO / NEXT?
 - Line: tell me what you're building, or what's broken.
-- Email shown as text: [EMAIL]
+- Email shown as text: the address in `content/site.ts`
 - Button: Email me
 - Links: GitHub · LinkedIn · Resume
 
