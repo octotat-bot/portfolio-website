@@ -202,3 +202,9 @@ export const credits = {
   fadeTo: 0.55,
   noteAt: 0.82,
 } as const;
+
+/**
+ * Shader budget. Dither patterns are 3px blocks, so 1x pixel density is
+ * enough; the cap keeps a large screen from drawing more than this many pixels.
+ */
+export const shaderBudget = { pixelRatio: 1, maxPixels: 1920 * 1080 } as const;

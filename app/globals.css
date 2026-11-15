@@ -204,6 +204,17 @@
   opacity: 0;
 }
 
+/* ---- M08: the dither fades in over the flat burgundy once it mounts ---- */
+.dither-in {
+  animation: dither-in var(--dur-roll) var(--ease-out) both;
+}
+
+@keyframes dither-in {
+  from {
+    opacity: 0;
+  }
+}
+
 /* ---- M20 ticker ------------------------------------------------------------ */
 .ticker-track {
   display: flex;
@@ -267,6 +278,11 @@
   }
 }
 
+/* Footer ghost marquee: decorative words drawn from data-text. */
+.ghost-word::before {
+  content: attr(data-text);
+}
+
 /* ---- M01 intro --------------------------------------------------------------
    Shown only when the head script set data-intro. If scripts never run, it
    removes itself after eight seconds. */
@@ -300,6 +316,7 @@
   }
 
   .grain,
+  .dither-in,
   .ticker-track,
   .pill-bob,
   .note-tilt[data-boil="true"],

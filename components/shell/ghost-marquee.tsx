@@ -6,7 +6,9 @@
 // Started from React Bits "Scroll Velocity" (reactbits.dev, MIT + Commons
 // Clause): its scroll-velocity spring and wrap-around loop are kept; drag,
 // skew, scale, fades, outlines and styling are removed. Paused off screen,
-// still with reduced motion. Decorative, so hidden from screen readers.
+// still with reduced motion. Decorative, so hidden from screen readers; the
+// words are drawn by a pseudo-element from data-text, so they are not page
+// text (the low-contrast `line` colour is deliberate and carries nothing).
 
 import {
   motion,
@@ -64,9 +66,7 @@ export function GhostMarquee({ text, className = "" }: { text: string; className
     <div ref={rootRef} aria-hidden="true" className={`overflow-hidden ${className}`}>
       <motion.div className="flex whitespace-nowrap" style={{ x }}>
         {Array.from({ length: COPIES }, (_, i) => (
-          <span key={i} ref={i === 0 ? copyRef : undefined} className="poster-1 shrink-0 pr-10 text-line">
-            {text}
-          </span>
+          <span key={i} ref={i === 0 ? copyRef : undefined} data-text={text} className="ghost-word poster-1 shrink-0 pr-10 text-line" />
         ))}
       </motion.div>
     </div>

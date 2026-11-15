@@ -5,7 +5,7 @@
 
 import { Dithering, ImageDithering, type PaperShaderElement } from "@paper-design/shaders-react";
 import type { Ref } from "react";
-import { dither } from "@/lib/motion";
+import { dither, shaderBudget } from "@/lib/motion";
 
 const fill = { position: "absolute", inset: 0 } as const;
 
@@ -31,6 +31,8 @@ export function DitherCanvas({
       speed={speed}
       frame={frame}
       offsetY={dither.lift}
+      minPixelRatio={shaderBudget.pixelRatio}
+      maxPixelCount={shaderBudget.maxPixels}
       width="100%"
       height="100%"
       style={fill}
@@ -49,6 +51,8 @@ export function ImageDitherCanvas({ src, back, front }: { src: string; back: str
       size={dither.size}
       colorSteps={2}
       fit="cover"
+      minPixelRatio={shaderBudget.pixelRatio}
+      maxPixelCount={shaderBudget.maxPixels}
       width="100%"
       height="100%"
       style={fill}

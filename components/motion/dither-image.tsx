@@ -34,7 +34,7 @@ export function DitherImage({ src, alt, resolved, back = "midnight", sizes, clas
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(([entry]) => entry.isIntersecting && setNear(true), {
-      rootMargin: "100% 0px",
+      rootMargin: "25% 0px",
     });
     observer.observe(el);
     return () => observer.disconnect();
