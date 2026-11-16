@@ -62,6 +62,16 @@ export function projectMedia(slug: string): ProjectMedia {
   };
 }
 
+export type Portrait = { src: string; width: number; height: number };
+
+/** The menu portrait, public/me/menu.png, if it exists. */
+export function menuPortrait(): Portrait | null {
+  const path = join(PUBLIC, "me", "menu.png");
+  if (!existsSync(path)) return null;
+  const size = imageSize(path);
+  return size ? { src: "/me/menu.png", ...size } : null;
+}
+
 /** Covers that exist, in Work order (for the cursor trail). */
 export function existingCovers(slugs: string[]): string[] {
   return slugs.flatMap((slug) => {

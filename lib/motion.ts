@@ -245,3 +245,30 @@ export const statementBeats = {
   snapAt: 0.8,
   noteAt: 0.86,
 } as const;
+
+/**
+ * M21 menu portrait (desktop). After the circle reveal and the links:
+ * the portrait scans in top to bottom over `scanIn`, then the page's shapes
+ * fly in (`flight`, `stagger` apart). Changing link: the old shapes scatter
+ * over `scatter` while the new ones assemble from `swapDelay` (`swapFlight`,
+ * `swapStagger` apart), and the portrait re-dithers with a `rescan` scan.
+ * The portrait leans at most `lean` px toward the pointer; the lens rings
+ * pulse `pulse` in scale every `pulsePeriod` seconds and are `ringSize`% of
+ * the portrait's width across. Closing: shapes scatter and the portrait
+ * fades over `closeOut`, then the circle closes.
+ */
+export const menuPortrait = {
+  scanIn: 0.5,
+  flight: 0.45,
+  stagger: 0.025,
+  scatter: 0.2,
+  swapDelay: 0.12,
+  swapFlight: 0.26,
+  swapStagger: 0.012,
+  rescan: 0.4,
+  lean: 8,
+  pulse: 0.04,
+  pulsePeriod: 2,
+  ringSize: 11,
+  closeOut: 0.2,
+} as const;

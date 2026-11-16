@@ -124,7 +124,19 @@ Closing
 - Choosing a link starts the burgundy stairs wipe (M02) and closes the menu underneath it.
 - Esc closes. Focus is trapped while open and returns to the menu button on close.
 
-Reduced motion: the field appears and disappears at once, links are simply there, the dot jumps, colour still changes on hover.
+Portrait collage (desktop only, from 810px; on phones the menu is links only)
+
+- The right half is a collage, back to front: the poster-shape composition for the hovered or focused link, the portrait (`public/me/menu.png`, a cut-out), a `claret` ring over each binocular lens, and under it the link's number and typed Note. The portrait stands on the bottom of its stage, between the nav row and the note, about 80 to 85% of the screen's height. The social links and the credit line sit in the left half, so nothing in the collage is over text or a link. Shapes are only ever behind the portrait.
+- Per link, the composition and the portrait's treatment change: **Home** a large burgundy disc behind the head with small ivory discs, portrait dithered ivory; **Work** ivory and claret bars stacked like a page behind the shoulder, claret dither; **About** two quarter discs forming a broken circle behind the head, the real photo; **Lab** three ivory stars and a claret triangle, a coarse 8x8 dither; **Contact** a burgundy square turned 45 degrees behind the head and one ring, burgundy dither.
+- Opening, after the circle reveal and the link slide-in: the portrait scans in top to bottom over 500ms, then the shapes fly in behind it (G1, 450ms, 25ms apart).
+- Hover or keyboard focus on a link: the old shapes scatter outward and fade (200ms) while the new composition assembles (from 120ms, 260ms each, 12ms apart), about 500ms in all; the portrait re-dithers with a 400ms top-to-bottom scan; the number scrambles and the Note retypes.
+- Idle: the shapes run their G3 loops; the lens rings pulse 4% in scale every 2 seconds.
+- Pointer: the shapes push away (G2); the portrait leans at most 8px toward the pointer on the default spring.
+- Closing: the shapes scatter and the portrait fades (200ms), then the circle closes. The page mark (G4) returns once the circle has closed.
+- The portrait is dithered with Paper Shaders `ImageDithering` (`midnight` back), masked by the photo's own transparency; two canvases take turns so none is created per hover. While the menu is open every page shader and page composition holds still. Only transform, opacity and clip-path animate. Everything in the collage is `aria-hidden` with no pointer events.
+- Without `public/me/menu.png` the collage is the composition alone, centred in the right half.
+
+Reduced motion: the field appears and disappears at once, links are simply there, the dot jumps, colour still changes on hover. The portrait and composition appear finished and still; treatments and compositions change at once; no scan, scatter or pulse.
 
 ### Nav zone
 

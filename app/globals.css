@@ -153,11 +153,13 @@
   }
 }
 
+/* The caret takes no width, so it never wraps onto a line of its own. */
 .note-caret {
   display: inline-block;
   width: 0.4em;
   height: 0.75em;
   margin-left: 0.08em;
+  margin-right: -0.48em;
   vertical-align: -0.05em;
   background-color: currentColor;
 }
@@ -376,6 +378,42 @@
     display: grid;
     grid-template-columns: 3fr 2fr;
     align-items: center;
+  }
+}
+
+/* M21 menu collage: the right half, between the nav row and the bottom. */
+.menu-collage-slot {
+  position: absolute;
+  top: var(--spacing-nav);
+  bottom: var(--spacing-6);
+  left: 50%;
+  right: var(--spacing-gutter);
+}
+
+/* M21 lens rings: claret, centred on each lens, pulsing 4% every 2s. */
+.lens-ring {
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.lens-ring[data-on="true"] {
+  opacity: 1;
+  transition-delay: 0.5s;
+  animation: lens-pulse 2s var(--ease-in-out) infinite;
+}
+
+@keyframes lens-pulse {
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lens-ring[data-on="true"] {
+    animation: none;
+    transition: none;
   }
 }
 

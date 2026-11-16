@@ -282,6 +282,105 @@ const lost: Composition = {
   ],
 };
 
+/*
+ * Menu compositions (M21), one per link. Laid out in the portrait's own
+ * frame (600 x 652, the photo's proportions) so they sit around the head and
+ * shoulders: the head is near (300, 205). They are drawn behind the portrait.
+ */
+const MENU_W = 600;
+const MENU_H = 652;
+const HEAD = { x: 300, y: 205 };
+
+const menuHome: Composition = {
+  id: "menu-home",
+  w: MENU_W,
+  h: MENU_H,
+  pieces: [
+    { k: "disc", r: 195, c: "field", x: HEAD.x, y: HEAD.y + 12, idle: { t: "breathe", a: 0.02, sp: 0.9 } },
+    { k: "ring", r: 285, sw: 2, c: "neutral", x: HEAD.x, y: HEAD.y + 70 },
+    { k: "disc", r: 14, c: "light", x: 70, y: 80 },
+    { k: "disc", r: 9, c: "light", x: 130, y: 28 },
+    { k: "disc", r: 11, c: "light", x: 540, y: 60 },
+    { k: "disc", r: 18, c: "light", x: 565, y: 170 },
+    { k: "disc", r: 7, c: "light", x: 40, y: 250 },
+    { k: "disc", r: 12, c: "accent", x: 505, y: 20 },
+    { k: "disc", r: 8, c: "light", x: 585, y: 300 },
+  ],
+};
+
+const menuWork: Composition = {
+  id: "menu-work",
+  w: MENU_W,
+  h: MENU_H,
+  pieces: [
+    ...[200, 160, 200, 130, 180, 110, 170].map(
+      (w, i): Piece => ({ k: "bar", w, h: 20, c: i === 2 || i === 5 ? "accent" : "light", x: 470 + w / 2 - 100, y: 70 + i * 40 }),
+    ),
+    { k: "quarter", r: 130, c: "field", x: 560, y: 470 },
+    { k: "square", r: 12, c: "light", x: 70, y: 90, rot: 20 },
+    { k: "disc", r: 9, c: "accent", x: 110, y: 40 },
+  ],
+};
+
+const menuAbout: Composition = {
+  id: "menu-about",
+  w: MENU_W,
+  h: MENU_H,
+  pieces: [
+    // Two opposite quarters of a circle round the head, the lower one knocked out of line.
+    { k: "quarter", r: 190, c: "field", x: HEAD.x + 95, y: HEAD.y - 80, idle: { t: "rock", a: 2, sp: 0.6 } },
+    { k: "quarter", r: 190, c: "accent", x: HEAD.x - 110, y: HEAD.y + 125, rot: 180, idle: { t: "rock", a: 2, sp: 0.6, ph: 2 } },
+    { k: "ring", r: 270, sw: 2, c: "neutral", x: HEAD.x, y: HEAD.y + 80 },
+    { k: "star", r: 18, c: "light", x: 80, y: 70 },
+    { k: "disc", r: 9, c: "light", x: 545, y: 420 },
+    { k: "disc", r: 6, c: "light", x: 520, y: 40 },
+    { k: "tri", r: 16, c: "light", x: 60, y: 300, rot: -10 },
+    { k: "square", r: 9, c: "light", x: 560, y: 260, rot: 25 },
+  ],
+};
+
+const menuLab: Composition = {
+  id: "menu-lab",
+  w: MENU_W,
+  h: MENU_H,
+  pieces: [
+    { k: "star", r: 36, c: "light", x: 100, y: 100 },
+    { k: "star", r: 26, c: "light", x: 505, y: 60 },
+    { k: "star", r: 42, c: "light", x: 545, y: 300 },
+    { k: "tri", r: 48, c: "accent", x: 70, y: 390, rot: 10, idle: { t: "rock", a: 10, sp: 1.3 } },
+    { k: "ring", r: 260, sw: 2, c: "neutral", x: HEAD.x, y: HEAD.y + 80 },
+    { k: "disc", r: 8, c: "light", x: 200, y: 30 },
+    { k: "disc", r: 10, c: "light", x: 420, y: 20 },
+    { k: "bar", w: 90, h: 10, c: "neutral", x: 70, y: 240, rot: -10 },
+  ],
+};
+
+const menuContact: Composition = {
+  id: "menu-contact",
+  w: MENU_W,
+  h: MENU_H,
+  pieces: [
+    { k: "square", r: 170, c: "field", x: HEAD.x, y: HEAD.y + 10, rot: 45, idle: { t: "rock", a: 1.5, sp: 0.5 } },
+    { k: "ring", r: 56, sw: 8, c: "accent", x: 520, y: 80 },
+    { k: "disc", r: 10, c: "light", x: 80, y: 110 },
+    { k: "disc", r: 7, c: "light", x: 120, y: 40 },
+    { k: "disc", r: 12, c: "light", x: 570, y: 250 },
+    { k: "star", r: 18, c: "light", x: 60, y: 300 },
+    { k: "tri", r: 18, c: "accent", x: 565, y: 400, rot: 15 },
+    { k: "square", r: 9, c: "light", x: 40, y: 470, rot: 20 },
+  ],
+};
+
+/** The menu composition for each page link. */
+export const menuCompositions = {
+  home: menuHome,
+  work: menuWork,
+  about: menuAbout,
+  lab: menuLab,
+  contact: menuContact,
+} as const;
+export type MenuKey = keyof typeof menuCompositions;
+
 export const compositions = {
   repetite,
   marginalia,

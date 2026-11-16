@@ -58,6 +58,18 @@ export const site = {
 
   pill: { label: "say hello", href: "/contact" },
 
+  /**
+   * The menu portrait (public/me/menu.png). Each lens gets a claret ring at
+   * lensX, lensY: percentages of the image's width and height. Set a lens to
+   * null to leave its ring out. Measured from the photo: the two binocular lenses.
+   */
+  menuPortrait: {
+    lenses: [
+      { lensX: 39.0, lensY: 32.9 },
+      { lensX: 61.2, lensY: 32.7 },
+    ] as { lensX: Maybe<number>; lensY: Maybe<number> }[],
+  },
+
   intro: { line: "loading" },
 
   footer: {

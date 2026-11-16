@@ -12,6 +12,8 @@
 // - Only the most visible field animates (lib/shader-slot.ts). `still` fields,
 //   such as tiles, never take the slot.
 // - With reduced motion every field is one still frame.
+// - While the menu is open every field holds still, so only the menu's own
+//   portrait dithering draws.
 
 import type { PaperShaderElement } from "@paper-design/shaders-react";
 import { useMotionValueEvent, useSpring } from "motion/react";
@@ -20,6 +22,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { HOVER_QUERY, useMedia, useReduced } from "@/lib/hooks";
 import { dither, spring } from "@/lib/motion";
 import { hasWebGL2, joinShaderSlot } from "@/lib/shader-slot";
+import { useMenu } from "@/components/shell/menu-state";
 
 const DitherCanvas = dynamic(() => import("./dither-canvas").then((m) => m.DitherCanvas), { ssr: false });
 
@@ -125,7 +128,8 @@ export function DitherField({ shape = "wave", still = false, drift = false, seed
     shaderRef.current?.paperShaderMount?.setUniforms({ u_offsetY: dither.lift - y }),
   );
 
-  const speed = running && !reduced && !still ? dither.speed : 0;
+  const { open: menuOpen } = useMenu();
+  const speed = running && !reduced && !still && !menuOpen ? dither.speed : 0;
 
   return (
     <div ref={rootRef} data-surface="burgundy" className={`relative isolate overflow-hidden bg-burgundy ${className}`}>

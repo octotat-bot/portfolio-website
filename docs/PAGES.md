@@ -15,7 +15,7 @@ Seven routes. Each page has one idea, one or two burgundy moments, and at most t
 ## On every page
 
 - **Nav** (56px, fixed, over content): name at left as a RollLink, menu button at right. A 20px page mark (G4) sits just right of the name. Text uses `mix-blend-mode: difference` so it reads on midnight, burgundy and ivory.
-- **Takeover menu** (M21): full-screen, five poster-size links stacked at left (Home, Work, About, Lab, Contact), a claret dot marking the current page, a typed note on the right for the hovered link, small RollLinks for GitHub, LinkedIn and Email along the bottom. Full spec in `MOTION.md`.
+- **Takeover menu** (M21): full-screen, five poster-size links stacked at left (Home, Work, About, Lab, Contact), a claret dot marking the current page, and small RollLinks for GitHub, LinkedIn and Email with the credit line along the bottom-left. From 810px the right half is a collage: the portrait (`public/me/menu.png`) with a poster-shape composition behind it and a claret ring on each lens, changing per hovered link, and the link's number and typed note under it. On phones, links only. Full spec in `MOTION.md`.
 - **Floating contact pill** (M23), except on Contact. It fades out while the Home hero buttons, the Home closing button, the About stack lines or the footer are on screen.
 - **Grain** (M22), **smooth scroll** (M25), **burgundy wipe** on navigation (M02).
 - **Nav zone**: tiles, cards and images fade out as they scroll into the top 120px, so nothing passes under the nav (see `MOTION.md`).

@@ -59,3 +59,36 @@ export function ImageDitherCanvas({ src, back, front }: { src: string; back: str
     />
   );
 }
+
+/** The menu portrait: contained, with a dither type and pixel size per link. */
+export function PortraitDitherCanvas({
+  src,
+  back,
+  front,
+  type,
+  size,
+}: {
+  src: string;
+  back: string;
+  front: string;
+  type: "4x4" | "8x8";
+  size: number;
+}) {
+  return (
+    <ImageDithering
+      image={src}
+      colorBack={back}
+      colorFront={front}
+      colorHighlight={front}
+      type={type}
+      size={size}
+      colorSteps={2}
+      fit="contain"
+      minPixelRatio={shaderBudget.pixelRatio}
+      maxPixelCount={shaderBudget.maxPixels}
+      width="100%"
+      height="100%"
+      style={fill}
+    />
+  );
+}

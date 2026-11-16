@@ -27,6 +27,7 @@ import { cancelFrame, cubicBezier, frame, type FrameData } from "motion/react";
 import { useEffect, useMemo, useRef } from "react";
 import { useStageClear } from "@/lib/curtain";
 import { NavFade } from "./nav-fade";
+import { useMenu } from "@/components/shell/menu-state";
 import { HOVER_QUERY, MD_QUERY, useMedia, useReduced } from "@/lib/hooks";
 import { dur, ease, shapes as cfg, spring } from "@/lib/motion";
 import {
@@ -47,15 +48,15 @@ const easeOut = cubicBezier(...ease.out);
 const popEase = cubicBezier(...ease.pop);
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
-type Pose = { x: number; y: number; r: number; s: number; sx: number };
+export type Pose = { x: number; y: number; r: number; s: number; sx: number };
 
 /** A stable pseudo-random sequence per composition, so start poses do not change between renders. */
-function seeded(seed: string) {
+export function seeded(seed: string) {
   let n = Array.from(seed).reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) % 233280, 7);
   return () => (n = (n * 9301 + 49297) % 233280) / 233280;
 }
 
-function Shape({ p, fillColour }: { p: Piece; fillColour: string }) {
+export function Shape({ p, fillColour }: { p: Piece; fillColour: string }) {
   const r = p.r ?? 0;
   switch (p.k) {
     case "disc":
@@ -99,11 +100,11 @@ function Shape({ p, fillColour }: { p: Piece; fillColour: string }) {
   }
 }
 
-const transform = (q: Pose) =>
+export const transform = (q: Pose) =>
   `translate(${q.x.toFixed(1)} ${q.y.toFixed(1)}) rotate(${q.r.toFixed(2)}) scale(${(q.s * q.sx).toFixed(3)} ${q.s.toFixed(3)})`;
 
 /** Where a piece rests (assembled) with its idle applied at time t (seconds since assembly). */
-function idlePose(p: Piece, idle: Idle, t: number): Pose {
+export function idlePose(p: Piece, idle: Idle, t: number): Pose {
   const q: Pose = { x: p.x, y: p.y, r: p.rot ?? 0, s: 1, sx: 1 };
   switch (idle.t) {
     case "spin":
@@ -165,6 +166,15 @@ export function ShapeComposition({
 }: Props) {
   const checkedRef = useRef(checked);
   checkedRef.current = checked;
+  // Page compositions hold still while the menu covers the page.
+  const { open: menuOpen } = useMenu();
+  const menuOpenRef = useRef(menuOpen);
+  menuOpenRef.current = menuOpen;
+  const controlRef = useRef<{ run: () => void; stop: () => void } | null>(null);
+  useEffect(() => {
+    if (menuOpen) controlRef.current?.stop();
+    else controlRef.current?.run();
+  }, [menuOpen]);
   const svgRef = useRef<SVGSVGElement>(null);
   const groups = useRef<(SVGGElement | null)[]>([]);
   const reduced = useReduced();
@@ -292,7 +302,7 @@ export function ShapeComposition({
     };
 
     const run = () => {
-      if (running || !visible || startedAt === null || fallDone) return;
+      if (running || !visible || startedAt === null || fallDone || menuOpenRef.current) return;
       running = true;
       frame.update(tick, true);
     };
@@ -314,6 +324,7 @@ export function ShapeComposition({
       { threshold: [0, cfg.startAt, 1] },
     );
     observer.observe(svg);
+    controlRef.current = { run, stop };
     startRef.current = () => {
       if (startedAt !== null) return;
       const r = svg.getBoundingClientRect();

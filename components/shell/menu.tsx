@@ -25,15 +25,16 @@ import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Scramble } from "@/components/motion/scramble";
 import { RollLink } from "@/components/ui/roll-link";
 import { RollText } from "@/components/ui/roll-text";
-import { Note } from "@/components/ui/note";
 import { a11y, menu as copy } from "@/content/pages";
 import { site } from "@/content/site";
 import { MD_QUERY, useMedia, useReduced } from "@/lib/hooks";
-import { dur, ease, menu as m, spring } from "@/lib/motion";
+import type { Portrait } from "@/lib/media";
+import { dur, ease, menu as m, menuPortrait as mp, spring } from "@/lib/motion";
+import type { MenuKey } from "@/lib/shapes";
 import { tokens } from "@/lib/tokens";
+import { MenuCollage } from "./menu-collage";
 import { useMenu } from "./menu-state";
 import { lockScroll } from "./smooth-scroll";
 import { useWipe } from "./wipe";
@@ -48,7 +49,10 @@ const isCurrent = (href: string, pathname: string) =>
 
 type Origin = { x: number; y: number; r: number };
 
-export function Menu() {
+/** The menu composition and portrait treatment for each link. */
+const MENU_KEYS: Record<string, MenuKey> = { "/": "home", "/work": "work", "/about": "about", "/lab": "lab", "/contact": "contact" };
+
+export function Menu({ portrait }: { portrait: Portrait | null }) {
   const { open, setOpen, closeInstantly, instant, buttonRef } = useMenu();
   const pathname = usePathname();
   const reduced = useReduced();
@@ -146,7 +150,7 @@ export function Menu() {
     closed: (skip: boolean) =>
       skip || reduced
         ? { clipPath: circle(origin.r), opacity: 0, transition: { duration: 0 } }
-        : { clipPath: circle(0), transition: { ...m.close, delay: m.fadeOut } },
+        : { clipPath: circle(0), transition: { ...m.close, delay: desktop ? mp.closeOut : m.fadeOut } },
     open: { clipPath: circle(origin.r), opacity: 1, transition: reduced ? { duration: 0 } : m.open },
   };
   const enter = (i: number) =>
@@ -237,23 +241,23 @@ export function Menu() {
               </ul>
             </nav>
 
-            {desktop ? (
-              <motion.div
-                className="flex flex-col gap-4 self-center"
-                aria-hidden="true"
-                initial={reduced ? false : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={leave}
-                transition={reduced ? { duration: 0 } : { duration: dur.roll, ease: ease.out, delay: bottomDelay }}
-              >
-                <Scramble text={shown.number} trigger="none" className="label text-ash" />
-                <Note text={shown.note} immediate tilt={-3} />
-              </motion.div>
-            ) : null}
           </div>
 
+          {/* Desktop: the collage fills the right half (M21). Phones: links only. */}
+          {desktop ? (
+            <div className="menu-collage-slot">
+              <MenuCollage
+                portrait={portrait}
+                target={MENU_KEYS[shown.href] ?? "home"}
+                number={shown.number}
+                note={shown.note}
+                reduced={reduced}
+              />
+            </div>
+          ) : null}
+
           <motion.div
-            className="mt-10 flex flex-wrap items-end justify-between gap-4"
+            className="mt-10 flex flex-wrap items-end justify-between gap-4 md:w-1/2 md:items-center md:justify-start md:gap-x-10"
             initial={reduced ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={leave}

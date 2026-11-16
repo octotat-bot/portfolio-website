@@ -77,6 +77,14 @@ The slugs are `repetite`, `marginalia`, `trailboard`, `bumpfix`, `smartresume` a
 - To caption screens, add `screenCaptions: ["first caption", "second caption"]` to the project's `study` in `content/projects.ts`, in the same order as the files.
 - Once two or more projects have a `cover.jpg`, the covers also trail the pointer on the Work page.
 
+## Change the menu portrait
+
+The desktop menu shows `public/me/menu.png`: a PNG with a transparent background (just the person), at least 1600px tall. Replace the file and rebuild; no code changes. Without the file, the menu shows its shapes alone.
+
+A claret ring sits on each lens of the binoculars. Their positions are in `content/site.ts`, in `menuPortrait.lenses`: `lensX` and `lensY` are percentages of the image's width and height, measured from its top-left corner. Set a lens to `null` to leave its ring out. If you change the photo, re-measure them.
+
+The current file was cut out of `assets/portrait/menu-original.png` on this Mac with Apple's Vision framework. To cut out a new photo the same way, run `swift scripts/cutout.swift <photo> public/me/menu.png`.
+
 ## Add a project
 
 Add an entry to `projects` in `content/projects.ts`. The order of the list is the order on the Work page.

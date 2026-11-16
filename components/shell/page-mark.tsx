@@ -12,7 +12,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useReduced } from "@/lib/hooks";
-import { ease, shapes as cfg } from "@/lib/motion";
+import { ease, menu as m, menuPortrait as mp, shapes as cfg } from "@/lib/motion";
 import { halfPath, pageMarks, quarterPath, starPoints, type Kind } from "@/lib/shapes";
 import { color, tokens } from "@/lib/tokens";
 import { useMenu } from "./menu-state";
@@ -40,6 +40,13 @@ export function PageMark() {
   const { open } = useMenu();
   const y = useUnderTicker();
   const [left, setLeft] = useState<number | null>(null);
+  // Hidden while the menu is open, and until its circle has closed again.
+  const [hidden, setHidden] = useState(open);
+  useEffect(() => {
+    if (open) return setHidden(true);
+    const id = window.setTimeout(() => setHidden(false), reduced ? 0 : (mp.closeOut + m.close.duration) * 1000);
+    return () => window.clearTimeout(id);
+  }, [open, reduced]);
   const kind = pageMarks.find((m) => m.match(pathname))?.kind ?? null;
 
   // Sit just right of the nav name, whatever its width.
@@ -63,7 +70,7 @@ export function PageMark() {
     <motion.div
       aria-hidden="true"
       className="page-mark pointer-events-none fixed top-0 z-85 flex h-nav items-center"
-      style={{ y, left: left ?? 0, opacity: left === null || open ? 0 : 1 }}
+      style={{ y, left: left ?? 0, opacity: left === null || hidden ? 0 : 1 }}
     >
       <AnimatePresence mode="popLayout" initial={false}>
         {kind ? (

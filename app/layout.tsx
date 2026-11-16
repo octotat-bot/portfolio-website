@@ -11,6 +11,7 @@ import { PageMark } from "@/components/shell/page-mark";
 import { Providers } from "@/components/shell/providers";
 import { a11y } from "@/content/pages";
 import { site } from "@/content/site";
+import { menuPortrait } from "@/lib/media";
 import { siteUrl } from "@/lib/site-url";
 import { baseFaces, effectFaces } from "./fonts";
 import "./globals.css";
@@ -48,7 +49,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <ContactPill />
           </PageFrame>
           <div aria-hidden="true" className="grain" />
-          <Menu />
+          <Menu portrait={menuPortrait()} />
           <PageMark />
           <Intro />
         </Providers>
