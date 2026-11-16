@@ -79,10 +79,9 @@ The slugs are `repetite`, `marginalia`, `trailboard`, `bumpfix`, `smartresume` a
 
 ## Change the loader
 
-Every full page load (the first visit and every refresh, but not moving between pages) plays a short loader: three pictures, each followed by a word card ("NEED MONEY", "FOR", "FERRARI."). The pictures and words are in `content/site.ts` → `intro.loaderSlides`; all three are set in burgundy.
+Every full page load (the first visit and every refresh, but not moving between pages) plays a short loader: four pictures, with a word card after each of the first three ("NEED", "MONEY", "FOR"), then "FERRARI." in the shutter's slit as it closes. The pictures and words are in `content/site.ts` → `intro.loaderSlides`, and the timings in `lib/motion.ts` → `intro`. All the words are burgundy on black.
 
-Pictures go in `public/loader/` as grayscale WebP, at most 1600px on the long side and under 150 KB each. If they can't load within a second, the loader shows the words only. Keep large originals out of `public/`; the current ones are in `assets/loader-originals/`, which git ignores.
-
+Pictures go in `public/intro/` as WebP, at most 1600px wide, quality 75. If they can't all load within a second, the loader shows the words only. Keep large originals out of `public/`; the current ones are in `assets/intro-originals/`, which git ignores.
 
 ## Change the menu portrait
 

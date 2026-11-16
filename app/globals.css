@@ -303,6 +303,11 @@
   }
 }
 
+/* Scroll stays locked while the loader runs. */
+html.pl-lock {
+  overflow: hidden;
+}
+
 /* The closing shutter: two black bars, each half the screen, scaled from
    their outer edge. Above the pictures, under the word cards. */
 .shutter-top,

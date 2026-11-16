@@ -73,14 +73,16 @@ export const site = {
   intro: {
     line: "loading",
     /**
-     * The loader (M01): each slide is a picture, then a word card. The words
-     * read as one line; screen readers hear it once. All words are set in
-     * burgundy. Pictures live in public/loader/ (grayscale WebP).
+     * The loader (M01): each slide is a picture, then a word card. The last
+     * word sits in the shutter's slit as it closes. The words read as one
+     * line; screen readers hear it once. All words are set in burgundy.
+     * Pictures live in public/intro/ (WebP, at most 1600px wide).
      */
     loaderSlides: [
-      { image: "/loader/1.webp", word: "NEED MONEY" },
-      { image: "/loader/2.webp", word: "FOR" },
-      { image: "/loader/3.webp", word: "FERRARI." },
+      { image: "/intro/1.webp", word: "NEED" },
+      { image: "/intro/2.webp", word: "MONEY" },
+      { image: "/intro/3.webp", word: "FOR" },
+      { image: "/intro/4.webp", word: "FERRARI." },
     ] as { image: string; word: string }[],
   },
 

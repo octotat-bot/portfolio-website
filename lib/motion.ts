@@ -10,26 +10,37 @@ export { dur, ease };
 export const spring = { stiffness: 140, damping: 30, mass: 0.5 } as const;
 
 /**
- * M01 loader. Every full page load: picture, word card, picture, word card,
- * picture, final word card, each a hard cut (3.3s). Each picture holds
- * `imageHold` and settles from `push` to 1; word card n holds `wordHolds[n]`.
- * Meanwhile two black shutter bars close from the top and bottom edges,
- * driven by one value through `shutter.value` at `shutter.at` seconds, so each
- * picture shows through a narrower band than the last. At 3.3s the bars meet;
- * then they part (`reveal`, ease-in-out) to show the page, and the page's
- * entrance starts `heroDelay` into that. All pictures must be ready within
- * `preloadBudget` seconds, or the loader shows the word cards only. With
- * reduced motion: the word cards, `reducedHold` each, then a cut.
+ * M01 loader, on every full page load. Four pictures, each followed by a word
+ * card: picture `imageHold`, word `wordHold`. The last word, FERRARI., is not
+ * a card on top but sits under the shutter, in its slit.
+ *
+ * The shutter is two black bars closing from the top and bottom edges, driven
+ * by one value (0 open, 1 shut) through `shutter.value` at `shutter.at`
+ * seconds. It holds still while a picture shows and steps closer while each
+ * word card covers it, so every picture shows through a narrower band than
+ * the last; through picture 4 it creeps to `slit` (0.7: a 30% slit).
+ *
+ * Then the finale: FERRARI. appears in the slit, its cap height `slitFill` of
+ * the slit; after `closeAfter` the bars close from `slit` to 1 over `close`,
+ * squeezing it to a line; solid black for `shutHold`; then the bars part over
+ * `reveal`, and the page's entrance starts `heroDelay` into that. A skip jumps
+ * straight to the close. Pictures must all be ready within `preloadBudget`
+ * seconds, or only the words play. Reduced motion: each word `reducedHold`,
+ * then a cut.
  */
 export const intro = {
-  imageHold: 0.6,
-  wordHolds: [0.5, 0.4, 0.6],
+  imageHold: 0.8,
+  wordHold: 0.6,
   push: 1.06,
   shutter: {
-    at: [0, 1.1, 2.1, 2.7, 3.3],
-    value: [0, 0.12, 0.55, 0.88, 1],
-    ease: "easeIn",
+    at: [0, 0.8, 1.4, 2.2, 2.8, 3.6, 4.2, 5.0],
+    value: [0, 0, 0.2, 0.2, 0.45, 0.45, 0.65, 0.7],
   },
+  slit: 0.7,
+  slitFill: 0.8,
+  closeAfter: 0.3,
+  close: 0.6,
+  shutHold: 0.15,
   reveal: 0.7,
   heroDelay: 0.15,
   preloadBudget: 1,

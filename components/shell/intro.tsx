@@ -1,30 +1,33 @@
 "use client";
 
-// M01 loader. On every full page load (first visit and every refresh, not
-// moves between pages), a run of hard cuts:
-//   0.0 picture 1 · 0.6 "NEED MONEY" · 1.1 picture 2 · 1.7 "FOR" ·
-//   2.1 picture 3 · 2.7 "FERRARI." · 3.3 shut. All words in burgundy.
-// Meanwhile a closing shutter: two black bars grow from the top and bottom
-// edges (scaleY, one shared value), so picture 1 is full-screen, picture 2 a
-// letterbox and picture 3 a slit. The word cards sit above the bars, full
-// black. At 3.3 the bars meet; then they part, top up and bottom down, and
-// the page shows through the gap. Its entrance starts 0.15s into that.
-// Timings are in lib/motion.ts (intro); the beats come from content/site.ts
-// (intro.loaderSlides). A small 000 to 100 counter runs bottom-left, and the
-// grain sits over everything until the bars part.
+// M01 loader, on every full page load (first visit and every refresh, not
+// moves between pages). About 6.8 seconds:
+//   0.0 picture 1 · 0.8 "NEED" · 1.4 picture 2 · 2.2 "MONEY" ·
+//   2.8 picture 3 · 3.6 "FOR" · 4.2 picture 4 ·
+//   5.0 "FERRARI." in the shutter's slit · 5.3 to 5.9 the shutter closes on it ·
+//   5.9 solid black · 6.05 to 6.75 the bars part to show the page.
+//
+// The shutter is two black bars (scaleY from the top and bottom edges, one
+// shared value). It holds still while a picture shows and steps closer while
+// each word card covers it, so every picture is narrower than the last.
+// Layers, bottom to top: picture, the FERRARI. slit card, the bars, the word
+// cards, then the counter and grain. All words are burgundy on black. The
+// page's entrance starts 0.15s into the bars parting. Timings: lib/motion.ts
+// (intro). Beats: content/site.ts (intro.loaderSlides).
 //
 // - All pictures are preloaded first (the head script adds preload links).
-//   If they are not ready within 1 second, the loader shows the word cards only.
-// - Any click, key, wheel or touch skips straight to the bars parting.
-// - Scroll stays locked until the bars have parted; then the loader unmounts.
-// - Reduced motion: no shutter and no push-in. The three word cards, 0.4s
-//   each, then a cut to the page.
+//   If they are not ready within 1 second, only the words play.
+// - Any click, key, wheel or touch jumps to FERRARI. and the close, so a skip
+//   still shows it.
+// - Scroll is locked (html.pl-lock) until the bars have parted; then the
+//   loader unmounts.
+// - Reduced motion: no shutter and no zoom. Each word for 0.4s, then a cut.
 // - The pictures are aria-hidden. The line is real text that screen readers
 //   hear once: "need money for ferrari".
 //
 // The screen is in the server HTML. The inline head script sets data-intro on
-// <html> before first paint when the loader should run, and CSS shows it only
-// then, so the page never flashes underneath.
+// <html> before first paint, and CSS shows it only then, so the page never
+// flashes underneath.
 
 import { useLenis } from "lenis/react";
 import { animate, motion, useMotionValue } from "motion/react";
@@ -36,8 +39,9 @@ import { lockScroll } from "./smooth-scroll";
 
 const slides = site.intro.loaderSlides;
 const images = slides.map((s) => s.image);
+const lastWord = slides[slides.length - 1].word;
 
-/** Before first paint: decide whether to run, and start loading the pictures. */
+/** Before first paint: show the loader and start loading the pictures. */
 export const INTRO_SCRIPT = `try{var d=document.documentElement;d.setAttribute("data-intro",matchMedia("(prefers-reduced-motion: reduce)").matches?"still":"");if(d.getAttribute("data-intro")===""){${JSON.stringify(images)}.forEach(function(h){var l=document.createElement("link");l.rel="preload";l.as="image";l.href=h;document.head.appendChild(l)})}}catch(e){}`;
 
 /** The whole line, as screen readers hear it. */
@@ -48,19 +52,22 @@ const SPOKEN = slides
   .replace(/[^\p{L}\p{N} ]/gu, "")
   .trim();
 
-type Word = { kind: "word"; text: string; hold: number };
-type Beat = { kind: "image"; src: string; hold: number } | Word;
+type Beat =
+  | { kind: "image"; src: string; hold: number }
+  | { kind: "word"; text: string; hold: number }
+  | { kind: "slit" };
 
-const wordHold = (i: number) => intro.wordHolds[Math.min(i, intro.wordHolds.length - 1)];
-
+/** Picture, word, picture, word, … picture. The last word is the finale, in the slit. */
 function beats(withImages: boolean): Beat[] {
-  return slides.flatMap((s, i) => {
-    const word: Beat = { kind: "word", text: s.word, hold: wordHold(i) };
-    return withImages ? [{ kind: "image", src: s.image, hold: intro.imageHold } as Beat, word] : [word];
+  return slides.flatMap((s, i): Beat[] => {
+    const image: Beat[] = withImages ? [{ kind: "image", src: s.image, hold: intro.imageHold }] : [];
+    if (i === slides.length - 1) return image;
+    return [...image, { kind: "word", text: s.word, hold: intro.wordHold }];
   });
 }
 
 const pad = (n: number) => String(Math.round(n)).padStart(3, "0");
+const sleep = (s: number) => new Promise<void>((r) => window.setTimeout(r, s * 1000));
 
 function preload(budget: number) {
   const all = Promise.all(
@@ -110,6 +117,65 @@ function WordCard({ text }: { text: string }) {
   );
 }
 
+type SlitFit = { w: number; h: number; size: number; baseline: number };
+
+/**
+ * The last word, centred in the shutter's slit: its cap height `slitFill` of
+ * the slit, or smaller if it would be wider than the screen less the gutters.
+ * Measured from the real font on a canvas, so the caps (not the line box) are
+ * centred. Mounted from the start, hidden, so the size is ready in time.
+ */
+function SlitCard({ text, shown }: { text: string; shown: boolean }) {
+  const probe = useRef<SVGTextElement>(null);
+  const [fit, setFit] = useState<SlitFit | null>(null);
+  useEffect(() => {
+    let alive = true;
+    const measure = async () => {
+      const el = probe.current;
+      if (!el) return;
+      const family = getComputedStyle(el).fontFamily;
+      try {
+        await document.fonts.load(`400 100px ${family}`, text);
+      } catch {}
+      const ctx = document.createElement("canvas").getContext("2d");
+      if (!ctx || !alive) return;
+      ctx.font = `400 100px ${family}`;
+      const word = ctx.measureText(text);
+      const cap = ctx.measureText("H").actualBoundingBoxAscent / 100;
+      const wide = (word.actualBoundingBoxLeft + word.actualBoundingBoxRight) / 100;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      // The page gutter token (it changes with the breakpoint).
+      const gutter = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--spacing-gutter")) || 16;
+      const slit = (1 - intro.slit) * h;
+      const size = Math.min((intro.slitFill * slit) / cap, (w - 2 * gutter) / wide);
+      setFit({ w, h, size, baseline: h / 2 + (cap * size) / 2 });
+    };
+    void measure();
+    window.addEventListener("resize", measure);
+    return () => {
+      alive = false;
+      window.removeEventListener("resize", measure);
+    };
+  }, [text]);
+  return (
+    <div className={`absolute inset-0 bg-black ${shown ? "" : "invisible"}`}>
+      <svg className="absolute inset-0 h-full w-full" viewBox={fit ? `0 0 ${fit.w} ${fit.h}` : undefined}>
+        <text
+          ref={probe}
+          className="font-display fill-burgundy uppercase"
+          x={fit ? fit.w / 2 : 0}
+          y={fit ? fit.baseline : 0}
+          fontSize={fit ? fit.size : 1}
+          textAnchor="middle"
+        >
+          {text}
+        </text>
+      </svg>
+    </div>
+  );
+}
+
 type Phase = "beats" | "reveal" | "gone";
 
 export function Intro() {
@@ -129,12 +195,14 @@ export function Intro() {
     const root = document.documentElement;
     const mode = root.getAttribute("data-intro");
     if (mode === null) {
-      // No loader this time: take the hidden screen out of the DOM.
       setPhase("gone");
       return;
     }
-    const unlock = lockScroll(lenis);
+    const unlockScroll = lockScroll(lenis);
+    root.classList.add("pl-lock");
+    let shown = 0;
     const show = (n: number) => {
+      shown = n;
       if (counter.current) counter.current.textContent = pad(n);
     };
     let isSkipped = false;
@@ -147,20 +215,23 @@ export function Intro() {
     };
     events.forEach((e) => window.addEventListener(e, onSkip, { passive: true }));
     const stopListening = () => events.forEach((e) => window.removeEventListener(e, onSkip));
+    /** Wait, unless a skip comes first. */
+    const wait = (s: number) => Promise.race([sleep(s), skipped]);
 
     const end = () => {
       root.removeAttribute("data-intro");
-      unlock();
+      root.classList.remove("pl-lock");
+      unlockScroll();
       setPhase("gone");
     };
 
     void (async () => {
       if (mode === "still") {
-        // Reduced motion: the word cards, then a cut. No shutter, no push-in.
+        // Reduced motion: each word on its own card, then a cut.
         show(100);
-        for (const b of beats(false)) {
-          setBeat(b);
-          await Promise.race([new Promise<void>((r) => window.setTimeout(r, intro.reducedHold * 1000)), skipped]);
+        for (const s of slides) {
+          setBeat({ kind: "word", text: s.word, hold: intro.reducedHold });
+          await wait(intro.reducedHold);
           if (isSkipped) break;
         }
         stopListening();
@@ -171,36 +242,46 @@ export function Intro() {
 
       const ready = await Promise.race([preload(intro.preloadBudget), skipped.then(() => false)]);
       const list = beats(ready);
-      const total = list.reduce((sum, b) => sum + b.hold, 0);
+      const run = list.reduce((sum, b) => sum + ("hold" in b ? b.hold : 0), 0);
       const t0 = performance.now();
       // Every beat is timed from the same start, so the cuts stay on the shutter's clock.
-      const until = (t: number) =>
-        Promise.race([
-          new Promise<void>((r) => window.setTimeout(r, Math.max(0, t * 1000 - (performance.now() - t0)))),
-          skipped,
-        ]);
-      const count = animate(0, 100, { duration: total, ease: "linear", onUpdate: show });
-      const { at, value, ease: segment } = intro.shutter;
-      const last = at[at.length - 1];
-      const closing = ready
-        ? animate(shut, [...value], { duration: last, times: at.map((t) => t / last), ease: at.slice(1).map(() => segment) })
+      const until = (t: number) => wait(Math.max(0, t - (performance.now() - t0) / 1000));
+      const count = animate(0, 100, { duration: run + intro.closeAfter + intro.close, ease: "linear", onUpdate: show });
+      const { at, value } = intro.shutter;
+      const span = at[at.length - 1];
+      const stepping = ready
+        ? animate(shut, [...value], {
+            duration: span,
+            times: at.map((t) => t / span),
+            ease: at.slice(1).map(() => ease.inOut),
+          })
         : null;
 
       let clock = 0;
       for (const b of list) {
         if (isSkipped) break;
         setBeat(b);
-        clock += b.hold;
+        clock += "hold" in b ? b.hold : 0;
         await until(clock);
       }
-      count.stop();
-      closing?.stop();
-      stopListening();
-      show(100);
+      stepping?.stop();
 
-      // Shut, then part the bars to show the page.
-      shut.set(1);
+      // Finale: FERRARI. in the slit, then the bars close on it.
+      shut.set(intro.slit);
+      setBeat({ kind: "slit" });
+      if (!isSkipped) await wait(intro.closeAfter);
+      stopListening();
+      if (isSkipped) {
+        count.stop();
+        animate(shown, 100, { duration: intro.close, ease: "linear", onUpdate: show });
+      }
+      await animate(shut, 1, { duration: intro.close, ease: ease.inOut });
+      count.stop();
+      show(100);
       setBeat(null);
+      await sleep(intro.shutHold);
+
+      // Part the bars to show the page.
       setPhase("reveal");
       const hero = window.setTimeout(() => setCurtain("clear"), intro.heroDelay * 1000);
       const part = { duration: intro.reveal, ease: ease.inOut };
@@ -230,6 +311,7 @@ export function Intro() {
             transition={{ duration: beat.hold, ease: "linear" }}
           />
         ) : null}
+        <SlitCard text={lastWord} shown={beat?.kind === "slit"} />
         <motion.div className="shutter-top" style={{ scaleY: shut, y: topY }} />
         <motion.div className="shutter-bottom" style={{ scaleY: shut, y: bottomY }} />
         {beat?.kind === "word" ? <WordCard key={beat.text} text={beat.text} /> : null}
