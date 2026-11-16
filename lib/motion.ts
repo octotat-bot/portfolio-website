@@ -18,7 +18,8 @@ export const spring = { stiffness: 140, damping: 30, mass: 0.5 } as const;
  * one still card for `reducedHold`, then a cut to the page.
  */
 export const intro = {
-  storageKey: "mm-intro-seen",
+  // A new key whenever the loader changes, so every visitor sees the new one once.
+  storageKey: "mm-loader-ferrari-seen",
   imageHold: 0.5,
   wordHold: 0.45,
   lastHold: 0.6,

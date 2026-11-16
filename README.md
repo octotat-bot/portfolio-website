@@ -83,6 +83,8 @@ The first visit in a session plays a short loader: three pictures, each followed
 
 Pictures go in `public/loader/` as grayscale WebP, at most 1600px on the long side and under 150 KB each. If they can't load within a second, the loader shows the words only. Keep large originals out of `public/`; the current ones are in `assets/loader-originals/`, which git ignores.
 
+The loader plays once per browser tab, so reloading won't show it again. To see it again, add `?intro` to any URL (for example `localhost:3000/?intro`). When you change the loader, also change `intro.storageKey` in `lib/motion.ts`, so visitors who saw the old one see the new one once.
+
 ## Change the menu portrait
 
 The desktop menu shows `public/me/menu.png`: a PNG with a transparent background (just the person), at least 1600px tall. Replace the file and rebuild; no code changes. Without the file, the menu shows its shapes alone.

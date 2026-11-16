@@ -11,6 +11,7 @@
 // - All pictures are preloaded first (the head script adds preload links).
 //   If they are not ready within 1 second, the loader shows the word cards only.
 // - Any click, key, wheel or touch skips straight to the wipe.
+// - Adding ?intro to any URL clears the session flag, so the loader plays again.
 // - Reduced motion: one still card with the whole line, then a cut to the page.
 // - The pictures are aria-hidden. The line is real text that screen readers
 //   hear once: "need money for ferrari".
@@ -32,7 +33,7 @@ const slides = site.intro.loaderSlides;
 const images = slides.map((s) => s.image);
 
 /** Before first paint: decide whether to run, and start loading the pictures. */
-export const INTRO_SCRIPT = `try{if(!sessionStorage.getItem(${JSON.stringify(intro.storageKey)})){var d=document.documentElement;d.setAttribute("data-intro",matchMedia("(prefers-reduced-motion: reduce)").matches?"still":"");if(d.getAttribute("data-intro")===""){${JSON.stringify(images)}.forEach(function(h){var l=document.createElement("link");l.rel="preload";l.as="image";l.href=h;document.head.appendChild(l)})}}}catch(e){}`;
+export const INTRO_SCRIPT = `try{if(new URLSearchParams(location.search).has("intro"))sessionStorage.removeItem(${JSON.stringify(intro.storageKey)});if(!sessionStorage.getItem(${JSON.stringify(intro.storageKey)})){var d=document.documentElement;d.setAttribute("data-intro",matchMedia("(prefers-reduced-motion: reduce)").matches?"still":"");if(d.getAttribute("data-intro")===""){${JSON.stringify(images)}.forEach(function(h){var l=document.createElement("link");l.rel="preload";l.as="image";l.href=h;document.head.appendChild(l)})}}}catch(e){}`;
 
 /** The whole line, as screen readers hear it. */
 const SPOKEN = slides
