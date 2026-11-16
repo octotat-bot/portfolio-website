@@ -77,6 +77,12 @@ The slugs are `repetite`, `marginalia`, `trailboard`, `bumpfix`, `smartresume` a
 - To caption screens, add `screenCaptions: ["first caption", "second caption"]` to the project's `study` in `content/projects.ts`, in the same order as the files.
 - Once two or more projects have a `cover.jpg`, the covers also trail the pointer on the Work page.
 
+## Change the loader
+
+The first visit in a session plays a short loader: three pictures, each followed by a word card ("NEED MONEY", "FOR", "FERRARI."). The pictures and words are in `content/site.ts` → `intro.loaderSlides`; add `accent: true` to set a word in claret.
+
+Pictures go in `public/loader/` as grayscale WebP, at most 1600px on the long side and under 150 KB each. If they can't load within a second, the loader shows the words only. Keep large originals out of `public/`; the current ones are in `assets/loader-originals/`, which git ignores.
+
 ## Change the menu portrait
 
 The desktop menu shows `public/me/menu.png`: a PNG with a transparent background (just the person), at least 1600px tall. Replace the file and rebuild; no code changes. Without the file, the menu shows its shapes alone.

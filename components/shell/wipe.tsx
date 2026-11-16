@@ -21,6 +21,11 @@ import { wipe } from "@/lib/motion";
 type PlayOptions = {
   /** Runs while the screen is fully covered. */
   onCovered?: () => void | Promise<void>;
+  /**
+   * Start fully covered (a hard cut to the burgundy columns) and only lift.
+   * For the loader, which already covers the screen.
+   */
+  fromCovered?: boolean;
 };
 
 type WipeApi = {
@@ -92,7 +97,7 @@ export function WipeProvider({ children }: { children: ReactNode }) {
   }, [lenis]);
 
   const play = useCallback(
-    async ({ onCovered }: PlayOptions = {}) => {
+    async ({ onCovered, fromCovered = false }: PlayOptions = {}) => {
       if (reduced) {
         await onCovered?.();
         return;
@@ -100,7 +105,13 @@ export function WipeProvider({ children }: { children: ReactNode }) {
       if (busy.current) return;
       busy.current = true;
       try {
-        await cover();
+        if (fromCovered) {
+          await Promise.all(columns().map((el) => animate(el, { y: "0%" }, { duration: 0 })));
+          setBlocking(true);
+          setCurtain("covered");
+        } else {
+          await cover();
+        }
         await onCovered?.();
         await nextFrame();
         await uncover();
@@ -108,7 +119,7 @@ export function WipeProvider({ children }: { children: ReactNode }) {
         busy.current = false;
       }
     },
-    [cover, reduced, uncover],
+    [animate, columns, cover, reduced, setBlocking, uncover],
   );
 
   const navigate = useCallback(

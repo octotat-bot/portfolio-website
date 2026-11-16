@@ -10,3 +10,6 @@ next-env.d.ts
 
 # generated from docs/tokens.json on every dev, build and typecheck
 styles/tokens.css
+
+# Full-size loader originals (about 23 MB); the site uses public/loader/*.webp
+assets/loader-originals/

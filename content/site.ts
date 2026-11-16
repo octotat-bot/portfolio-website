@@ -70,7 +70,19 @@ export const site = {
     ] as { lensX: Maybe<number>; lensY: Maybe<number> }[],
   },
 
-  intro: { line: "loading" },
+  intro: {
+    line: "loading",
+    /**
+     * The loader (M01): each slide is a picture, then a word card. The words
+     * read as one line; screen readers hear it once. `accent` sets the word
+     * in claret. Pictures live in public/loader/ (grayscale WebP).
+     */
+    loaderSlides: [
+      { image: "/loader/1.webp", word: "NEED MONEY" },
+      { image: "/loader/2.webp", word: "FOR" },
+      { image: "/loader/3.webp", word: "FERRARI.", accent: true },
+    ] as { image: string; word: string; accent?: boolean }[],
+  },
 
   footer: {
     line: "i build apps, agents and the things between.",

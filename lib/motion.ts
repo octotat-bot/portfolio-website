@@ -9,12 +9,22 @@ export { dur, ease };
 /** Default spring for anything that follows the pointer or scroll. */
 export const spring = { stiffness: 140, damping: 30, mass: 0.5 } as const;
 
-/** M01 intro counter. */
+/**
+ * M01 loader. Once per session: picture, word card, picture, word card,
+ * picture, final word card, each a hard cut. Pictures push in from 1 to
+ * `push` over `imageHold`; word cards hold `wordHold`, the last one
+ * `lastHold`. All pictures must be ready within `preloadBudget` seconds, or
+ * the loader shows the word cards only. With reduced motion the whole line is
+ * one still card for `reducedHold`, then a cut to the page.
+ */
 export const intro = {
-  /** Session flag: the intro runs once per session. */
   storageKey: "mm-intro-seen",
-  /** The counter takes at least this long, longer if fonts are still loading. */
-  minDuration: 1.6,
+  imageHold: 0.5,
+  wordHold: 0.45,
+  lastHold: 0.6,
+  push: 1.04,
+  preloadBudget: 1,
+  reducedHold: 1.2,
 } as const;
 
 /** M02 burgundy stairs wipe. */

@@ -31,7 +31,7 @@ Default spring for anything that follows the pointer or scroll: stiffness 140, d
 
 | ID | Pattern | Trigger | What happens | Build |
 | --- | --- | --- | --- | --- |
-| M01 | Intro counter | First page load in a session | Midnight screen. An Anton counter runs 000 to 100 bottom-left while fonts and the hero load, a mono line reads "loading". At 100 the wipe (M02) lifts it away | Motion `animate` on a number; store a session flag so it runs once |
+| M01 | Loader | First page load in a session | A run of hard cuts, no fades: picture 1 full-screen (`object-fit: cover`, pushing in from 1 to 1.04) for 0.5s; a midnight card with "NEED MONEY" in `monument` Anton, ivory, centred, 0.45s; picture 2, 0.5s; "FOR", 0.45s; picture 3, 0.5s; "FERRARI." in `claret`, 0.6s. About 3 seconds in all. Then the stairs wipe (M02), already covering, lifts away to the page. A small 000 to 100 counter runs bottom-left throughout, with a mono "loading" label; the grain sits over everything. The pictures are preloaded first; if they are not ready within 1 second, only the word cards play. Any click, key, wheel or touch skips to the wipe. Pictures are `aria-hidden`; the line is real text that screen readers hear once ("need money for ferrari"). Beats come from `content/site.ts` → `intro.loaderSlides` | Hard cuts by swapping one element; Motion for the push-in and the counter; a session flag so it runs once |
 | M02 | Burgundy stairs wipe | Every route change, and the end of M01 | Five vertical burgundy columns rise from the bottom one after another, left to right, 60ms apart, each taking `dur-page`, until the screen is covered. The new page mounts underneath. The columns then leave upward in the same order. `ease-in-out` | React `<ViewTransition>` or a fixed overlay driven by Motion; five divs, staggered y transforms. Fallback: instant cut |
 | M22 | Grain | Always | Fixed full-screen noise layer jumps position five times a second | CSS `steps()` animation on a fixed, pointer-events-none layer |
 | M25 | Smooth scroll | Always | Scrolling is eased, same speed as native | Lenis at default settings, driven by Motion's frame loop. Off for touch and for reduced motion |
@@ -157,7 +157,7 @@ When `prefers-reduced-motion: reduce` is set:
 
 | Pattern | Becomes |
 | --- | --- |
-| M01 | Skipped |
+| M01 | One still card with the whole line, "NEED MONEY FOR FERRARI.", then a cut to the page |
 | M02 | Instant cut |
 | M03, M04, M05, M10, M11, M19, M29 | Final state shown immediately |
 | M06, M07 | Colour change only |
