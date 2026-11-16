@@ -87,6 +87,17 @@ Rules
 - **Dither**: burgundy fields are not flat fills. They are a slow two-colour dither pattern (`midnight` and `burgundy`), which gives a printed look and moves slightly.
 - **Pictures** are shown dithered in two colours (`midnight` and `ivory`, or `burgundy-deep` and `ivory`) and resolve to full colour on hover or inside case studies.
 
+## Shapes
+
+A small kit of flat poster shapes used as motion graphics: **disc, ring, half disc, quarter disc, 8-point star, bar, triangle, square.**
+
+- Colours: `ivory`, `burgundy` and `claret` only, with `line` for neutral pieces (page lines, tracks, ground bars). On a burgundy field the kit uses `ivory` and `line` only, since claret never sits on burgundy.
+- Flat and square-edged: no gradients, no shadows, no rounded strokes. Drawn as inline SVG and moved with Motion; no other library.
+- Pieces are grouped into **compositions** of 10 to 16 shapes with a fixed layout (`lib/shapes.ts`). Each project has its own composition with its own idle loop (see G3 in `MOTION.md`).
+- A composition is clipped to its own box and is only placed in space that is otherwise empty. A shape never overlaps text or a project picture. Like tiles and pictures, a composition fades in the nav zone.
+- Compositions are decoration: hidden from screen readers and never carry information.
+- The **page mark** is a single 20px ivory shape just right of the nav name, one per page (G4).
+
 ## Components
 
 Seven building blocks. Build these first; every page is made from them.
@@ -114,7 +125,7 @@ Also needed, once each: Nav with Menu overlay, Footer, Grain layer, Page wipe, F
 
 ## Do not
 
-- Add a colour, shadow, gradient, glow, rounded card, icon set or custom cursor.
+- Add a colour, shadow, gradient, glow, rounded card, icon set or custom cursor. The shape kit above is the only illustration.
 - Centre a narrow column of text on a wide screen.
 - Put a small all-caps label above a headline for decoration.
 - Use more than one burgundy button on a screen.

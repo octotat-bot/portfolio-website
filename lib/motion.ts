@@ -208,3 +208,26 @@ export const credits = {
  * enough; the cap keeps a large screen from drawing more than this many pixels.
  */
 export const shaderBudget = { pixelRatio: 1, maxPixels: 1920 * 1080 } as const;
+
+/**
+ * Poster shapes (DESIGN.md "Shapes", MOTION.md G1 to G4).
+ * G1 assemble: each shape flies in from outside its box over `flight`
+ * seconds, `stagger` apart, ease-out, once `startAt` of the box is in view.
+ * G2 push: within `reach` px of a fine pointer a shape moves away, up to
+ * `push` px, on the default spring.
+ * G3 idle loops run after assembly (speeds live in lib/shapes.ts).
+ * 404: after `holdBeforeFall` seconds assembled, shapes fall out of the box.
+ * G4 page mark: `markSize` px, swapped during the wipe in `markSwap` seconds.
+ */
+export const shapes = {
+  startAt: 0.35,
+  flight: 0.9,
+  stagger: 0.045,
+  reach: 240,
+  push: 110,
+  holdBeforeFall: 1,
+  fallStagger: 0.05,
+  gravity: 2600,
+  markSize: 20,
+  markSwap: 0.45,
+} as const;

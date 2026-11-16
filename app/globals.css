@@ -325,6 +325,65 @@
   }
 }
 
+/* ---- Poster shapes ---------------------------------------------------------------
+   A composition waits hidden until its script takes over (it then flies in);
+   with reduced motion the finished composition shows straight away. */
+.shape-composition[data-pending] {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shape-composition[data-pending] {
+    visibility: visible;
+  }
+}
+
+/* Composition boxes. Below 1025px a box sits under its section's text. */
+.shape-box {
+  position: relative;
+  height: 32vh;
+}
+
+.shape-box-bio {
+  position: relative;
+  height: 220px;
+}
+
+/* Closing and 404: text, then the composition; side by side from 1025px. */
+.shape-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-10);
+}
+
+@variant lg {
+  .shape-box {
+    height: 50vh;
+  }
+
+  .shape-box-tall {
+    height: 72vh;
+  }
+
+  .shape-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+
+  /* Contact: the question left, the composition right. */
+  .shape-split {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    align-items: center;
+  }
+}
+
+/* G4: no page mark while the intro covers the page. */
+:root[data-intro] .page-mark {
+  visibility: hidden;
+}
+
 /* ---- Home layout ----------------------------------------------------------- */
 /* The hero fills at least the first screen under the 40px ticker; it grows
    rather than clip on short landscape screens. */

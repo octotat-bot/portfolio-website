@@ -7,6 +7,7 @@ import { INTRO_SCRIPT, Intro } from "@/components/shell/intro";
 import { Menu } from "@/components/shell/menu";
 import { MenuButton, Nav } from "@/components/shell/nav";
 import { PageFrame } from "@/components/shell/page-frame";
+import { PageMark } from "@/components/shell/page-mark";
 import { Providers } from "@/components/shell/providers";
 import { a11y } from "@/content/pages";
 import { site } from "@/content/site";
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 // Stacking, bottom to top: page 0, pill 30, nav 40, grain 50, menu 60,
-// menu button 70, intro 75, wipe 80.
+// menu button 70, intro 75, wipe 80, page mark 85.
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${baseFaces} ${effectFaces}`} suppressHydrationWarning>
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           </PageFrame>
           <div aria-hidden="true" className="grain" />
           <Menu />
+          <PageMark />
           <Intro />
         </Providers>
       </body>

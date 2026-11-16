@@ -6,17 +6,20 @@
 // alternating by index.
 // M14 tile hop: on hover or focus it rotates to 0 and lifts 10px (dur-pop,
 // ease-pop) and its picture clears (M15).
-// Without a cover it shows the dither field with the project name only.
+// Without a cover it shows the project's poster-shape composition (G1 then
+// G3) on midnight-raised, above the name band; a real cover replaces it.
 // The name sits on a solid burgundy band at the foot of the picture, so it
-// never lies over text inside a cover image.
+// never lies over text inside a cover image or a composition.
 
 import { motion } from "motion/react";
 import { useState } from "react";
 import { DitherField } from "@/components/motion/dither-field";
 import { DitherImage } from "@/components/motion/dither-image";
+import { ShapeComposition } from "@/components/motion/shape-composition";
 import { RevealText } from "@/components/motion/reveal-text";
 import { TransitionLink } from "@/components/shell/wipe";
 import { tileHop } from "@/lib/motion";
+import { projectComposition } from "@/lib/shapes";
 
 const TILTS = [-4, 3, -5, 4, -3, 5];
 
@@ -50,6 +53,12 @@ export function ProjectTile({
   const [focus, setFocus] = useState(false);
   const active = forceActive ?? (hover || focus);
   const tilt = TILTS[index % TILTS.length];
+  const comp = cover ? null : projectComposition(href.split("/").pop() ?? "");
+  const nameBand = revealName ? (
+    <RevealText as="span" text={name} className="poster-4 block text-ivory" />
+  ) : (
+    <span className="poster-4 block text-ivory">{name}</span>
+  );
 
   return (
     <TransitionLink
@@ -66,16 +75,19 @@ export function ProjectTile({
         animate={active ? { rotate: 0, y: -tileHop.lift } : { rotate: tilt, y: 0 }}
         transition={{ duration: tileHop.duration, ease: tileHop.ease }}
       >
-        <DitherField still seed={index} className="block aspect-4/5">
-          {cover ? <DitherImage src={cover} alt="" resolved={active} back="burgundy-deep" sizes={sizes} /> : null}
-          <span className="absolute inset-x-0 bottom-0 block bg-burgundy px-3 pb-3 pt-2">
-            {revealName ? (
-              <RevealText as="span" text={name} className="poster-4 block text-ivory" />
-            ) : (
-              <span className="poster-4 block text-ivory">{name}</span>
-            )}
+        {comp ? (
+          <span className="flex aspect-4/5 flex-col bg-midnight-raised">
+            <span className="relative block min-h-0 flex-1 p-3">
+              <ShapeComposition comp={comp} />
+            </span>
+            <span className="block bg-burgundy px-3 pb-3 pt-2">{nameBand}</span>
           </span>
-        </DitherField>
+        ) : (
+          <DitherField still seed={index} className="block aspect-4/5">
+            {cover ? <DitherImage src={cover} alt="" resolved={active} back="burgundy-deep" sizes={sizes} /> : null}
+            <span className="absolute inset-x-0 bottom-0 block bg-burgundy px-3 pb-3 pt-2">{nameBand}</span>
+          </DitherField>
+        )}
         <span className="meta block bg-ivory px-3 py-2 text-midnight">{caption}</span>
       </motion.span>
     </TransitionLink>

@@ -5,13 +5,16 @@
 //   poster-1 on two lines, centred, rising in (M03), then shuffling through
 //   the scribble faces before settling on Anton (M04).
 //   Bio: the page's h1 in poster-3 at left (M03); at right three short
-//   paragraphs, the first in `lede`, then `body`.
+//   paragraphs, the first in `lede`, then `body`. From 810px a small
+//   poster-shape composition (G1, G3) fills the empty space under the heading.
 //   Things i believe: a numbered hairline list, the number in `label`, the
 //   line in poster-4 rising in (M03 per row); two rows sweep one word (M11).
 
 import { DitherField } from "@/components/motion/dither-field";
 import { RevealText } from "@/components/motion/reveal-text";
+import { ShapeComposition } from "@/components/motion/shape-composition";
 import { about } from "@/content/about";
+import { compositions } from "@/lib/shapes";
 
 export function Opener() {
   return (
@@ -31,7 +34,12 @@ export function Bio() {
   const [first, ...rest] = about.bio.paragraphs;
   return (
     <section className="grid gap-10 px-4 py-32 md:grid-cols-2 md:px-10">
-      <RevealText as="h1" text={about.bio.heading} className="poster-3" />
+      <div className="flex flex-col gap-10">
+        <RevealText as="h1" text={about.bio.heading} className="poster-3" />
+        <div className="shape-box-bio hidden md:block">
+          <ShapeComposition comp={compositions.bio} />
+        </div>
+      </div>
       <div className="flex max-w-measure flex-col gap-6">
         <p className="lede">{first}</p>
         {rest.map((p) => (

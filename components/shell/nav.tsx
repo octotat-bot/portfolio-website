@@ -24,7 +24,7 @@ const TICKER = px("ticker");
  * On Home the nav starts under the 40px ticker and moves up with it, then
  * stays at the top once the ticker has scrolled away. Elsewhere it is at the top.
  */
-function useUnderTicker() {
+export function useUnderTicker() {
   const pathname = usePathname();
   const onHome = pathname === "/";
   const { scrollY } = useScroll();
@@ -38,9 +38,11 @@ export function Nav() {
   const y = useUnderTicker();
   return (
     <motion.header style={{ y }} className="fixed inset-x-0 top-0 z-40 flex h-nav items-center px-4 md:px-10">
-      <RollLink href="/" tone="plain">
-        {site.navName}
-      </RollLink>
+      <span id="nav-name" className="inline-flex">
+        <RollLink href="/" tone="plain">
+          {site.navName}
+        </RollLink>
+      </span>
     </motion.header>
   );
 }

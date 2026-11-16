@@ -41,7 +41,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
   return (
     <main id="main">
       <ProgressLine />
-      <HeaderBand name={project.name} kind={project.kind} />
+      <HeaderBand name={project.name} kind={project.kind} slug={project.slug} />
       <LedeFacts project={project} />
       <Story blocks={blocks} />
       {study.hasResults ? (

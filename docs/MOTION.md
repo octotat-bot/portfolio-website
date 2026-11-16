@@ -77,6 +77,20 @@ Default spring for anything that follows the pointer or scroll: stiffness 140, d
 | --- | --- | --- | --- | --- |
 | M07 | Button fill | Hover or focus | `ivory` fills the button from the left in `dur-roll`; label turns `midnight` after 120ms; press moves it down 1px | CSS background-size transition |
 
+### Poster shapes
+
+The shape kit is in `DESIGN.md` → Shapes. Timings are in `lib/motion.ts` (`shapes`), layouts and idle speeds in `lib/shapes.ts`.
+
+| ID | Pattern | Trigger | What happens | Build |
+| --- | --- | --- | --- | --- |
+| G1 | Assemble | A composition's box is 35% in view, once, after the intro and the wipe | Each shape flies in from outside its box (turned, at 0.3 scale) to its place over 900ms, `ease-out`, 45ms apart. The composition is clipped to its box | Inline SVG, one transform per shape, Motion's frame loop |
+| G2 | Pointer push | After assembly, desktop with a fine pointer only, where the placement asks for it | Shapes within 240px of the pointer move away, up to 110px, on the default spring, and return when it leaves | Same frame loop; pointer read once per move |
+| G3 | Idle | After assembly | Stars spin, half discs rock, small discs bob, large discs breathe. Project loops: **Repetite** ring segments fill and empty; **Marginalia** a claret bar lights one line of the page at a time; **Trailboard** three discs orbit a centre; **BumpFix** three triangles step upward in turn | Same frame loop; segments change opacity only |
+| G4 | Page mark | Every route change | A 20px ivory shape next to the nav name: Home disc, Work half disc, About quarter disc, Lab star, Contact square. While the wipe covers the screen the old shape turns and shrinks away and the new one turns and grows in, `ease-in-out`, 450ms. It sits above the wipe. None on the 404 or while the menu is open | Motion presence on one small SVG |
+| G5 | Fall apart | 404 only | One second after the composition has assembled, its shapes fall out of the bottom of the box, turning, 50ms apart | Same frame loop |
+
+Rules: transform and opacity only. Only compositions on screen run their loop. Phones keep G1 and G3, not G2.
+
 ## The takeover menu (M21)
 
 The menu is a full-screen takeover with poster-size links. This is the one place the whole type system shows at once, so build it carefully.
@@ -139,6 +153,8 @@ When `prefers-reduced-motion: reduce` is set:
 | M09, M12, M13, M16, M17 | Normal scrolling layout, nothing pinned, everything sharp |
 | M18 | A static wrapped list of the words |
 | M20, M22, M23, M25, M30 | Off or still |
+| G1, G2, G3, G5 | Each composition shown finished and still |
+| G4 | The mark swaps at once |
 | M24, M26 | Flat, readable text in place |
 | M27, M28 | Plain vertical list of tiles or screens |
 | M21 | See the takeover menu section |
