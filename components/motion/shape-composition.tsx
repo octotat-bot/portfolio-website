@@ -11,6 +11,9 @@
 //      breathe, plus the project loops (ring fill, line scan, orbit, step).
 //   `fall`: on the 404 page the shapes fall out of the box a second after
 //      they have assembled.
+//   `checked`: a piece marked `crooked` rests out of true until this turns
+//      true, then snaps into place (ease-pop, dur-pop); it goes back if it
+//      turns false again, so the check can be scrubbed with scroll.
 //
 // The SVG is clipped to its own box, so no shape reaches text or pictures,
 // and it fades in the nav zone like tiles and pictures do.
@@ -25,7 +28,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useStageClear } from "@/lib/curtain";
 import { NavFade } from "./nav-fade";
 import { HOVER_QUERY, MD_QUERY, useMedia, useReduced } from "@/lib/hooks";
-import { ease, shapes as cfg, spring } from "@/lib/motion";
+import { dur, ease, shapes as cfg, spring } from "@/lib/motion";
 import {
   arcPath,
   defaultIdle,
@@ -41,6 +44,7 @@ import {
 } from "@/lib/shapes";
 
 const easeOut = cubicBezier(...ease.out);
+const popEase = cubicBezier(...ease.pop);
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
 type Pose = { x: number; y: number; r: number; s: number; sx: number };
@@ -146,10 +150,21 @@ type Props = {
   push?: boolean;
   /** 404: fall out of the box after assembling. */
   fall?: boolean;
+  /** Straighten any `crooked` piece. */
+  checked?: boolean;
   className?: string;
 };
 
-export function ShapeComposition({ comp, surface = "midnight", push = false, fall = false, className = "" }: Props) {
+export function ShapeComposition({
+  comp,
+  surface = "midnight",
+  push = false,
+  fall = false,
+  checked = false,
+  className = "",
+}: Props) {
+  const checkedRef = useRef(checked);
+  checkedRef.current = checked;
   const svgRef = useRef<SVGSVGElement>(null);
   const groups = useRef<(SVGGElement | null)[]>([]);
   const reduced = useReduced();
@@ -195,6 +210,8 @@ export function ShapeComposition({ comp, surface = "midnight", push = false, fal
     let fallDone = false;
     const off = comp.pieces.map(() => ({ x: 0, y: 0, vx: 0, vy: 0 }));
     const pointer = { on: false, x: 0, y: 0 };
+    // 0 = crooked, 1 = in place; moves toward the target over dur-pop.
+    let straight = checkedRef.current ? 1 : 0;
 
     const tick = ({ timestamp, delta }: FrameData) => {
       if (startedAt === null) return;
@@ -208,6 +225,8 @@ export function ShapeComposition({ comp, surface = "midnight", push = false, fal
       const ctm = pushOn ? svg.getScreenCTM() : null;
       const unit = ctm ? 1 / ctm.a : 1;
       const reach = cfg.reach * unit;
+      straight = Math.min(1, Math.max(0, straight + ((checkedRef.current ? 1 : -1) * dt) / dur.pop));
+      const crook = 1 - popEase(straight);
       const maxPush = cfg.push * unit;
 
       let allGone = true;
@@ -217,6 +236,11 @@ export function ShapeComposition({ comp, surface = "midnight", push = false, fal
         const t = easeOut(clamp01((elapsed - i * cfg.stagger) / cfg.flight));
         const since = Math.max(0, elapsed - i * cfg.stagger - cfg.flight);
         const rest = p.scan ? scanPose(p, since, false) : idlePose(p, idles[i], since);
+        if (p.crooked) {
+          rest.x += p.crooked.dx * crook;
+          rest.y += p.crooked.dy * crook;
+          rest.r += p.crooked.rot * crook;
+        }
         const from = starts[i];
         const q: Pose = {
           x: from.x + (rest.x - from.x) * t,

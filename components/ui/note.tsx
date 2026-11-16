@@ -71,15 +71,19 @@ export function Note({ text, tone = "claret", tilt = -3, size = "note", classNam
   return (
     <p ref={ref} className={`${size} ${colour} note-tilt ${className}`} style={style} data-boil={phase === "boiling"}>
       <span className="sr-only">{text}</span>
-      <span aria-hidden="true">
-        <span ref={typed}>{text}</span>
-        {phase === "typing" || phase === "blinking" ? (
-          <span
-            className="note-caret"
-            data-blink={phase === "blinking"}
-            onAnimationEnd={() => setPhase("boiling")}
-          />
-        ) : null}
+      {/* An invisible copy holds the note's full size, so nothing moves while it types. */}
+      <span aria-hidden="true" className="relative block">
+        <span className="invisible">{text}</span>
+        <span className="absolute inset-0">
+          <span ref={typed}>{text}</span>
+          {phase === "typing" || phase === "blinking" ? (
+            <span
+              className="note-caret"
+              data-blink={phase === "blinking"}
+              onAnimationEnd={() => setPhase("boiling")}
+            />
+          ) : null}
+        </span>
       </span>
     </p>
   );

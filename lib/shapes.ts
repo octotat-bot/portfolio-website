@@ -40,6 +40,11 @@ export type Piece = {
   idle?: Idle;
   /** A ring drawn in segments that fill and empty (Repetite). */
   fill?: { segments: number; ph: number };
+  /**
+   * Rests this far out of true until the composition is `checked`, then
+   * snaps into place (Home statement).
+   */
+  crooked?: { dx: number; dy: number; rot: number };
   /** A left-anchored bar that lights one line at a time (Marginalia). */
   scan?: { rows: { y: number; w: number }[]; x0: number; perRow: number };
 };
@@ -171,6 +176,27 @@ const bumpfix: Composition = {
   ],
 };
 
+/** Home statement: a stacked "thing", one block crooked until it is checked. */
+const statementComp: Composition = {
+  id: "statement",
+  w: 600,
+  h: 600,
+  pieces: [
+    { k: "bar", w: 360, h: 28, c: "neutral", x: 300, y: 540 },
+    { k: "square", r: 70, c: "field", x: 300, y: 456 },
+    { k: "square", r: 55, c: "light", x: 300, y: 331, crooked: { dx: 48, dy: -8, rot: 17 } },
+    { k: "half", r: 75, c: "field", x: 300, y: 276 },
+    { k: "disc", r: 26, c: "accent", x: 300, y: 165 },
+    { k: "star", r: 40, c: "light", x: 485, y: 110 },
+    { k: "ring", r: 46, sw: 8, c: "accent", x: 115, y: 140 },
+    { k: "tri", r: 34, c: "accent", x: 125, y: 480, idle: { t: "rock", a: 8, sp: 1.4 } },
+    { k: "quarter", r: 80, c: "field", x: 520, y: 470 },
+    { k: "disc", r: 10, c: "light", x: 470, y: 230 },
+    { k: "bar", w: 90, h: 12, c: "neutral", x: 110, y: 300, rot: -8 },
+    { k: "square", r: 12, c: "light", x: 85, y: 385, rot: 20, idle: { t: "spin", v: 10 } },
+  ],
+};
+
 /** Home closing, right side: wide. */
 const closing: Composition = {
   id: "closing",
@@ -256,7 +282,17 @@ const lost: Composition = {
   ],
 };
 
-export const compositions = { repetite, marginalia, trailboard, bumpfix, closing, contact: contactComp, bio, lost } as const;
+export const compositions = {
+  repetite,
+  marginalia,
+  trailboard,
+  bumpfix,
+  statement: statementComp,
+  closing,
+  contact: contactComp,
+  bio,
+  lost,
+} as const;
 export type CompositionId = keyof typeof compositions;
 
 /** The composition for a project slug, if it has one. */

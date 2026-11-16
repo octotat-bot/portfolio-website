@@ -56,6 +56,8 @@ export const home = {
 
   statement: {
     sentence: "I BUILD THE THING, THEN I CHECK IF IT'S ACTUALLY RIGHT.",
+    /** The sentence in its two beats: the build, then the check. */
+    beats: ["I BUILD THE THING,", "THEN I CHECK IF IT'S ACTUALLY RIGHT."],
     note: "most people skip the second part",
   },
 

@@ -392,7 +392,48 @@
 }
 
 .statement-height {
-  height: 150vh;
+  height: 280vh;
+}
+
+/* M26 two beats: composition above the text on phones, beside it from 810px. */
+.statement-stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--spacing-6);
+}
+
+.statement-shapes {
+  position: relative;
+  height: 26vh;
+  flex-shrink: 0;
+}
+
+@variant md {
+  .statement-stage {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    align-items: center;
+    gap: var(--spacing-10);
+  }
+
+  .statement-shapes {
+    order: 2;
+    height: 62vh;
+  }
+}
+
+/* Beat 2's check bar: burgundy, behind the word, grows from the left. */
+.check-bar {
+  position: absolute;
+  inset: 0.04em 0;
+  z-index: -1;
+  background-color: var(--color-burgundy);
+  transform-origin: left center;
+}
+
+.check-bar-on {
+  transform: scaleX(1);
 }
 
 .closing-height {

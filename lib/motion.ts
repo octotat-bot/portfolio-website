@@ -231,3 +231,17 @@ export const shapes = {
   markSize: 20,
   markSwap: 0.45,
 } as const;
+
+/**
+ * M26 statement in two beats. The section is `height` tall and pinned; these
+ * are shares of the pinned scroll. Beat 2's words rise over `rise`, then a
+ * burgundy bar sweeps behind each word in turn over `check`. At `snapAt` the
+ * crooked block in the composition snaps true; at `noteAt` the note types.
+ */
+export const statementBeats = {
+  height: "280vh",
+  rise: [0.08, 0.3],
+  check: [0.36, 0.78],
+  snapAt: 0.8,
+  noteAt: 0.86,
+} as const;
