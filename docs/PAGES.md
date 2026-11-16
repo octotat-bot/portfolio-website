@@ -25,7 +25,7 @@ Seven routes. Each page has one idea, one or two burgundy moments, and at most t
 
 | # | Section | Layout | Components and motion |
 | --- | --- | --- | --- |
-| 0 | Intro | Full screen, first visit per session | M01, ending in its own shutter |
+| 0 | Intro | Full screen, every full page load (first visit and refresh) | M01, ending in its own shutter |
 | 1 | Ticker | 40px band above the nav area | Ticker, M20 |
 | 2 | Poster hero | At least 100dvh. Dither field fills the screen. Name in `monument`, bottom-left, edge to edge: MUKUND / MANGLA on two lines on phones, MUKUND MANGLA on one line from 810px. A mono status line top-left under the nav. Lede and two buttons in the open space above the name, at the right from 810px | M08 with pointer drift, M03 then M04 on the name, M05 on the status line (cycles every 3s; screen readers get the first line only), M09 on scroll, Button M07 |
 | 3 | Statement | 280vh, the stage pinned, midnight. The sentence in `poster-3` in two beats, left; a poster-shape composition right (above the text on phones); the typed Note under the sentence. With reduced motion: nothing pinned, every word checked, the block straight | M26 (two beats), G1, G3, then M10 on the note |

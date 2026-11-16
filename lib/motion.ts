@@ -10,7 +10,7 @@ export { dur, ease };
 export const spring = { stiffness: 140, damping: 30, mass: 0.5 } as const;
 
 /**
- * M01 loader. Once per session: picture, word card, picture, word card,
+ * M01 loader. Every full page load: picture, word card, picture, word card,
  * picture, final word card, each a hard cut (3.3s). Each picture holds
  * `imageHold` and settles from `push` to 1; word card n holds `wordHolds[n]`.
  * Meanwhile two midnight shutter bars close from the top and bottom edges,
@@ -22,8 +22,6 @@ export const spring = { stiffness: 140, damping: 30, mass: 0.5 } as const;
  * reduced motion: the word cards, `reducedHold` each, then a cut.
  */
 export const intro = {
-  // A new key whenever the loader changes, so every visitor sees the new one once.
-  storageKey: "mm-loader-shutter-seen",
   imageHold: 0.6,
   wordHolds: [0.5, 0.4, 0.6],
   push: 1.06,

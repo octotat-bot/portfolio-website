@@ -1,8 +1,9 @@
 "use client";
 
-// M01 loader. On the first page load of a session, a run of hard cuts:
+// M01 loader. On every full page load (first visit and every refresh, not
+// moves between pages), a run of hard cuts:
 //   0.0 picture 1 · 0.6 "NEED MONEY" · 1.1 picture 2 · 1.7 "FOR" ·
-//   2.1 picture 3 · 2.7 "FERRARI." in claret · 3.3 shut.
+//   2.1 picture 3 · 2.7 "FERRARI." · 3.3 shut. All words in burgundy.
 // Meanwhile a closing shutter: two midnight bars grow from the top and bottom
 // edges (scaleY, one shared value), so picture 1 is full-screen, picture 2 a
 // letterbox and picture 3 a slit. The word cards sit above the bars, full
@@ -15,7 +16,6 @@
 // - All pictures are preloaded first (the head script adds preload links).
 //   If they are not ready within 1 second, the loader shows the word cards only.
 // - Any click, key, wheel or touch skips straight to the bars parting.
-// - Adding ?intro to any URL clears the session flag, so the loader plays again.
 // - Scroll stays locked until the bars have parted; then the loader unmounts.
 // - Reduced motion: no shutter and no push-in. The three word cards, 0.4s
 //   each, then a cut to the page.
@@ -38,7 +38,7 @@ const slides = site.intro.loaderSlides;
 const images = slides.map((s) => s.image);
 
 /** Before first paint: decide whether to run, and start loading the pictures. */
-export const INTRO_SCRIPT = `try{if(new URLSearchParams(location.search).has("intro"))sessionStorage.removeItem(${JSON.stringify(intro.storageKey)});if(!sessionStorage.getItem(${JSON.stringify(intro.storageKey)})){var d=document.documentElement;d.setAttribute("data-intro",matchMedia("(prefers-reduced-motion: reduce)").matches?"still":"");if(d.getAttribute("data-intro")===""){${JSON.stringify(images)}.forEach(function(h){var l=document.createElement("link");l.rel="preload";l.as="image";l.href=h;document.head.appendChild(l)})}}}catch(e){}`;
+export const INTRO_SCRIPT = `try{var d=document.documentElement;d.setAttribute("data-intro",matchMedia("(prefers-reduced-motion: reduce)").matches?"still":"");if(d.getAttribute("data-intro")===""){${JSON.stringify(images)}.forEach(function(h){var l=document.createElement("link");l.rel="preload";l.as="image";l.href=h;document.head.appendChild(l)})}}catch(e){}`;
 
 /** The whole line, as screen readers hear it. */
 const SPOKEN = slides
@@ -48,14 +48,14 @@ const SPOKEN = slides
   .replace(/[^\p{L}\p{N} ]/gu, "")
   .trim();
 
-type Word = { kind: "word"; text: string; accent: boolean; hold: number };
+type Word = { kind: "word"; text: string; hold: number };
 type Beat = { kind: "image"; src: string; hold: number } | Word;
 
 const wordHold = (i: number) => intro.wordHolds[Math.min(i, intro.wordHolds.length - 1)];
 
 function beats(withImages: boolean): Beat[] {
   return slides.flatMap((s, i) => {
-    const word: Beat = { kind: "word", text: s.word, accent: !!s.accent, hold: wordHold(i) };
+    const word: Beat = { kind: "word", text: s.word, hold: wordHold(i) };
     return withImages ? [{ kind: "image", src: s.image, hold: intro.imageHold } as Beat, word] : [word];
   });
 }
@@ -81,15 +81,17 @@ function preload(budget: number) {
   return Promise.race([all, timeout]);
 }
 
-/** A full-screen midnight word card in monument size, scaled down only if it would overflow a phone. */
-function WordCard({ text, accent }: { text: string; accent: boolean }) {
+/** A full-screen midnight word card in monument size, burgundy, scaled down only if it would overflow a phone. */
+function WordCard({ text }: { text: string }) {
   const ref = useRef<HTMLParagraphElement>(null);
   const [scale, setScale] = useState(1);
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
     const fit = () => {
-      const avail = el.parentElement ? el.parentElement.clientWidth : window.innerWidth;
+      const box = el.parentElement;
+      const pad = box ? Number.parseFloat(getComputedStyle(box).paddingLeft) + Number.parseFloat(getComputedStyle(box).paddingRight) : 0;
+      const avail = (box ? box.clientWidth : window.innerWidth) - pad;
       setScale(Math.min(1, avail / Math.max(1, el.scrollWidth)));
     };
     fit();
@@ -99,7 +101,7 @@ function WordCard({ text, accent }: { text: string; accent: boolean }) {
     <div className="absolute inset-0 flex items-center justify-center bg-midnight px-4 md:px-10">
       <p
         ref={ref}
-        className={`monument whitespace-nowrap text-center ${accent ? "text-claret" : "text-ivory"}`}
+        className="monument whitespace-nowrap text-center text-burgundy"
         style={{ transform: `scale(${scale})` }}
       >
         {text}
@@ -162,9 +164,6 @@ export function Intro() {
           if (isSkipped) break;
         }
         stopListening();
-        try {
-          sessionStorage.setItem(intro.storageKey, "1");
-        } catch {}
         setCurtain("clear");
         end();
         return;
@@ -203,9 +202,6 @@ export function Intro() {
       shut.set(1);
       setBeat(null);
       setPhase("reveal");
-      try {
-        sessionStorage.setItem(intro.storageKey, "1");
-      } catch {}
       const hero = window.setTimeout(() => setCurtain("clear"), intro.heroDelay * 1000);
       const part = { duration: intro.reveal, ease: ease.inOut };
       await Promise.all([animate(topY, "-100%", part), animate(bottomY, "100%", part)]);
@@ -236,7 +232,7 @@ export function Intro() {
         ) : null}
         <motion.div className="shutter-top" style={{ scaleY: shut, y: topY }} />
         <motion.div className="shutter-bottom" style={{ scaleY: shut, y: bottomY }} />
-        {beat?.kind === "word" ? <WordCard key={beat.text} text={beat.text} accent={beat.accent} /> : null}
+        {beat?.kind === "word" ? <WordCard key={beat.text} text={beat.text} /> : null}
         {revealing ? null : (
           <>
             <div className="absolute bottom-6 left-4 flex flex-col gap-1 md:bottom-10 md:left-10">
