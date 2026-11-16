@@ -14,18 +14,13 @@ import { wipe } from "@/lib/motion";
 // columns leave upward in the same order.
 //
 // Driven by Motion on a fixed overlay rather than React's <ViewTransition>,
-// because it also has to run where no route changes: the end of the intro and
-// a menu link to the page already shown. With reduced motion every change is
+// because it also has to run where no route changes: a menu link to the page
+// already shown. (The intro, M01, ends with its own shutter, not this wipe.) With reduced motion every change is
 // an instant cut.
 
 type PlayOptions = {
   /** Runs while the screen is fully covered. */
   onCovered?: () => void | Promise<void>;
-  /**
-   * Start fully covered (a hard cut to the burgundy columns) and only lift.
-   * For the loader, which already covers the screen.
-   */
-  fromCovered?: boolean;
 };
 
 type WipeApi = {
@@ -97,7 +92,7 @@ export function WipeProvider({ children }: { children: ReactNode }) {
   }, [lenis]);
 
   const play = useCallback(
-    async ({ onCovered, fromCovered = false }: PlayOptions = {}) => {
+    async ({ onCovered }: PlayOptions = {}) => {
       if (reduced) {
         await onCovered?.();
         return;
@@ -105,13 +100,7 @@ export function WipeProvider({ children }: { children: ReactNode }) {
       if (busy.current) return;
       busy.current = true;
       try {
-        if (fromCovered) {
-          await Promise.all(columns().map((el) => animate(el, { y: "0%" }, { duration: 0 })));
-          setBlocking(true);
-          setCurtain("covered");
-        } else {
-          await cover();
-        }
+        await cover();
         await onCovered?.();
         await nextFrame();
         await uncover();
@@ -119,7 +108,7 @@ export function WipeProvider({ children }: { children: ReactNode }) {
         busy.current = false;
       }
     },
-    [animate, columns, cover, reduced, setBlocking, uncover],
+    [cover, reduced, uncover],
   );
 
   const navigate = useCallback(

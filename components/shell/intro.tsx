@@ -1,18 +1,24 @@
 "use client";
 
 // M01 loader. On the first page load of a session, a run of hard cuts:
-//   picture 1 (pushing in 1 to 1.04) · "NEED MONEY" · picture 2 · "FOR" ·
-//   picture 3 · "FERRARI." in claret, held a little longer.
-// Then the stairs wipe (M02), already covering, lifts away to the page.
-// The beats come from content/site.ts (intro.loaderSlides). A small 000 to
-// 100 counter runs bottom-left throughout, and the grain sits over everything.
-// About 3 seconds of beats in all.
+//   0.0 picture 1 · 0.6 "NEED MONEY" · 1.1 picture 2 · 1.7 "FOR" ·
+//   2.1 picture 3 · 2.7 "FERRARI." in claret · 3.3 shut.
+// Meanwhile a closing shutter: two midnight bars grow from the top and bottom
+// edges (scaleY, one shared value), so picture 1 is full-screen, picture 2 a
+// letterbox and picture 3 a slit. The word cards sit above the bars, full
+// midnight. At 3.3 the bars meet; then they part, top up and bottom down, and
+// the page shows through the gap. Its entrance starts 0.15s into that.
+// Timings are in lib/motion.ts (intro); the beats come from content/site.ts
+// (intro.loaderSlides). A small 000 to 100 counter runs bottom-left, and the
+// grain sits over everything until the bars part.
 //
 // - All pictures are preloaded first (the head script adds preload links).
 //   If they are not ready within 1 second, the loader shows the word cards only.
-// - Any click, key, wheel or touch skips straight to the wipe.
+// - Any click, key, wheel or touch skips straight to the bars parting.
 // - Adding ?intro to any URL clears the session flag, so the loader plays again.
-// - Reduced motion: one still card with the whole line, then a cut to the page.
+// - Scroll stays locked until the bars have parted; then the loader unmounts.
+// - Reduced motion: no shutter and no push-in. The three word cards, 0.4s
+//   each, then a cut to the page.
 // - The pictures are aria-hidden. The line is real text that screen readers
 //   hear once: "need money for ferrari".
 //
@@ -21,13 +27,12 @@
 // then, so the page never flashes underneath.
 
 import { useLenis } from "lenis/react";
-import { animate, motion } from "motion/react";
+import { animate, motion, useMotionValue } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { site } from "@/content/site";
 import { setCurtain } from "@/lib/curtain";
-import { intro } from "@/lib/motion";
+import { ease, intro } from "@/lib/motion";
 import { lockScroll } from "./smooth-scroll";
-import { useWipe } from "./wipe";
 
 const slides = site.intro.loaderSlides;
 const images = slides.map((s) => s.image);
@@ -43,16 +48,14 @@ const SPOKEN = slides
   .replace(/[^\p{L}\p{N} ]/gu, "")
   .trim();
 
-type Beat = { kind: "image"; src: string; hold: number } | { kind: "word"; text: string; accent: boolean; hold: number };
+type Word = { kind: "word"; text: string; accent: boolean; hold: number };
+type Beat = { kind: "image"; src: string; hold: number } | Word;
+
+const wordHold = (i: number) => intro.wordHolds[Math.min(i, intro.wordHolds.length - 1)];
 
 function beats(withImages: boolean): Beat[] {
   return slides.flatMap((s, i) => {
-    const word: Beat = {
-      kind: "word",
-      text: s.word,
-      accent: !!s.accent,
-      hold: i === slides.length - 1 ? intro.lastHold : intro.wordHold,
-    };
+    const word: Beat = { kind: "word", text: s.word, accent: !!s.accent, hold: wordHold(i) };
     return withImages ? [{ kind: "image", src: s.image, hold: intro.imageHold } as Beat, word] : [word];
   });
 }
@@ -78,7 +81,7 @@ function preload(budget: number) {
   return Promise.race([all, timeout]);
 }
 
-/** A word card in monument size, scaled down only if it would overflow a phone. */
+/** A full-screen midnight word card in monument size, scaled down only if it would overflow a phone. */
 function WordCard({ text, accent }: { text: string; accent: boolean }) {
   const ref = useRef<HTMLParagraphElement>(null);
   const [scale, setScale] = useState(1);
@@ -93,7 +96,7 @@ function WordCard({ text, accent }: { text: string; accent: boolean }) {
     document.fonts.ready.then(fit);
   }, [text]);
   return (
-    <div className="absolute inset-0 flex items-center justify-center px-4 md:px-10">
+    <div className="absolute inset-0 flex items-center justify-center bg-midnight px-4 md:px-10">
       <p
         ref={ref}
         className={`monument whitespace-nowrap text-center ${accent ? "text-claret" : "text-ivory"}`}
@@ -105,108 +108,146 @@ function WordCard({ text, accent }: { text: string; accent: boolean }) {
   );
 }
 
+type Phase = "beats" | "reveal" | "gone";
+
 export function Intro() {
   const counter = useRef<HTMLSpanElement>(null);
   const lenis = useLenis();
-  const { play } = useWipe();
   const started = useRef(false);
   const [beat, setBeat] = useState<Beat | null>(null);
-  const [still, setStill] = useState(false);
+  const [phase, setPhase] = useState<Phase>("beats");
+  // 0 = open, 1 = the bars meet in the middle. Both bars share it.
+  const shut = useMotionValue(0);
+  const topY = useMotionValue("0%");
+  const bottomY = useMotionValue("0%");
 
   useEffect(() => {
+    if (started.current) return;
+    started.current = true;
     const root = document.documentElement;
     const mode = root.getAttribute("data-intro");
-    if (started.current || mode === null) return;
-    started.current = true;
+    if (mode === null) {
+      // No loader this time: take the hidden screen out of the DOM.
+      setPhase("gone");
+      return;
+    }
     const unlock = lockScroll(lenis);
     const show = (n: number) => {
       if (counter.current) counter.current.textContent = pad(n);
     };
-    let done = false;
+    let isSkipped = false;
     let skip: () => void = () => {};
     const skipped = new Promise<void>((resolve) => (skip = resolve));
-    const wait = (s: number) => Promise.race([new Promise<void>((r) => window.setTimeout(r, s * 1000)), skipped]);
-
-    const finish = async () => {
-      if (done) return;
-      done = true;
-      show(100);
-      try {
-        sessionStorage.setItem(intro.storageKey, "1");
-      } catch {}
-      const reveal = () => {
-        root.removeAttribute("data-intro");
-        unlock();
-      };
-      if (mode === "still") {
-        reveal();
-        setCurtain("clear");
-        return;
-      }
-      await play({ fromCovered: true, onCovered: reveal });
-    };
-
     const events = ["pointerdown", "keydown", "wheel", "touchmove"] as const;
-    const onSkip = () => skip();
+    const onSkip = () => {
+      isSkipped = true;
+      skip();
+    };
     events.forEach((e) => window.addEventListener(e, onSkip, { passive: true }));
+    const stopListening = () => events.forEach((e) => window.removeEventListener(e, onSkip));
+
+    const end = () => {
+      root.removeAttribute("data-intro");
+      unlock();
+      setPhase("gone");
+    };
 
     void (async () => {
       if (mode === "still") {
-        setStill(true);
+        // Reduced motion: the word cards, then a cut. No shutter, no push-in.
         show(100);
-        await wait(intro.reducedHold);
-      } else {
-        const ready = await Promise.race([preload(intro.preloadBudget), skipped.then(() => false)]);
-        const list = beats(ready);
-        const total = list.reduce((sum, b) => sum + b.hold, 0);
-        const count = animate(0, 100, { duration: total, ease: "linear", onUpdate: show });
-        for (const b of list) {
+        for (const b of beats(false)) {
           setBeat(b);
-          await wait(b.hold);
-          if (done) break;
+          await Promise.race([new Promise<void>((r) => window.setTimeout(r, intro.reducedHold * 1000)), skipped]);
+          if (isSkipped) break;
         }
-        count.stop();
+        stopListening();
+        try {
+          sessionStorage.setItem(intro.storageKey, "1");
+        } catch {}
+        setCurtain("clear");
+        end();
+        return;
       }
-      events.forEach((e) => window.removeEventListener(e, onSkip));
-      await finish();
+
+      const ready = await Promise.race([preload(intro.preloadBudget), skipped.then(() => false)]);
+      const list = beats(ready);
+      const total = list.reduce((sum, b) => sum + b.hold, 0);
+      const t0 = performance.now();
+      // Every beat is timed from the same start, so the cuts stay on the shutter's clock.
+      const until = (t: number) =>
+        Promise.race([
+          new Promise<void>((r) => window.setTimeout(r, Math.max(0, t * 1000 - (performance.now() - t0)))),
+          skipped,
+        ]);
+      const count = animate(0, 100, { duration: total, ease: "linear", onUpdate: show });
+      const { at, value, ease: segment } = intro.shutter;
+      const last = at[at.length - 1];
+      const closing = ready
+        ? animate(shut, [...value], { duration: last, times: at.map((t) => t / last), ease: at.slice(1).map(() => segment) })
+        : null;
+
+      let clock = 0;
+      for (const b of list) {
+        if (isSkipped) break;
+        setBeat(b);
+        clock += b.hold;
+        await until(clock);
+      }
+      count.stop();
+      closing?.stop();
+      stopListening();
+      show(100);
+
+      // Shut, then part the bars to show the page.
+      shut.set(1);
+      setBeat(null);
+      setPhase("reveal");
+      try {
+        sessionStorage.setItem(intro.storageKey, "1");
+      } catch {}
+      const hero = window.setTimeout(() => setCurtain("clear"), intro.heroDelay * 1000);
+      const part = { duration: intro.reveal, ease: ease.inOut };
+      await Promise.all([animate(topY, "-100%", part), animate(bottomY, "100%", part)]);
+      window.clearTimeout(hero);
+      setCurtain("clear");
+      end();
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (phase === "gone") return null;
+  const revealing = phase === "reveal";
+
   return (
-    <div className="intro fixed inset-0 z-75 overflow-hidden bg-midnight">
+    <div className={`intro fixed inset-0 z-75 overflow-hidden ${revealing ? "pointer-events-none" : "bg-midnight"}`}>
       <p className="sr-only">{SPOKEN}</p>
       <div aria-hidden="true" className="absolute inset-0">
-        {still ? (
-          <div className="absolute inset-0 flex items-center justify-center px-4 md:px-10">
-            <p className="poster-1 text-center text-ivory">
-              {slides.map((s, i) => (
-                <span key={i} className={s.accent ? "text-claret" : undefined}>
-                  {s.word}{" "}
-                </span>
-              ))}
-            </p>
-          </div>
-        ) : beat?.kind === "image" ? (
+        {beat?.kind === "image" ? (
           <motion.img
             key={beat.src}
             src={beat.src}
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
-            initial={{ scale: 1 }}
-            animate={{ scale: intro.push }}
+            initial={{ scale: intro.push }}
+            animate={{ scale: 1 }}
             transition={{ duration: beat.hold, ease: "linear" }}
           />
-        ) : beat?.kind === "word" ? (
-          <WordCard key={beat.text} text={beat.text} accent={beat.accent} />
         ) : null}
-        <div className="absolute bottom-6 left-4 flex flex-col gap-1 md:bottom-10 md:left-10">
-          <p className="label text-ash">{site.intro.line}</p>
-          <p className="poster-4 tabular-nums text-ivory">
-            <span ref={counter}>000</span>
-          </p>
-        </div>
-        <div className="grain" />
+        <motion.div className="shutter-top" style={{ scaleY: shut, y: topY }} />
+        <motion.div className="shutter-bottom" style={{ scaleY: shut, y: bottomY }} />
+        {beat?.kind === "word" ? <WordCard key={beat.text} text={beat.text} accent={beat.accent} /> : null}
+        {revealing ? null : (
+          <>
+            <div className="absolute bottom-6 left-4 flex flex-col gap-1 md:bottom-10 md:left-10">
+              <p className="label text-ash">{site.intro.line}</p>
+              <p className="poster-4 tabular-nums text-ivory">
+                <span ref={counter}>000</span>
+              </p>
+            </div>
+            <div className="grain" />
+          </>
+        )}
       </div>
     </div>
   );

@@ -11,21 +11,31 @@ export const spring = { stiffness: 140, damping: 30, mass: 0.5 } as const;
 
 /**
  * M01 loader. Once per session: picture, word card, picture, word card,
- * picture, final word card, each a hard cut. Pictures push in from 1 to
- * `push` over `imageHold`; word cards hold `wordHold`, the last one
- * `lastHold`. All pictures must be ready within `preloadBudget` seconds, or
- * the loader shows the word cards only. With reduced motion the whole line is
- * one still card for `reducedHold`, then a cut to the page.
+ * picture, final word card, each a hard cut (3.3s). Each picture holds
+ * `imageHold` and settles from `push` to 1; word card n holds `wordHolds[n]`.
+ * Meanwhile two midnight shutter bars close from the top and bottom edges,
+ * driven by one value through `shutter.value` at `shutter.at` seconds, so each
+ * picture shows through a narrower band than the last. At 3.3s the bars meet;
+ * then they part (`reveal`, ease-in-out) to show the page, and the page's
+ * entrance starts `heroDelay` into that. All pictures must be ready within
+ * `preloadBudget` seconds, or the loader shows the word cards only. With
+ * reduced motion: the word cards, `reducedHold` each, then a cut.
  */
 export const intro = {
   // A new key whenever the loader changes, so every visitor sees the new one once.
-  storageKey: "mm-loader-ferrari-seen",
-  imageHold: 0.5,
-  wordHold: 0.45,
-  lastHold: 0.6,
-  push: 1.04,
+  storageKey: "mm-loader-shutter-seen",
+  imageHold: 0.6,
+  wordHolds: [0.5, 0.4, 0.6],
+  push: 1.06,
+  shutter: {
+    at: [0, 1.1, 2.1, 2.7, 3.3],
+    value: [0, 0.12, 0.55, 0.88, 1],
+    ease: "easeIn",
+  },
+  reveal: 0.7,
+  heroDelay: 0.15,
   preloadBudget: 1,
-  reducedHold: 1.2,
+  reducedHold: 0.4,
 } as const;
 
 /** M02 burgundy stairs wipe. */

@@ -303,6 +303,29 @@
   }
 }
 
+/* The closing shutter: two midnight bars, each half the screen, scaled from
+   their outer edge. Above the pictures, under the word cards. */
+.shutter-top,
+.shutter-bottom {
+  position: fixed;
+  left: 0;
+  width: 100vw;
+  height: 50dvh;
+  background: var(--color-midnight);
+  transform: scaleY(0);
+  will-change: transform;
+}
+
+.shutter-top {
+  top: 0;
+  transform-origin: top;
+}
+
+.shutter-bottom {
+  bottom: 0;
+  transform-origin: bottom;
+}
+
 /* ---- Reduced motion: complete and still ------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] {
