@@ -12,34 +12,37 @@ export const spring = { stiffness: 140, damping: 30, mass: 0.5 } as const;
 /**
  * M01 loader, on every full page load. Four pictures, each followed by a word
  * card: picture `imageHold`, word `wordHold`. The last word, FERRARI., is not
- * a card on top but sits under the shutter, in its slit.
+ * a card on top but sits under the shutter, from `ferrariAt`.
  *
  * The shutter is two black bars closing from the top and bottom edges, driven
- * by one value (0 open, 1 shut) through `shutter.value` at `shutter.at`
- * seconds. It holds still while a picture shows and steps closer while each
- * word card covers it, so every picture shows through a narrower band than
- * the last; through picture 4 it creeps to `slit` (0.7: a 30% slit).
+ * by one value (0 open, 1 shut) in ONE continuous tween from 0 to 1 over
+ * `shutter.duration`, on `shutter.ease` (slow start, speeding up). It never
+ * pauses: it keeps running under the word cards, so each picture comes back
+ * exactly where the motion left it. The slit is about 95% for picture 2, 78%
+ * for picture 3, 50% to 28% for picture 4, and 28% when FERRARI. appears.
  *
- * Then the finale: FERRARI. appears in the slit, its cap height `slitFill` of
- * the slit; after `closeAfter` the bars close from `slit` to 1 over `close`,
- * squeezing it to a line; solid black for `shutHold`; then the bars part over
- * `reveal`, and the page's entrance starts `heroDelay` into that. A skip jumps
- * straight to the close. Pictures must all be ready within `preloadBudget`
- * seconds, or only the words play. Reduced motion: each word `reducedHold`,
- * then a cut.
+ * FERRARI. is sized to the smaller of: cap height `slitFill` of `slitSize`
+ * (of the screen height), or `widthFill` of the screen width. A skip runs
+ * the bars from wherever they are to 1 over `skipClose`, ease-in, with
+ * FERRARI. under them. Then solid black for `shutHold`, and the bars part
+ * over `reveal`; the page's entrance starts `heroDelay` into that. Pictures
+ * must all be ready within `preloadBudget` seconds, or only the words play.
+ * Reduced motion: each word `reducedHold`, then a cut.
  */
 export const intro = {
   imageHold: 0.8,
   wordHold: 0.6,
   push: 1.06,
   shutter: {
-    at: [0, 0.8, 1.4, 2.2, 2.8, 3.6, 4.2, 5.0],
-    value: [0, 0, 0.2, 0.2, 0.45, 0.45, 0.65, 0.7],
+    duration: 5.9,
+    // M01's own curve (not a token): a slow start that speeds up.
+    ease: [0.11, 0, 0.5, 0] as [number, number, number, number],
   },
-  slit: 0.7,
+  ferrariAt: 5.0,
+  slitSize: 0.28,
   slitFill: 0.8,
-  closeAfter: 0.3,
-  close: 0.6,
+  widthFill: 0.92,
+  skipClose: 0.5,
   shutHold: 0.15,
   reveal: 0.7,
   heroDelay: 0.15,

@@ -4,21 +4,25 @@
 // moves between pages). About 6.8 seconds:
 //   0.0 picture 1 · 0.8 "NEED" · 1.4 picture 2 · 2.2 "MONEY" ·
 //   2.8 picture 3 · 3.6 "FOR" · 4.2 picture 4 ·
-//   5.0 "FERRARI." in the shutter's slit · 5.3 to 5.9 the shutter closes on it ·
-//   5.9 solid black · 6.05 to 6.75 the bars part to show the page.
+//   5.0 "FERRARI." under the shutter · 5.9 shut, solid black ·
+//   6.05 to 6.75 the bars part to show the page.
 //
-// The shutter is two black bars (scaleY from the top and bottom edges, one
-// shared value). It holds still while a picture shows and steps closer while
-// each word card covers it, so every picture is narrower than the last.
-// Layers, bottom to top: picture, the FERRARI. slit card, the bars, the word
+// The shutter is two black bars (scaleY from the top and bottom edges) on one
+// motion value, in ONE continuous tween from open to shut over 0 to 5.9s,
+// slow at first and speeding up. It never pauses or resets: it keeps running
+// under the word cards, so each picture comes back where the motion left it,
+// and the slit shrinks steadily across the pictures. FERRARI. sits under the
+// bars, in the slit, and the bars squeeze it to a line, then black.
+// Layers, bottom to top: picture, the FERRARI. card, the bars, the word
 // cards, then the counter and grain. All words are burgundy on black. The
 // page's entrance starts 0.15s into the bars parting. Timings: lib/motion.ts
-// (intro). Beats: content/site.ts (intro.loaderSlides).
+// (intro). Beats: content/site.ts (intro.loaderSlides). Nothing re-renders
+// per frame: the bars, push-in and counter run on motion values and refs.
 //
 // - All pictures are preloaded first (the head script adds preload links).
 //   If they are not ready within 1 second, only the words play.
-// - Any click, key, wheel or touch jumps to FERRARI. and the close, so a skip
-//   still shows it.
+// - Any click, key, wheel or touch shows FERRARI. and runs the bars from
+//   wherever they are to shut over 0.5s, then the hold and the reveal.
 // - Scroll is locked (html.pl-lock) until the bars have parted; then the
 //   loader unmounts.
 // - Reduced motion: no shutter and no zoom. Each word for 0.4s, then a cut.
@@ -30,7 +34,7 @@
 // flashes underneath.
 
 import { useLenis } from "lenis/react";
-import { animate, motion, useMotionValue } from "motion/react";
+import { animate, cubicBezier, motion, useMotionValue, type AnimationPlaybackControls } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { site } from "@/content/site";
 import { setCurtain } from "@/lib/curtain";
@@ -120,8 +124,8 @@ function WordCard({ text }: { text: string }) {
 type SlitFit = { w: number; h: number; size: number; baseline: number };
 
 /**
- * The last word, centred in the shutter's slit: its cap height `slitFill` of
- * the slit, or smaller if it would be wider than the screen less the gutters.
+ * The last word, centred in the shutter's slit: cap height `slitFill` of a
+ * `slitSize` slit, or `widthFill` of the screen width, whichever is smaller.
  * Measured from the real font on a canvas, so the caps (not the line box) are
  * centred. Mounted from the start, hidden, so the size is ready in time.
  */
@@ -145,10 +149,8 @@ function SlitCard({ text, shown }: { text: string; shown: boolean }) {
       const wide = (word.actualBoundingBoxLeft + word.actualBoundingBoxRight) / 100;
       const w = window.innerWidth;
       const h = window.innerHeight;
-      // The page gutter token (it changes with the breakpoint).
-      const gutter = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--spacing-gutter")) || 16;
-      const slit = (1 - intro.slit) * h;
-      const size = Math.min((intro.slitFill * slit) / cap, (w - 2 * gutter) / wide);
+      const slit = intro.slitSize * h;
+      const size = Math.min((intro.slitFill * slit) / cap, (intro.widthFill * w) / wide);
       setFit({ w, h, size, baseline: h / 2 + (cap * size) / 2 });
     };
     void measure();
@@ -242,20 +244,17 @@ export function Intro() {
 
       const ready = await Promise.race([preload(intro.preloadBudget), skipped.then(() => false)]);
       const list = beats(ready);
-      const run = list.reduce((sum, b) => sum + ("hold" in b ? b.hold : 0), 0);
+      const { duration, ease: curve } = intro.shutter;
       const t0 = performance.now();
       // Every beat is timed from the same start, so the cuts stay on the shutter's clock.
       const until = (t: number) => wait(Math.max(0, t - (performance.now() - t0) / 1000));
-      const count = animate(0, 100, { duration: run + intro.closeAfter + intro.close, ease: "linear", onUpdate: show });
-      const { at, value } = intro.shutter;
-      const span = at[at.length - 1];
-      const stepping = ready
-        ? animate(shut, [...value], {
-            duration: span,
-            times: at.map((t) => t / span),
-            ease: at.slice(1).map(() => ease.inOut),
-          })
-        : null;
+      // With the pictures: one tween, 0 to 1, from the first picture. Words
+      // only: FERRARI. comes early, so the bars start from where the tween
+      // would be at that point and finish over the same remaining time.
+      const tail = duration - intro.ferrariAt;
+      const run = list.reduce((sum, b) => sum + ("hold" in b ? b.hold : 0), 0);
+      const count = animate(0, 100, { duration: run + tail, ease: "linear", onUpdate: show });
+      let closing: AnimationPlaybackControls | null = ready ? animate(shut, 1, { duration, ease: curve }) : null;
 
       let clock = 0;
       for (const b of list) {
@@ -264,18 +263,22 @@ export function Intro() {
         clock += "hold" in b ? b.hold : 0;
         await until(clock);
       }
-      stepping?.stop();
-
-      // Finale: FERRARI. in the slit, then the bars close on it.
-      shut.set(intro.slit);
       setBeat({ kind: "slit" });
-      if (!isSkipped) await wait(intro.closeAfter);
+      if (!isSkipped) {
+        if (!closing) {
+          shut.set(cubicBezier(...curve)(intro.ferrariAt / duration));
+          closing = animate(shut, 1, { duration: tail, ease: "easeIn" });
+        }
+        await Promise.race([closing, skipped]);
+      }
       stopListening();
       if (isSkipped) {
+        // From wherever the bars are, shut over skipClose, FERRARI. under them.
+        closing?.stop();
         count.stop();
-        animate(shown, 100, { duration: intro.close, ease: "linear", onUpdate: show });
+        animate(shown, 100, { duration: intro.skipClose, ease: "linear", onUpdate: show });
+        await animate(shut, 1, { duration: intro.skipClose, ease: "easeIn" });
       }
-      await animate(shut, 1, { duration: intro.close, ease: ease.inOut });
       count.stop();
       show(100);
       setBeat(null);
