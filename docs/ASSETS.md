@@ -9,7 +9,7 @@ What the site needs, where each file goes, and what to show until it exists. The
 | Project cover, one per project | `public/projects/<slug>/cover.jpg` | 1600 x 2000 (4:5), any colour; the site dithers it | Tile shows the dither field with the project name only |
 | Project screens, three to six per case study | `public/projects/<slug>/shot-01.jpg` … | 1920 wide, 16:10 or the app's real ratio; phone screens 1170 x 2532 | The proof section is left out in production; development shows empty hairline frames labelled "screens coming" |
 | Project video, optional | `public/projects/<slug>/demo.mp4` | 10 to 30 seconds, under 8 MB, no sound | Not shown |
-| GitHub and LeetCode numbers | Fetched live (`lib/live-numbers.ts`), refreshed at most once a day; usernames and a last known count in `content/site.ts` | Whole numbers | If a fetch fails, the last known count shows. The Numbers section is hidden until at least two of its three figures have values |
+| GitHub and LeetCode numbers | Fetched live (`lib/live-numbers.ts`), refreshed at most once a day; usernames and a last known count in `content/site.ts` | Whole numbers | If a fetch fails, the last known count shows. The Numbers section is hidden until both figures have values |
 | Email, resume link | `content/site.ts` | | Email button and resume link are hidden |
 
 Project slugs: `repetite`, `marginalia`, `trailboard`, `bumpfix`, `smartresume`, `nexabank`.

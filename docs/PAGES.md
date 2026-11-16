@@ -31,7 +31,7 @@ Seven routes. Each page has one idea, one or two burgundy moments, and at most t
 | 3 | Statement | 150vh tall with the sentence sticky at mid-screen, midnight. One sentence in `poster-3`, left-aligned, with one typed Note under it | M26, then M10 on the note |
 | 4 | What i build | Pinned split. Left 40%: `poster-4` heading, a short paragraph, a ghost button to Work. Right 60%: WordList | M12, M03 on the heading |
 | 5 | Selected work | From 810px: pinned title for 250vh, headline in `poster-1` centred, four ProjectTiles drift past, at most two over the headline at once. Below 810px: the headline on its own, the note, then the four tiles as a card stack. Text never sits on other text | M13 (desktop), M27 (phones), M14, M15; one Note beside the first tile on desktop, under the headline on phones (M10) |
-| 6 | Numbers | Full-bleed burgundy dither field. Three figures in a row (stacked on phones): number in `poster-1`, caption in `label`. Shown only when at least two figures have values; otherwise the whole section is left out. A single blank figure among them shows a dash | M08, M19 |
+| 6 | Numbers | Full-bleed burgundy dither field. Two figures in a row (stacked on phones): GitHub contributions this year and LeetCode problems solved, both fetched live. Number in `poster-1`, caption in `label`. Shown only when at least two figures have values; otherwise the whole section is left out. A single blank figure among them shows a dash | M08, M19 |
 | 7 | Closing | 90dvh, midnight. `poster-1` question, one line, primary button to Contact | M03, M11 on one word |
 | 8 | Footer | | |
 

@@ -84,7 +84,6 @@ Bottom-right label: designed and built by mukund mangla
 | --- | --- |
 | Live: GitHub contributions this calendar year for octotat-bot | contributions on github this year |
 | Live: LeetCode problems solved (all difficulties) for Hakka123 | leetcode problems solved |
-| 2 | ai internships in 2026 |
 
 **Closing**
 

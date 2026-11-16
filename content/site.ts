@@ -23,9 +23,9 @@ const links: Record<LinkId, ExternalLink> = {
   resume: { label: "Resume", value: null, kind: "url" },
 };
 
-// The first two are fetched live (lib/live-numbers.ts) and refreshed at most
-// once a day. Leave `value` as null for a live number; set it to a whole
-// number to fix a figure by hand.
+// Both are fetched live (lib/live-numbers.ts) and refreshed at most once a
+// day. Leave `value` as null for a live number; set it to a whole number to
+// fix a figure by hand.
 const numbers: SiteNumber[] = [
   {
     value: null,
@@ -37,7 +37,6 @@ const numbers: SiteNumber[] = [
     caption: "leetcode problems solved",
     live: { source: "leetcode-solved", user: "Hakka123", lastKnown: { value: 254, on: "2026-11-15" } },
   },
-  { value: 2, caption: "ai internships in 2026" },
 ];
 
 export const site = {
