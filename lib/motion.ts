@@ -13,7 +13,7 @@ export const spring = { stiffness: 140, damping: 30, mass: 0.5 } as const;
  * M01 loader. Every full page load: picture, word card, picture, word card,
  * picture, final word card, each a hard cut (3.3s). Each picture holds
  * `imageHold` and settles from `push` to 1; word card n holds `wordHolds[n]`.
- * Meanwhile two midnight shutter bars close from the top and bottom edges,
+ * Meanwhile two black shutter bars close from the top and bottom edges,
  * driven by one value through `shutter.value` at `shutter.at` seconds, so each
  * picture shows through a narrower band than the last. At 3.3s the bars meet;
  * then they part (`reveal`, ease-in-out) to show the page, and the page's

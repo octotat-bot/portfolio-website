@@ -4,10 +4,10 @@
 // moves between pages), a run of hard cuts:
 //   0.0 picture 1 · 0.6 "NEED MONEY" · 1.1 picture 2 · 1.7 "FOR" ·
 //   2.1 picture 3 · 2.7 "FERRARI." · 3.3 shut. All words in burgundy.
-// Meanwhile a closing shutter: two midnight bars grow from the top and bottom
+// Meanwhile a closing shutter: two black bars grow from the top and bottom
 // edges (scaleY, one shared value), so picture 1 is full-screen, picture 2 a
 // letterbox and picture 3 a slit. The word cards sit above the bars, full
-// midnight. At 3.3 the bars meet; then they part, top up and bottom down, and
+// black. At 3.3 the bars meet; then they part, top up and bottom down, and
 // the page shows through the gap. Its entrance starts 0.15s into that.
 // Timings are in lib/motion.ts (intro); the beats come from content/site.ts
 // (intro.loaderSlides). A small 000 to 100 counter runs bottom-left, and the
@@ -81,7 +81,7 @@ function preload(budget: number) {
   return Promise.race([all, timeout]);
 }
 
-/** A full-screen midnight word card in monument size, burgundy, scaled down only if it would overflow a phone. */
+/** A full-screen black word card in monument size, burgundy, scaled down only if it would overflow a phone. */
 function WordCard({ text }: { text: string }) {
   const ref = useRef<HTMLParagraphElement>(null);
   const [scale, setScale] = useState(1);
@@ -98,7 +98,7 @@ function WordCard({ text }: { text: string }) {
     document.fonts.ready.then(fit);
   }, [text]);
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-midnight px-4 md:px-10">
+    <div className="absolute inset-0 flex items-center justify-center bg-black px-4 md:px-10">
       <p
         ref={ref}
         className="monument whitespace-nowrap text-center text-burgundy"
@@ -216,7 +216,7 @@ export function Intro() {
   const revealing = phase === "reveal";
 
   return (
-    <div className={`intro fixed inset-0 z-75 overflow-hidden ${revealing ? "pointer-events-none" : "bg-midnight"}`}>
+    <div className={`intro fixed inset-0 z-75 overflow-hidden ${revealing ? "pointer-events-none" : "bg-black"}`}>
       <p className="sr-only">{SPOKEN}</p>
       <div aria-hidden="true" className="absolute inset-0">
         {beat?.kind === "image" ? (

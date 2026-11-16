@@ -303,7 +303,7 @@
   }
 }
 
-/* The closing shutter: two midnight bars, each half the screen, scaled from
+/* The closing shutter: two black bars, each half the screen, scaled from
    their outer edge. Above the pictures, under the word cards. */
 .shutter-top,
 .shutter-bottom {
@@ -311,7 +311,7 @@
   left: 0;
   width: 100vw;
   height: 50dvh;
-  background: var(--color-midnight);
+  background: var(--color-black);
   transform: scaleY(0);
   will-change: transform;
 }

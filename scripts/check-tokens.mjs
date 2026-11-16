@@ -24,7 +24,7 @@ const compiler = await compile('@import "tailwindcss";\n@import "./styles/tokens
 });
 
 const mustNotExist = [
-  "bg-red-500", "text-blue-600", "bg-white", "text-black", "border-gray-200", "bg-slate-900",
+  "bg-red-500", "text-blue-600", "bg-white", "text-zinc-700", "border-gray-200", "bg-slate-900",
   "from-pink-500", "ring-indigo-500", "fill-emerald-400",
   "rounded-xs", "rounded-md", "rounded-lg", "rounded-xl", "rounded-2xl", "rounded-3xl",
   "shadow-sm", "shadow-md", "shadow-lg", "shadow-xl", "inset-shadow-sm", "drop-shadow-md", "text-shadow-sm",
@@ -34,7 +34,7 @@ const mustNotExist = [
   "blur-sm", "animate-spin", "animate-pulse", "sm:block", "xl:block", "max-w-md",
 ];
 const mustExist = [
-  "bg-midnight", "bg-midnight-raised", "border-line", "bg-burgundy", "bg-burgundy-deep", "text-claret",
+  "bg-midnight", "bg-black", "bg-midnight-raised", "border-line", "bg-burgundy", "bg-burgundy-deep", "text-claret",
   "text-ivory", "text-ash",
   "p-1", "p-2", "p-3", "p-4", "p-6", "p-10", "p-16", "p-24", "p-32",
   "h-nav", "h-button", "h-ticker", "min-h-target", "max-w-measure",

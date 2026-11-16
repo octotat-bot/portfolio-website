@@ -32,6 +32,7 @@ Dark only. Fixed proportions on every page: about 70% `midnight`, 20% `burgundy`
 | Token | Value | Job |
 | --- | --- | --- |
 | `midnight` | #070B14 | Page ground |
+| `black` | #000000 | The loader (M01) only: word cards and shutter bars |
 | `midnight-raised` | #11141D | Menu overlay, frames |
 | `line` | #2A2F3D | 1px hairlines |
 | `burgundy` | #800020 | The loud colour, as a filled field |
@@ -42,7 +43,7 @@ Dark only. Fixed proportions on every page: about 70% `midnight`, 20% `burgundy`
 
 Rules
 
-1. **Burgundy is a surface, claret is ink.** `burgundy` on `midnight` is 1.8:1 and unreadable, so burgundy only appears as a filled area with `ivory` text on it. For a burgundy word or line on the dark ground, use `claret`. One exception: the loader's word cards (M01) are set in `burgundy` on midnight, by choice: monument-size, decorative (screen readers get the line as text), and meant to sit dim against the ground.
+1. **Burgundy is a surface, claret is ink.** `burgundy` on `midnight` is 1.8:1 and unreadable, so burgundy only appears as a filled area with `ivory` text on it. For a burgundy word or line on the dark ground, use `claret`. One exception: the loader's word cards (M01) are set in `burgundy` on `black`, by choice: monument-size, decorative (screen readers get the line as text), and meant to sit dim against the ground.
 2. `claret` on midnight is 4:1. Use it at 24px and larger only.
 3. On burgundy, all text is `ivory`. `ash` and `claret` both fail there.
 4. Every page has one or two full-bleed burgundy moments, never more.
