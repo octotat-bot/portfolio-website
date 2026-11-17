@@ -3,7 +3,7 @@
 // Home 5: selected work as a rising pile (M31), desktop and phones.
 // The section is (projects + 1.5) screens tall on desktop, (projects + 1) on
 // phones. Inside it a stage pins (native sticky, top 0, one screen) with the
-// headline and the note centred behind the cards. Driven by Motion useScroll
+// headline (in `monument`) and the note centred behind the cards. Driven by Motion useScroll
 // on the section:
 //   0 to 0.12  the headline alone;
 //   0.12 to 0.8  each card rises from 110dvh below to its spot in its own
@@ -13,9 +13,9 @@
 // Transform only. Each card's shapes (G1, G3) wait to assemble until it has
 // landed, and stop when the section is off screen.
 //
-// The cards are the original ProjectTiles at their original sizes (16vw, at
-// least 210px, on desktop; the content width on phones). Desktop: one centred
-// row, each overlapping the one before by 30%, tilted -3, 1, -2, 4deg and
+// The cards are the original ProjectTiles. Desktop: one centred row, each
+// overlapping the one before by 20%, as wide as lets the row fill the content
+// width (about 400px at 1440, capped by the screen height), tilted -3, 1, -2, 4deg and
 // dropped 0, 96, 40, 64px (at 1440, scaled with the width). Phones: one
 // column, offset 8vw left and right, tilted -2 and 2deg, overlapping as deeply
 // as it takes to fit one screen. Each new card lands on top.
@@ -200,6 +200,9 @@ export function SelectedWork({ tiles }: { tiles: HomeTile[] }) {
   const vars = {
     "--pile-screens-sm": n + pile.screens.sm,
     "--pile-screens-md": n + pile.screens.md,
+    "--pile-n": n,
+    "--pile-overlap": pile.rowOverlap,
+    "--pile-drop-max": `${(Math.max(...pile.drops) / pile.dropBase) * 100}vw`,
   } as CSSProperties;
 
   return (
@@ -210,7 +213,7 @@ export function SelectedWork({ tiles }: { tiles: HomeTile[] }) {
         style={{ opacity: reduced ? 1 : leave }}
       >
         <div className="absolute inset-0 z-0 flex flex-col items-center justify-center gap-6 px-4 text-center md:px-10">
-          <RevealText as="h2" text={headline} className="poster-1" />
+          <RevealText as="h2" text={headline} className="monument" />
           <Note text={note} tilt={4} />
         </div>
         {tiles.map((tile, i) => (

@@ -516,8 +516,10 @@ html.pl-lock {
 
 /* M31 rising pile: the section is (projects + 1) screens tall on phones,
    (projects + 1.5) from md; the counts come from lib/motion.ts (pile). Cards
-   keep the original tile sizes: the content width on phones, 16vw (at least
-   210px) from md. */
+   are the content width on phones. From md they are as wide as lets the row
+   (each card over the last by --pile-overlap) fill the content width, capped
+   so a card plus its caption, the deepest drop and a margin fit under the
+   nav band. */
 .pile {
   height: calc(var(--pile-screens-sm) * 100dvh);
 }
@@ -532,7 +534,10 @@ html.pl-lock {
   }
 
   .pile-card {
-    width: max(16vw, 210px);
+    width: min(
+      calc((100% - 2 * var(--spacing-gutter)) / (1 + (1 - var(--pile-overlap)) * (var(--pile-n) - 1))),
+      calc((100dvh - var(--spacing-nav-band) - var(--pile-drop-max) - 92px) / 1.25)
+    );
   }
 }
 

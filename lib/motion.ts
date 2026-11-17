@@ -101,9 +101,11 @@ export const statement = { offset: 40, rotate: 25, opacity: 0.3 } as const;
  * `ease-out`; the card turns from 0 to its tilt as it rises. From `end` to
  * 1 everything holds, then the section scrolls away.
  *
- * Desktop: the original tile size, in one centred row; each card overlaps the
- * one before by `rowOverlap` of its width, tilted `tilts`, dropped `drops`
- * px at a 1440px-wide screen (scaled with the width). Phones: the original
+ * Desktop: one centred row; each card overlaps the one before by `rowOverlap`
+ * of its width, and the cards are as wide as that lets the row fill the
+ * content width (about 400px at 1440), but never so tall that the pile leaves
+ * the screen. Tilted `tilts`, dropped `drops` px at a 1440px-wide screen
+ * (scaled with the width). Phones: the original
  * full-width tiles, one column, offset `phone.offset` vw left and right,
  * tilted `phone.tilt`, overlapped as deeply as it takes for the pile to fit
  * one screen between the nav band and `phone.bottom` px from the bottom.
@@ -120,7 +122,7 @@ export const pile = {
   tilts: [-3, 1, -2, 4],
   drops: [0, 96, 40, 64],
   dropBase: 1440,
-  rowOverlap: 0.3,
+  rowOverlap: 0.2,
   phone: { tilt: 2, offset: 8, bottom: 24 },
   hover: { scale: 1.03, duration: dur.fast, ease: ease.pop },
 } as const;
