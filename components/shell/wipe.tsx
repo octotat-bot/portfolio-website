@@ -213,5 +213,8 @@ export function TransitionLink({ href, onNavigate, ...props }: TransitionLinkPro
   );
 }
 
-/** True for links that leave the site or open the mail client. */
-export const isExternal = (href: string) => /^(https?:|mailto:|tel:)/.test(href);
+/** True for links that leave the site, open the mail client, or point at a file (no wipe). */
+export const isExternal = (href: string) => /^(https?:|mailto:|tel:)/.test(href) || isFile(href);
+
+/** A file in public/ (such as the resume PDF), not a page: a plain link, no wipe. */
+export const isFile = (href: string) => /^\/[^?#]*\.[a-z0-9]{2,5}$/i.test(href);

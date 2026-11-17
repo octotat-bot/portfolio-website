@@ -10,7 +10,7 @@
 //   plain: ivory, rolls to ivory. For the nav name, which sits on any surface.
 
 import { useState, type FocusEvent, type ReactNode } from "react";
-import { TransitionLink, isExternal } from "@/components/shell/wipe";
+import { TransitionLink, isExternal, isFile } from "@/components/shell/wipe";
 import { RollText } from "./roll-text";
 
 export type RollTone = "large" | "small" | "plain";
@@ -56,8 +56,10 @@ export function RollLink({ href, children, tone = "small", type = "label", class
   );
 
   if (isExternal(href)) {
+    // Files (the resume PDF) open in a new tab, so the site stays where it was.
+    const file = isFile(href);
     return (
-      <a href={href} className={classes} {...handlers}>
+      <a href={href} className={classes} {...handlers} {...(file ? { target: "_blank", rel: "noopener" } : {})}>
         {inner}
       </a>
     );

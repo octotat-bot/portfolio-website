@@ -29,7 +29,7 @@ Every blank is `null` in `content/`. While a value is `null`, the site hides it 
 | To set | File | Field |
 | --- | --- | --- |
 | Email address | `content/site.ts` | `links.email.value`, the address only (no `mailto:`). Already set |
-| Resume link | `content/site.ts` | `links.resume.value`, a full URL to the PDF |
+| Resume link | `content/site.ts` | `links.resume.value`: now `/Mukund_Mangla_Resume.pdf`, the file in `public/`. To update the resume, replace that file and keep its name. A full URL to a PDF elsewhere works too |
 | Site address | `content/site.ts` | `url`, for example `"https://mukundmangla.com"` |
 
 Setting the email makes the Email link appear in the menu and footer, and the address and "Email me" button appear on Contact. Setting the resume makes the Resume link appear on Contact and in the footer. The site address is used in share links and the sitemap; until you set it, they use the address Vercel gives the deploy.

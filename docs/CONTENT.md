@@ -27,7 +27,7 @@ Links
 | GitHub | https://github.com/octotat-bot |
 | LinkedIn | https://www.linkedin.com/in/mukund-mangla/ |
 | Email | (in `content/site.ts`) |
-| Resume | [RESUME_PDF_URL] |
+| Resume | /Mukund_Mangla_Resume.pdf (the file in `public/`) |
 
 ## Menu
 

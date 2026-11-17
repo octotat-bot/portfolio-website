@@ -19,8 +19,8 @@ const links: Record<LinkId, ExternalLink> = {
   linkedin: { label: "LinkedIn", value: "https://www.linkedin.com/in/mukund-mangla/", kind: "url" },
   // The address only, no "mailto:".
   email: { label: "Email", value: "manglamukund123@gmail.com", kind: "email" },
-  // Blank: a URL to the resume PDF.
-  resume: { label: "Resume", value: null, kind: "url" },
+  // The PDF in public/; replace the file (same name) to update it.
+  resume: { label: "Resume", value: "/Mukund_Mangla_Resume.pdf", kind: "url" },
 };
 
 // Both are fetched live (lib/live-numbers.ts) and refreshed at most once a
