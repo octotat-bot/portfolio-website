@@ -25,17 +25,13 @@
 // and hides the last (a DOM attribute, no React render), so a cut is only a
 // repaint and no frame is ever blank. The bars run on a Motion value.
 //
-// Sound: off until the first pointer or key press (a small chip says so),
-// then a shutter click on each photo frame and a low thump on each word
-// frame, fading out at the end. Web Audio only (lib/intro-sound.ts).
-//
 // Before it starts: all photos decoded and Anton loaded, or 1.5s, whichever
 // comes first. The head script (INTRO_SCRIPT) sets html.pl-cover (hides the
 // page) and html.pl-lock (blocks wheel, touch and scroll keys) before
 // hydration; the loader drops pl-cover as it mounts and pl-lock when it ends;
 // both are released after 15s whatever happens.
 // Reduced motion: only the last frame, the bars at 0.24, held 1.4s, then the
-// loader fades out over 0.4s. No sound.
+// loader fades out over 0.4s.
 // The photos are aria-hidden; screen readers hear "need money for ferrari".
 
 import { useLenis } from "lenis/react";
@@ -43,7 +39,6 @@ import { animate, motion, useMotionValue } from "motion/react";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { site } from "@/content/site";
 import { setCurtain } from "@/lib/curtain";
-import { createIntroSound } from "@/lib/intro-sound";
 import { ease, intro } from "@/lib/motion";
 import { lockScroll } from "./smooth-scroll";
 
@@ -104,7 +99,6 @@ export function Intro() {
   const frameEls = useRef<(HTMLDivElement | null)[]>([]);
   const [phase, setPhase] = useState<Phase>("waiting");
   const [fits, setFits] = useState<Fits | null>(null);
-  const [chip, setChip] = useState<"pointer" | "touch" | null>(null);
   // 0 = open, 1 = the bars meet in the middle. Both bars share it.
   const shut = useMotionValue(0);
   const topY = useMotionValue("0%");
@@ -126,23 +120,9 @@ export function Intro() {
     const reduced = mode === "still";
     const timers: number[] = [];
     const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
-    const sound = createIntroSound();
 
     const family = probe.current ? getComputedStyle(probe.current).fontFamily : "Anton";
     const onResize = () => setFits(measure(family));
-
-    // Sound is off until the first pointer or key press.
-    const onArm = () => {
-      sound.arm();
-      setChip(null);
-      window.removeEventListener("pointerdown", onArm);
-      window.removeEventListener("keydown", onArm);
-    };
-    if (!reduced) {
-      setChip(window.matchMedia("(hover: none)").matches ? "touch" : "pointer");
-      window.addEventListener("pointerdown", onArm);
-      window.addEventListener("keydown", onArm);
-    }
 
     let current: HTMLElement | null = null;
     const show = (k: number | null) => {
@@ -153,16 +133,13 @@ export function Intro() {
       if (frames[k].kind === "photo") {
         const g = current.querySelector<HTMLElement>("[data-grain]");
         if (g) g.style.backgroundPosition = `${rand(intro.grain)}px ${rand(intro.grain)}px`;
-        if (sound.armed) sound.click();
-      } else if (sound.armed) sound.thump();
+      }
     };
 
     const finish = () => {
       html.removeAttribute("data-intro");
       html.classList.remove("pl-lock", "pl-cover");
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("pointerdown", onArm);
-      window.removeEventListener("keydown", onArm);
       unlockScroll();
       // To the top, or to the URL's #hash.
       const id = decodeURIComponent(window.location.hash.slice(1));
@@ -221,7 +198,6 @@ export function Intro() {
         shut.set(1);
         show(null);
         setPhase("split");
-        sound.fadeOut(intro.hold + intro.split);
       });
       at(END + intro.hold * 1000, () => {
         const part = { duration: intro.split, ease: ease.inOut };
@@ -284,14 +260,6 @@ export function Intro() {
         <motion.div className="shutter-top" style={{ scaleY: shut, y: topY }} />
         <motion.div className="shutter-bottom" style={{ scaleY: shut, y: bottomY }} />
       </div>
-      {chip && !splitting ? (
-        <button
-          type="button"
-          className="label absolute bottom-6 left-1/2 z-10 -translate-x-1/2 border border-line bg-black px-4 py-2 text-ash md:bottom-10"
-        >
-          {chip === "touch" ? "Tap for sound" : "Click to unmute"}
-        </button>
-      ) : null}
     </motion.div>
   );
 }
