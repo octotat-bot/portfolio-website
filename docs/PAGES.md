@@ -19,7 +19,7 @@ Seven routes. Each page has one idea, one or two burgundy moments, and at most t
 - **Floating contact pill** (M23), except on Contact. It fades out while the Home hero buttons, the Home closing button, the About stack lines or the footer are on screen.
 - **Grain** (M22), **smooth scroll** (M25), **burgundy wipe** on navigation (M02).
 - **Nav zone**: tiles, cards and images fade out as they scroll into the top 120px, so nothing passes under the nav (see `MOTION.md`).
-- **Footer**: three columns on desktop, stacked on phones. Left: name in `poster-4` and one line. Middle: the four page links, numbered. Right: GitHub, LinkedIn, Email, Resume. Under them a hairline, then the copyright in `label`. Last, a full-width ghost marquee in `line` colour that speeds up with scroll (M20 variant), each copy of its words turned upside down (180°).
+- **Footer**: three columns on desktop, stacked on phones. Left: name in `poster-4` and one line. Middle: the four page links, numbered. Right: GitHub, LinkedIn, Email, Resume. Under them a hairline, then the copyright in `label`. Last, a full-width ghost marquee in `line` colour that speeds up with scroll (M20 variant), each copy of its words turned upside down (180°), with split-flap motion: the letters flip in when it arrives, flip now and then, flip under the pointer, and the line leans with scroll speed (M32).
 
 ## Home `/`
 

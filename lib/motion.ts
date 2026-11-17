@@ -172,6 +172,22 @@ export const countUp = { duration: 1.4, ease: ease.out } as const;
 /** M20 ticker. */
 export const ticker = { speed: 60 } as const;
 
+/**
+ * M32 footer flip line (the ghost marquee): a split-flap board. When it first
+ * comes into view the letters flip in one after another (`enter`), from
+ * edge-on; while it shows, a random letter flips over every `idle` seconds;
+ * on desktop a letter flips as it passes under the pointer (`flip`); and the
+ * whole line leans with scroll speed, up to `skew` degrees at `skewAt` px/s.
+ */
+export const flipLine = {
+  enter: { stagger: 0.035, duration: 0.5 },
+  flip: 0.6,
+  idle: 1.2,
+  skew: 10,
+  skewAt: 2000,
+  perspective: 800,
+} as const;
+
 /** M21 takeover menu. */
 export const menu = {
   open: { duration: dur.page, ease: ease.inOut },
