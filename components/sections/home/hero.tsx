@@ -5,7 +5,8 @@
 // edge along the bottom (two lines on phones, one from 810px), rises (M03),
 // then shuffles its faces (M04). A mono status line top-left cycles every 3s,
 // scrambling each time (M05); screen readers get only the first line. Lede and
-// two buttons sit in the open space above the name, at the right from 810px.
+// buttons (See the work, Say hello, and Resume while it has a value) sit in
+// the open space above the name, at the right from 810px.
 // M09 lift-off: while the first screen scrolls, the name scales 1 to 1.35,
 // rises 20% and fades out by 80%; the field's bottom edge rises in steps.
 // With reduced motion: still field, no lift, the status line holds its first line.
@@ -26,6 +27,7 @@ export function Hero() {
   const reduced = useReduced();
   const { hero } = home;
   const [see, hello] = hero.buttons;
+  const resume = site.links.resume;
 
   // M09
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
@@ -74,6 +76,11 @@ export function Hero() {
               <Button href={hello.href} variant="ghost">
                 {hello.label}
               </Button>
+              {resume.value ? (
+                <Button href={resume.value} variant="ghost">
+                  {resume.label}
+                </Button>
+              ) : null}
             </div>
           </div>
           <motion.div style={reduced ? undefined : { scale, y, opacity, transformOrigin: "0% 100%" }}>

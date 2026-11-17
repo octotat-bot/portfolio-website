@@ -10,7 +10,7 @@
 // The fill is a scaleX pseudo-element; see .button in globals.css.
 
 import type { MouseEventHandler } from "react";
-import { TransitionLink, isExternal } from "@/components/shell/wipe";
+import { TransitionLink, isExternal, isFile } from "@/components/shell/wipe";
 
 export type ButtonVariant = "primary" | "ghost" | "on-burgundy";
 
@@ -30,8 +30,10 @@ export function Button({ children, variant = "primary", href, onClick, type = "b
   const label = <span className="relative">{children}</span>;
 
   if (href && isExternal(href)) {
+    // Files (the resume PDF) open in a new tab.
+    const file = isFile(href);
     return (
-      <a href={href} className={classes} data-force={force}>
+      <a href={href} className={classes} data-force={force} {...(file ? { target: "_blank", rel: "noopener" } : {})}>
         {label}
       </a>
     );

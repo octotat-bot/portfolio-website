@@ -52,7 +52,7 @@ Bottom-right label: designed and built by mukund mangla
   - open to internships
 - Lede: i build apps, agents and the things between.
 - Supporting line: third-year computer science student. i design it, build it, and then check that it actually works.
-- Buttons: See the work · Say hello
+- Buttons: See the work · Say hello · Resume (opens the resume PDF in a new tab)
 
 **Statement**
 
