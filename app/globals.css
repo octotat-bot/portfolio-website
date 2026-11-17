@@ -287,14 +287,14 @@
 
 /* ---- M01 intro --------------------------------------------------------------
    Shown only when the head script set data-intro. If scripts never run, it
-   removes itself after eight seconds. */
+   hides itself after 15 seconds (the head script releases the page then too). */
 .intro {
   display: none;
 }
 
 :root[data-intro] .intro {
   display: block;
-  animation: intro-failsafe 0s 8s forwards;
+  animation: intro-failsafe 0s 15s forwards;
 }
 
 @keyframes intro-failsafe {
@@ -303,13 +303,39 @@
   }
 }
 
-/* Scroll stays locked while the loader runs. */
+/* pl-cover: the page stays hidden until the loader is up (no flash).
+   pl-lock: no scrolling while it runs (the head script also blocks wheel,
+   touch and scroll keys). */
+html.pl-cover body {
+  visibility: hidden;
+}
+
+html.pl-cover .intro {
+  visibility: visible;
+}
+
 html.pl-lock {
   overflow: hidden;
 }
 
-/* The closing shutter: two black bars, each half the screen, scaled from
-   their outer edge. Above the pictures, under the word cards. */
+/* Every frame is mounted up front and hidden; the schedule shows one at a
+   time, so a cut is only a repaint. */
+.intro-frame {
+  visibility: hidden;
+}
+
+.intro-frame[data-on] {
+  visibility: visible;
+}
+
+/* Film grain over the photo frames: a 256px tile, moved every frame. */
+.intro-grain {
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* The shutter: two black bars, each half the screen, scaled from their outer
+   edge, above the frames. */
 .shutter-top,
 .shutter-bottom {
   position: fixed;

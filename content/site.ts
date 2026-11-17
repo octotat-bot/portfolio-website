@@ -71,19 +71,22 @@ export const site = {
   },
 
   intro: {
-    line: "loading",
     /**
-     * The loader (M01): each slide is a picture, then a word card. The last
-     * word sits in the shutter's slit as it closes. The words read as one
-     * line; screen readers hear it once. All words are set in burgundy.
-     * Pictures live in public/intro/ (WebP, at most 1600px wide).
+     * The loader (M01). `words` read as one line ("need money for ferrari"),
+     * which screen readers hear once; the last is the one that fills the
+     * screen. `photos` live in public/intro/ (black and white, built by
+     * scripts/make-intro-assets.mjs); `fx`/`fy` (0 to 1) are each picture's
+     * focal point, where its cover crop is anchored. The frame order is in
+     * lib/motion.ts (intro.frames).
      */
-    loaderSlides: [
-      { image: "/intro/1.webp", word: "NEED" },
-      { image: "/intro/2.webp", word: "MONEY" },
-      { image: "/intro/3.webp", word: "FOR" },
-      { image: "/intro/4.webp", word: "FERRARI." },
-    ] as { image: string; word: string }[],
+    words: ["NEED", "MONEY", "FOR", "FERRARI."],
+    photos: [
+      { src: "/intro/1.webp", fx: 0.5, fy: 0.5 },
+      { src: "/intro/2.webp", fx: 0.52, fy: 0.62 },
+      { src: "/intro/3.webp", fx: 0.5, fy: 0.42 },
+      { src: "/intro/4.webp", fx: 0.38, fy: 0.6 },
+    ] as { src: string; fx: number; fy: number }[],
+    grain: "/intro/grain.webp",
   },
 
   footer: {

@@ -79,9 +79,9 @@ The slugs are `repetite`, `marginalia`, `trailboard`, `bumpfix`, `smartresume` a
 
 ## Change the loader
 
-Every full page load (the first visit and every refresh, but not moving between pages) plays a short loader: four pictures, with a word card after each of the first three ("NEED", "MONEY", "FOR"), then "FERRARI." in the shutter's slit as it closes. The pictures and words are in `content/site.ts` → `intro.loaderSlides`, and the timings in `lib/motion.ts` → `intro`. All the words are burgundy on black.
+Every full page load (the first visit and every refresh, but not moving between pages) plays a 4.6-second loader: 31 quick cuts between the words NEED / MONEY / FOR / FERRARI. and four photos, while a shutter closes, then the shutter splits open onto the page. The words and photos are in `content/site.ts` → `intro`, with each photo's focal point (`fx`, `fy`, 0 to 1) for its crop. The frame order and lengths are in `lib/motion.ts` → `intro.frames`.
 
-Pictures go in `public/intro/` as WebP, at most 1600px wide, quality 75. If they can't all load within a second, the loader shows the words only. Keep large originals out of `public/`; the current ones are in `assets/intro-originals/`, which git ignores.
+To change a photo, put its full-size original in `assets/intro-originals/` (git ignores it), point `scripts/make-intro-assets.mjs` at it, and run `node scripts/make-intro-assets.mjs`. It writes black-and-white WebPs (at most 1600px wide) and the grain tile to `public/intro/`. It needs ffmpeg and cwebp (`brew install ffmpeg webp`).
 
 ## Change the menu portrait
 

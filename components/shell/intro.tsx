@@ -1,335 +1,297 @@
 "use client";
 
 // M01 loader, on every full page load (first visit and every refresh, not
-// moves between pages). About 6.8 seconds:
-//   0.0 picture 1 · 0.8 "NEED" · 1.4 picture 2 · 2.2 "MONEY" ·
-//   2.8 picture 3 · 3.6 "FOR" · 4.2 picture 4 ·
-//   5.0 "FERRARI." under the shutter · 5.9 shut, solid black ·
-//   6.05 to 6.75 the bars part to show the page.
+// moves between pages). About 4.6 seconds, no skip:
+//   0 to 3.53s  31 hard-cut frames (lib/motion.ts, intro.frames): words NEED,
+//               MONEY, FOR, FERRARI. and photos 1 to 4, alternating, slowing to
+//               FERRARI. filling the screen (frame 7, to 1.98s), then a fast
+//               loop of 60ms frames, some mirrored or inverted;
+//   1.98 to 3.53s  the shutter's two black bars close in one move (half a
+//               cosine), so the fast loop plays in a shrinking slit;
+//   3.53s       shut: the frame goes, solid black;
+//   3.65 to 4.55s  the bars part (ease-in-out) to show the page, already
+//               rendered underneath; then the loader unmounts, the scroll lock
+//               lifts, the page goes to the top (or the URL's #hash) and the
+//               hero's entrance plays.
 //
-// The shutter is two black bars (scaleY from the top and bottom edges) on one
-// motion value, in ONE continuous tween from open to shut over 0 to 5.9s,
-// slow at first and speeding up. It never pauses or resets: it keeps running
-// under the word cards, so each picture comes back where the motion left it,
-// and the slit shrinks steadily across the pictures. FERRARI. sits under the
-// bars, in the slit, and the bars squeeze it to a line, then black.
-// Layers, bottom to top: picture, the FERRARI. card, the bars, the word
-// cards, then the counter and grain. All words are burgundy on black. The
-// page's entrance starts 0.15s into the bars parting. Timings: lib/motion.ts
-// (intro). Beats: content/site.ts (intro.loaderSlides). Nothing re-renders
-// per frame: the bars, push-in and counter run on motion values and refs.
+// Word frames: black, the word in burgundy Anton (inverted: burgundy, the word
+// in black), centred on its capitals, the smaller of 90% of the screen width
+// or a cap height of 76% of its height; the full frame fills the screen edge
+// to edge. Measured on a canvas once the font has loaded. Photo frames: black,
+// the photo as a cover crop anchored at its focal point, film grain on top at
+// a random offset each frame; flip mirrors, invert inverts.
 //
-// - All pictures are preloaded first (the head script adds preload links).
-//   If they are not ready within 1 second, only the words play.
-// - Any click, key, wheel or touch shows FERRARI. and runs the bars from
-//   wherever they are to shut over 0.5s, then the hold and the reveal.
-// - Scroll is locked (html.pl-lock) until the bars have parted; then the
-//   loader unmounts.
-// - Reduced motion: no shutter and no zoom. Each word for 0.4s, then a cut.
-// - The pictures are aria-hidden. The line is real text that screen readers
-//   hear once: "need money for ferrari".
+// Every frame is mounted up front, hidden; each scheduled timeout shows one
+// and hides the last (a DOM attribute, no React render), so a cut is only a
+// repaint and no frame is ever blank. The bars run on a Motion value.
 //
-// The screen is in the server HTML. The inline head script sets data-intro on
-// <html> before first paint, and CSS shows it only then, so the page never
-// flashes underneath.
+// Sound: off until the first pointer or key press (a small chip says so),
+// then a shutter click on each photo frame and a low thump on each word
+// frame, fading out at the end. Web Audio only (lib/intro-sound.ts).
+//
+// Before it starts: all photos decoded and Anton loaded, or 1.5s, whichever
+// comes first. The head script (INTRO_SCRIPT) sets html.pl-cover (hides the
+// page) and html.pl-lock (blocks wheel, touch and scroll keys) before
+// hydration; the loader drops pl-cover as it mounts and pl-lock when it ends;
+// both are released after 15s whatever happens.
+// Reduced motion: only the last frame, the bars at 0.24, held 1.4s, then the
+// loader fades out over 0.4s. No sound.
+// The photos are aria-hidden; screen readers hear "need money for ferrari".
 
 import { useLenis } from "lenis/react";
-import { animate, cubicBezier, motion, useMotionValue, type AnimationPlaybackControls } from "motion/react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { animate, motion, useMotionValue } from "motion/react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { site } from "@/content/site";
 import { setCurtain } from "@/lib/curtain";
+import { createIntroSound } from "@/lib/intro-sound";
 import { ease, intro } from "@/lib/motion";
 import { lockScroll } from "./smooth-scroll";
 
-const slides = site.intro.loaderSlides;
-const images = slides.map((s) => s.image);
-const lastWord = slides[slides.length - 1].word;
-
-/** Before first paint: show the loader and start loading the pictures. */
-export const INTRO_SCRIPT = `try{var d=document.documentElement;d.setAttribute("data-intro",matchMedia("(prefers-reduced-motion: reduce)").matches?"still":"");if(d.getAttribute("data-intro")===""){${JSON.stringify(images)}.forEach(function(h){var l=document.createElement("link");l.rel="preload";l.as="image";l.href=h;document.head.appendChild(l)})}}catch(e){}`;
-
-/** The whole line, as screen readers hear it. */
-const SPOKEN = slides
-  .map((s) => s.word)
-  .join(" ")
-  .toLowerCase()
-  .replace(/[^\p{L}\p{N} ]/gu, "")
-  .trim();
-
-type Beat =
-  | { kind: "image"; src: string; hold: number }
-  | { kind: "word"; text: string; hold: number }
-  | { kind: "slit" };
-
-/** Picture, word, picture, word, … picture. The last word is the finale, in the slit. */
-function beats(withImages: boolean): Beat[] {
-  return slides.flatMap((s, i): Beat[] => {
-    const image: Beat[] = withImages ? [{ kind: "image", src: s.image, hold: intro.imageHold }] : [];
-    if (i === slides.length - 1) return image;
-    return [...image, { kind: "word", text: s.word, hold: intro.wordHold }];
-  });
-}
-
-const pad = (n: number) => String(Math.round(n)).padStart(3, "0");
-const sleep = (s: number) => new Promise<void>((r) => window.setTimeout(r, s * 1000));
-
-function preload(budget: number) {
-  const all = Promise.all(
-    images.map(
-      (src) =>
-        new Promise<void>((resolve, reject) => {
-          const img = new Image();
-          img.onload = () => img.decode().then(resolve, resolve);
-          img.onerror = reject;
-          img.src = src;
-        }),
-    ),
-  ).then(
-    () => true,
-    () => false,
-  );
-  const timeout = new Promise<boolean>((resolve) => window.setTimeout(() => resolve(false), budget * 1000));
-  return Promise.race([all, timeout]);
-}
-
-/** A full-screen black word card in monument size, burgundy, scaled down only if it would overflow a phone. */
-function WordCard({ text }: { text: string }) {
-  const ref = useRef<HTMLParagraphElement>(null);
-  const [scale, setScale] = useState(1);
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const fit = () => {
-      const box = el.parentElement;
-      const pad = box ? Number.parseFloat(getComputedStyle(box).paddingLeft) + Number.parseFloat(getComputedStyle(box).paddingRight) : 0;
-      const avail = (box ? box.clientWidth : window.innerWidth) - pad;
-      setScale(Math.min(1, avail / Math.max(1, el.scrollWidth)));
-    };
-    fit();
-    document.fonts.ready.then(fit);
-  }, [text]);
-  return (
-    <div className="absolute inset-0 flex items-center justify-center bg-black px-4 md:px-10">
-      <p
-        ref={ref}
-        className="monument whitespace-nowrap text-center text-burgundy"
-        style={{ transform: `scale(${scale})` }}
-      >
-        {text}
-      </p>
-    </div>
-  );
-}
-
-type SlitFit = { w: number; h: number; size: number; baseline: number };
+const { words, photos, grain } = site.intro;
+const frames = intro.frames;
+const LAST = frames.length - 1;
+const preloads = [...photos.map((p) => p.src), grain];
 
 /**
- * The last word, centred in the shutter's slit: cap height `slitFill` of a
- * `slitSize` slit, or `widthFill` of the screen width, whichever is smaller.
- * Measured from the real font on a canvas, so the caps (not the line box) are
- * centred. Mounted from the start, hidden, so the size is ready in time.
+ * Before first paint: show the loader, hide the page, block scrolling, start
+ * loading the pictures, and release everything after the safety time.
  */
-function SlitCard({ text, shown }: { text: string; shown: boolean }) {
-  const probe = useRef<SVGTextElement>(null);
-  const [fit, setFit] = useState<SlitFit | null>(null);
-  useEffect(() => {
-    let alive = true;
-    const measure = async () => {
-      const el = probe.current;
-      if (!el) return;
-      const family = getComputedStyle(el).fontFamily;
-      try {
-        await document.fonts.load(`400 100px ${family}`, text);
-      } catch {}
-      const ctx = document.createElement("canvas").getContext("2d");
-      if (!ctx || !alive) return;
-      ctx.font = `400 100px ${family}`;
-      const word = ctx.measureText(text);
-      const cap = ctx.measureText("H").actualBoundingBoxAscent / 100;
-      const wide = (word.actualBoundingBoxLeft + word.actualBoundingBoxRight) / 100;
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const slit = intro.slitSize * h;
-      const size = Math.min((intro.slitFill * slit) / cap, (intro.widthFill * w) / wide);
-      setFit({ w, h, size, baseline: h / 2 + (cap * size) / 2 });
-    };
-    void measure();
-    window.addEventListener("resize", measure);
-    return () => {
-      alive = false;
-      window.removeEventListener("resize", measure);
-    };
-  }, [text]);
-  return (
-    <div className={`absolute inset-0 bg-black ${shown ? "" : "invisible"}`}>
-      <svg className="absolute inset-0 h-full w-full" viewBox={fit ? `0 0 ${fit.w} ${fit.h}` : undefined}>
-        <text
-          ref={probe}
-          className="font-display fill-burgundy uppercase"
-          x={fit ? fit.w / 2 : 0}
-          y={fit ? fit.baseline : 0}
-          fontSize={fit ? fit.size : 1}
-          textAnchor="middle"
-        >
-          {text}
-        </text>
-      </svg>
-    </div>
-  );
+export const INTRO_SCRIPT = `try{var d=document.documentElement,r=matchMedia("(prefers-reduced-motion: reduce)").matches;d.setAttribute("data-intro",r?"still":"");d.classList.add("pl-cover","pl-lock");if(!r){${JSON.stringify(preloads)}.forEach(function(h){var l=document.createElement("link");l.rel="preload";l.as="image";l.href=h;document.head.appendChild(l)})}var k={" ":1,Spacebar:1,PageUp:1,PageDown:1,ArrowUp:1,ArrowDown:1,ArrowLeft:1,ArrowRight:1,Home:1,End:1},b=function(e){if(d.classList.contains("pl-lock")&&(e.type!=="keydown"||k[e.key]))e.preventDefault()};addEventListener("wheel",b,{passive:false});addEventListener("touchmove",b,{passive:false});addEventListener("keydown",b);setTimeout(function(){d.classList.remove("pl-cover","pl-lock");d.removeAttribute("data-intro")},${intro.safety * 1000})}catch(e){}`;
+
+/** The whole line, as screen readers hear it. */
+const SPOKEN = words.join(" ").toLowerCase().replace(/[^\p{L}\p{N} ]/gu, "").trim();
+
+/** Where each frame starts, in ms from the first. */
+const STARTS = frames.reduce<number[]>((acc, _, i) => [...acc, i === 0 ? 0 : acc[i - 1] + frames[i - 1].ms], []);
+const END = STARTS[LAST] + frames[LAST].ms;
+
+/** A word's place on the screen: drawn from x (left ink edge lined up), baseline y, at size px. */
+type Place = { x: number; y: number; size: number };
+type Fits = { w: number; h: number; words: Place[]; full: Place[] };
+
+function measure(family: string): Fits {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const ctx = document.createElement("canvas").getContext("2d");
+  const none = words.map(() => ({ x: 0, y: 0, size: 0 }));
+  if (!ctx) return { w, h, words: none, full: none };
+  ctx.font = `400 100px ${family}`;
+  const cap = ctx.measureText("H").actualBoundingBoxAscent / 100;
+  const place = (word: string, widthShare: number, capShare: number): Place => {
+    const m = ctx.measureText(word);
+    const left = m.actualBoundingBoxLeft / 100;
+    const ink = (m.actualBoundingBoxLeft + m.actualBoundingBoxRight) / 100;
+    const size = Math.min((widthShare * w) / ink, (capShare * h) / cap);
+    return { x: (w - ink * size) / 2 + left * size, y: h / 2 + (cap * size) / 2, size };
+  };
+  return {
+    w,
+    h,
+    words: words.map((word) => place(word, intro.word.width, intro.word.cap)),
+    full: words.map((word) => place(word, 1, 1)),
+  };
 }
 
-type Phase = "beats" | "reveal" | "gone";
+const halfCosine = (p: number) => (1 - Math.cos(Math.PI * p)) / 2;
+const rand = (n: number) => Math.floor(Math.random() * n);
+
+type Phase = "waiting" | "playing" | "split" | "gone";
 
 export function Intro() {
-  const counter = useRef<HTMLSpanElement>(null);
   const lenis = useLenis();
   const started = useRef(false);
-  const [beat, setBeat] = useState<Beat | null>(null);
-  const [phase, setPhase] = useState<Phase>("beats");
+  const probe = useRef<HTMLSpanElement>(null);
+  const frameEls = useRef<(HTMLDivElement | null)[]>([]);
+  const [phase, setPhase] = useState<Phase>("waiting");
+  const [fits, setFits] = useState<Fits | null>(null);
+  const [chip, setChip] = useState<"pointer" | "touch" | null>(null);
   // 0 = open, 1 = the bars meet in the middle. Both bars share it.
   const shut = useMotionValue(0);
   const topY = useMotionValue("0%");
   const bottomY = useMotionValue("0%");
+  const opacity = useMotionValue(1);
 
   useEffect(() => {
     if (started.current) return;
     started.current = true;
-    const root = document.documentElement;
-    const mode = root.getAttribute("data-intro");
+    const html = document.documentElement;
+    const mode = html.getAttribute("data-intro");
     if (mode === null) {
       setPhase("gone");
       return;
     }
+    // The loader covers the page itself from here.
+    html.classList.remove("pl-cover");
     const unlockScroll = lockScroll(lenis);
-    root.classList.add("pl-lock");
-    let shown = 0;
-    const show = (n: number) => {
-      shown = n;
-      if (counter.current) counter.current.textContent = pad(n);
-    };
-    let isSkipped = false;
-    let skip: () => void = () => {};
-    const skipped = new Promise<void>((resolve) => (skip = resolve));
-    const events = ["pointerdown", "keydown", "wheel", "touchmove"] as const;
-    const onSkip = () => {
-      isSkipped = true;
-      skip();
-    };
-    events.forEach((e) => window.addEventListener(e, onSkip, { passive: true }));
-    const stopListening = () => events.forEach((e) => window.removeEventListener(e, onSkip));
-    /** Wait, unless a skip comes first. */
-    const wait = (s: number) => Promise.race([sleep(s), skipped]);
+    const reduced = mode === "still";
+    const timers: number[] = [];
+    const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
+    const sound = createIntroSound();
 
-    const end = () => {
-      root.removeAttribute("data-intro");
-      root.classList.remove("pl-lock");
+    const family = probe.current ? getComputedStyle(probe.current).fontFamily : "Anton";
+    const onResize = () => setFits(measure(family));
+
+    // Sound is off until the first pointer or key press.
+    const onArm = () => {
+      sound.arm();
+      setChip(null);
+      window.removeEventListener("pointerdown", onArm);
+      window.removeEventListener("keydown", onArm);
+    };
+    if (!reduced) {
+      setChip(window.matchMedia("(hover: none)").matches ? "touch" : "pointer");
+      window.addEventListener("pointerdown", onArm);
+      window.addEventListener("keydown", onArm);
+    }
+
+    let current: HTMLElement | null = null;
+    const show = (k: number | null) => {
+      current?.removeAttribute("data-on");
+      current = k === null ? null : frameEls.current[k];
+      if (!current || k === null) return;
+      current.setAttribute("data-on", "");
+      if (frames[k].kind === "photo") {
+        const g = current.querySelector<HTMLElement>("[data-grain]");
+        if (g) g.style.backgroundPosition = `${rand(intro.grain)}px ${rand(intro.grain)}px`;
+        if (sound.armed) sound.click();
+      } else if (sound.armed) sound.thump();
+    };
+
+    const finish = () => {
+      html.removeAttribute("data-intro");
+      html.classList.remove("pl-lock", "pl-cover");
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("pointerdown", onArm);
+      window.removeEventListener("keydown", onArm);
       unlockScroll();
+      // To the top, or to the URL's #hash.
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      const target = id ? document.getElementById(id) : null;
+      if (lenis) lenis.scrollTo(target ?? 0, { immediate: true, force: true });
+      else if (target) target.scrollIntoView();
+      else window.scrollTo(0, 0);
       setPhase("gone");
+      setCurtain("clear");
     };
 
     void (async () => {
-      if (mode === "still") {
-        // Reduced motion: each word on its own card, then a cut.
-        show(100);
-        for (const s of slides) {
-          setBeat({ kind: "word", text: s.word, hold: intro.reducedHold });
-          await wait(intro.reducedHold);
-          if (isSkipped) break;
-        }
-        stopListening();
-        setCurtain("clear");
-        end();
+      // Photos decoded and the font loaded, or the time runs out.
+      const fontReady = document.fonts.load(`400 100px ${family}`, words.join("")).then(
+        () => undefined,
+        () => undefined,
+      );
+      const photosReady = reduced
+        ? Promise.resolve()
+        : Promise.all(
+            photos.map(
+              (p) =>
+                new Promise<void>((resolve) => {
+                  const img = new Image();
+                  img.onload = () => img.decode().then(resolve, resolve);
+                  img.onerror = () => resolve();
+                  img.src = p.src;
+                }),
+            ),
+          ).then(() => undefined);
+      await Promise.race([
+        Promise.all([fontReady, photosReady]),
+        new Promise((r) => window.setTimeout(r, intro.ready * 1000)),
+      ]);
+      setFits(measure(family));
+      window.addEventListener("resize", onResize);
+      setPhase("playing");
+      // Let the sized frames render before the first cut.
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+      if (reduced) {
+        show(LAST);
+        shut.set(intro.reduced.bars);
+        at(intro.reduced.hold * 1000, () => {
+          void animate(opacity, 0, { duration: intro.reduced.fade, ease: "linear" }).then(finish);
+        });
         return;
       }
 
-      const ready = await Promise.race([preload(intro.preloadBudget), skipped.then(() => false)]);
-      const list = beats(ready);
-      const { duration, ease: curve } = intro.shutter;
-      const t0 = performance.now();
-      // Every beat is timed from the same start, so the cuts stay on the shutter's clock.
-      const until = (t: number) => wait(Math.max(0, t - (performance.now() - t0) / 1000));
-      // With the pictures: one tween, 0 to 1, from the first picture. Words
-      // only: FERRARI. comes early, so the bars start from where the tween
-      // would be at that point and finish over the same remaining time.
-      const tail = duration - intro.ferrariAt;
-      const run = list.reduce((sum, b) => sum + ("hold" in b ? b.hold : 0), 0);
-      const count = animate(0, 100, { duration: run + tail, ease: "linear", onUpdate: show });
-      let closing: AnimationPlaybackControls | null = ready ? animate(shut, 1, { duration, ease: curve }) : null;
-
-      let clock = 0;
-      for (const b of list) {
-        if (isSkipped) break;
-        setBeat(b);
-        clock += "hold" in b ? b.hold : 0;
-        await until(clock);
-      }
-      setBeat({ kind: "slit" });
-      if (!isSkipped) {
-        if (!closing) {
-          shut.set(cubicBezier(...curve)(intro.ferrariAt / duration));
-          closing = animate(shut, 1, { duration: tail, ease: "easeIn" });
-        }
-        await Promise.race([closing, skipped]);
-      }
-      stopListening();
-      if (isSkipped) {
-        // From wherever the bars are, shut over skipClose, FERRARI. under them.
-        closing?.stop();
-        count.stop();
-        animate(shown, 100, { duration: intro.skipClose, ease: "linear", onUpdate: show });
-        await animate(shut, 1, { duration: intro.skipClose, ease: "easeIn" });
-      }
-      count.stop();
-      show(100);
-      setBeat(null);
-      await sleep(intro.shutHold);
-
-      // Part the bars to show the page.
-      setPhase("reveal");
-      const hero = window.setTimeout(() => setCurtain("clear"), intro.heroDelay * 1000);
-      const part = { duration: intro.reveal, ease: ease.inOut };
-      await Promise.all([animate(topY, "-100%", part), animate(bottomY, "100%", part)]);
-      window.clearTimeout(hero);
-      setCurtain("clear");
-      end();
+      frames.forEach((_, k) => at(STARTS[k], () => show(k)));
+      // The shutter: open until frame 7 ends, then one move to shut.
+      at(intro.shutter.from * 1000, () => {
+        animate(shut, 1, { duration: intro.shutter.to - intro.shutter.from, ease: halfCosine });
+      });
+      at(END, () => {
+        shut.set(1);
+        show(null);
+        setPhase("split");
+        sound.fadeOut(intro.hold + intro.split);
+      });
+      at(END + intro.hold * 1000, () => {
+        const part = { duration: intro.split, ease: ease.inOut };
+        void Promise.all([animate(topY, "-100%", part), animate(bottomY, "100%", part)]).then(finish);
+      });
     })();
+
+    return () => {
+      timers.forEach((t) => window.clearTimeout(t));
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (phase === "gone") return null;
-  const revealing = phase === "reveal";
+  const splitting = phase === "split";
 
   return (
-    <div className={`intro fixed inset-0 z-75 overflow-hidden ${revealing ? "pointer-events-none" : "bg-black"}`}>
+    <motion.div
+      className={`intro fixed inset-0 z-75 overflow-hidden ${splitting ? "pointer-events-none" : "bg-black"}`}
+      style={{ opacity }}
+    >
       <p className="sr-only">{SPOKEN}</p>
+      <span ref={probe} aria-hidden="true" className="font-display pointer-events-none absolute opacity-0">
+        {words.join("")}
+      </span>
       <div aria-hidden="true" className="absolute inset-0">
-        {beat?.kind === "image" ? (
-          <motion.img
-            key={beat.src}
-            src={beat.src}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover"
-            initial={{ scale: intro.push }}
-            animate={{ scale: 1 }}
-            transition={{ duration: beat.hold, ease: "linear" }}
-          />
-        ) : null}
-        <SlitCard text={lastWord} shown={beat?.kind === "slit"} />
+        {fits
+          ? frames.map((frame, k) => {
+              const invert = frame.fx === "invert";
+              const ref = (el: HTMLDivElement | null) => {
+                frameEls.current[k] = el;
+              };
+              if (frame.kind === "word") {
+                const p = frame.fx === "full" ? fits.full[frame.i] : fits.words[frame.i];
+                return (
+                  <div key={k} ref={ref} className={`intro-frame absolute inset-0 ${invert ? "bg-burgundy" : "bg-black"}`}>
+                    <svg className="absolute inset-0 h-full w-full" viewBox={`0 0 ${fits.w} ${fits.h}`}>
+                      <text className={`font-display uppercase ${invert ? "fill-black" : "fill-burgundy"}`} x={p.x} y={p.y} fontSize={p.size}>
+                        {words[frame.i]}
+                      </text>
+                    </svg>
+                  </div>
+                );
+              }
+              const photo = photos[frame.i];
+              const style: CSSProperties = {
+                objectPosition: `${photo.fx * 100}% ${photo.fy * 100}%`,
+                transform: frame.fx === "flip" ? "scaleX(-1)" : undefined,
+                filter: invert ? "invert(1)" : undefined,
+              };
+              return (
+                <div key={k} ref={ref} className="intro-frame absolute inset-0 bg-black">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={photo.src} alt="" className="absolute inset-0 h-full w-full object-cover" style={style} />
+                  <div data-grain="" className="intro-grain absolute inset-0" style={{ backgroundImage: `url(${grain})` }} />
+                </div>
+              );
+            })
+          : null}
         <motion.div className="shutter-top" style={{ scaleY: shut, y: topY }} />
         <motion.div className="shutter-bottom" style={{ scaleY: shut, y: bottomY }} />
-        {beat?.kind === "word" ? <WordCard key={beat.text} text={beat.text} /> : null}
-        {revealing ? null : (
-          <>
-            <div className="absolute bottom-6 left-4 flex flex-col gap-1 md:bottom-10 md:left-10">
-              <p className="label text-ash">{site.intro.line}</p>
-              <p className="poster-4 tabular-nums text-ivory">
-                <span ref={counter}>000</span>
-              </p>
-            </div>
-            <div className="grain" />
-          </>
-        )}
       </div>
-    </div>
+      {chip && !splitting ? (
+        <button
+          type="button"
+          className="label absolute bottom-6 left-1/2 z-10 -translate-x-1/2 border border-line bg-black px-4 py-2 text-ash md:bottom-10"
+        >
+          {chip === "touch" ? "Tap for sound" : "Click to unmute"}
+        </button>
+      ) : null}
+    </motion.div>
   );
 }

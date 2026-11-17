@@ -9,45 +9,78 @@ export { dur, ease };
 /** Default spring for anything that follows the pointer or scroll. */
 export const spring = { stiffness: 140, damping: 30, mass: 0.5 } as const;
 
+/** One loader frame: a word (index into site.intro.words) or a photo (into site.intro.photos). */
+export type IntroFrame = {
+  kind: "word" | "photo";
+  i: number;
+  ms: number;
+  /** full: the word fills the screen. flip: mirrored. invert: colours swapped. */
+  fx?: "full" | "flip" | "invert";
+};
+
+const f = (kind: IntroFrame["kind"], i: number, ms: number, fx?: IntroFrame["fx"]): IntroFrame => ({ kind, i, ms, fx });
+
 /**
- * M01 loader, on every full page load. Four pictures, each followed by a word
- * card: picture `imageHold`, word `wordHold`. The last word, FERRARI., is not
- * a card on top but sits under the shutter, from `ferrariAt`.
+ * M01 loader, on every full page load. 31 hard-cut frames, 3.53s, each shown
+ * by a scheduled timeout: words (NEED, MONEY, FOR, FERRARI.) and photos
+ * (1 to 4) alternating, slowing to a held FERRARI. that fills the screen
+ * (frame 7, ending at `shutter.from`), then a fast loop of 60ms frames with
+ * some mirrored or inverted. The shutter bars stay open until `shutter.from`
+ * and then close in one move (half a cosine) until `shutter.to`, so the fast
+ * loop plays in a shrinking slit. At `shutter.to` the bars are shut and the
+ * frame goes; `hold` later they part (`split`, ease-in-out) to show the page.
  *
- * The shutter is two black bars closing from the top and bottom edges, driven
- * by one value (0 open, 1 shut) in ONE continuous tween from 0 to 1 over
- * `shutter.duration`, on `shutter.ease` (slow start, speeding up). It never
- * pauses: it keeps running under the word cards, so each picture comes back
- * exactly where the motion left it. The slit is about 95% for picture 2, 78%
- * for picture 3, 50% to 28% for picture 4, and 28% when FERRARI. appears.
- *
- * FERRARI. is sized to the smaller of: cap height `slitFill` of `slitSize`
- * (of the screen height), or `widthFill` of the screen width. A skip runs
- * the bars from wherever they are to 1 over `skipClose`, ease-in, with
- * FERRARI. under them. Then solid black for `shutHold`, and the bars part
- * over `reveal`; the page's entrance starts `heroDelay` into that. Pictures
- * must all be ready within `preloadBudget` seconds, or only the words play.
- * Reduced motion: each word `reducedHold`, then a cut.
+ * Word size: the smaller of `word.width` of the screen width or a cap height
+ * of `word.cap` of its height; the full frame fills the screen edge to edge.
+ * Photos: a cover crop anchored at each photo's focal point, with grain at a
+ * random offset on every frame. Pictures and the font must be ready within
+ * `ready` seconds, or it starts anyway. `safety`: everything is released
+ * after this long whatever happens. Reduced motion: only the last frame, the
+ * bars at `reduced.bars`, held `reduced.hold`, then faded out over
+ * `reduced.fade`.
  */
 export const intro = {
-  imageHold: 0.8,
-  wordHold: 0.6,
-  push: 1.06,
-  shutter: {
-    duration: 5.9,
-    // M01's own curve (not a token): a slow start that speeds up.
-    ease: [0.11, 0, 0.5, 0] as [number, number, number, number],
-  },
-  ferrariAt: 5.0,
-  slitSize: 0.28,
-  slitFill: 0.8,
-  widthFill: 0.92,
-  skipClose: 0.5,
-  shutHold: 0.15,
-  reveal: 0.7,
-  heroDelay: 0.15,
-  preloadBudget: 1,
-  reducedHold: 0.4,
+  frames: [
+    f("word", 0, 420),
+    f("photo", 0, 360),
+    f("word", 1, 310),
+    f("photo", 1, 270),
+    f("word", 2, 230),
+    f("photo", 2, 200),
+    f("word", 3, 190, "full"),
+    f("photo", 3, 110),
+    f("word", 0, 90),
+    f("photo", 0, 80, "flip"),
+    f("word", 1, 70),
+    f("photo", 1, 60),
+    f("word", 2, 60, "invert"),
+    f("photo", 2, 60),
+    f("word", 3, 60),
+    f("photo", 3, 60, "flip"),
+    f("word", 0, 60),
+    f("photo", 0, 60, "invert"),
+    f("word", 1, 60, "invert"),
+    f("photo", 1, 60),
+    f("word", 2, 60),
+    f("photo", 2, 60, "invert"),
+    f("word", 3, 60, "invert"),
+    f("photo", 3, 60),
+    f("word", 0, 60),
+    f("photo", 0, 60),
+    f("word", 1, 60),
+    f("photo", 1, 60, "flip"),
+    f("word", 2, 60),
+    f("photo", 2, 60),
+    f("word", 3, 60, "invert"),
+  ] as IntroFrame[],
+  word: { width: 0.9, cap: 0.76 },
+  shutter: { from: 1.98, to: 3.53 },
+  hold: 0.12,
+  split: 0.9,
+  ready: 1.5,
+  safety: 15,
+  grain: 256,
+  reduced: { bars: 0.24, hold: 1.4, fade: 0.4 },
 } as const;
 
 /** M02 burgundy stairs wipe. */
