@@ -16,7 +16,7 @@ This copy was drafted for Mukund from what is known about his work. He should re
 | Ticker, line 2 | open to internships |
 | Floating pill | say hello |
 | Footer line | i build apps, agents and the things between. |
-| Footer ghost marquee | STILL BUILDING |
+| Footer ghost marquee | FUCK MEDIOCRITY (shown upside down) |
 | Copyright | © 2026 Mukund Mangla |
 | Intro counter line | loading |
 

@@ -1,7 +1,8 @@
 "use client";
 
 // The footer's ghost marquee: one line in the `line` colour that runs right to
-// left and speeds up with scroll (an M20 variant).
+// left and speeds up with scroll (an M20 variant). With `upsideDown`, each
+// copy is turned 180 degrees; the line still runs right to left.
 //
 // Started from React Bits "Scroll Velocity" (reactbits.dev, MIT + Commons
 // Clause): its scroll-velocity spring and wrap-around loop are kept; drag,
@@ -34,7 +35,15 @@ const wrap = (min: number, max: number, v: number) => {
   return ((((v - min) % range) + range) % range) + min;
 };
 
-export function GhostMarquee({ text, className = "" }: { text: string; className?: string }) {
+export function GhostMarquee({
+  text,
+  upsideDown = false,
+  className = "",
+}: {
+  text: string;
+  upsideDown?: boolean;
+  className?: string;
+}) {
   const rootRef = useRef<HTMLDivElement>(null);
   const copyRef = useRef<HTMLSpanElement>(null);
   const [copyWidth, setCopyWidth] = useState(0);
@@ -66,7 +75,7 @@ export function GhostMarquee({ text, className = "" }: { text: string; className
     <div ref={rootRef} aria-hidden="true" className={`overflow-hidden ${className}`}>
       <motion.div className="flex whitespace-nowrap" style={{ x }}>
         {Array.from({ length: COPIES }, (_, i) => (
-          <span key={i} ref={i === 0 ? copyRef : undefined} data-text={text} className="ghost-word poster-1 shrink-0 pr-10 text-line" />
+          <span key={i} ref={i === 0 ? copyRef : undefined} data-text={text} className={`ghost-word poster-1 shrink-0 pr-10 text-line ${upsideDown ? "rotate-180" : ""}`} />
         ))}
       </motion.div>
     </div>

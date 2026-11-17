@@ -3,7 +3,7 @@
 // Footer: three columns on desktop, stacked on phones. Left: the name in
 // poster-4 and one line. Middle: the four page links, numbered. Right: GitHub,
 // LinkedIn, Email, Resume (each hidden while its value is a blank). Then a
-// hairline, the copyright, and the ghost marquee.
+// hairline, the copyright, and the ghost marquee (upside down).
 // Contact has the short footer: the copyright line only.
 
 import { usePathname } from "next/navigation";
@@ -57,7 +57,7 @@ export function Footer() {
       <div className="mx-4 mt-16 border-t border-line py-6 md:mx-10">
         <p className="label text-ash">{site.footer.copyright}</p>
       </div>
-      <GhostMarquee text={site.footer.ghostMarquee} className="pb-6" />
+      <GhostMarquee text={site.footer.ghostMarquee} upsideDown className="pb-6" />
     </footer>
   );
 }
