@@ -19,16 +19,7 @@ export const revalidate = 86400;
 export default async function HomePage() {
   const numbers = await resolveNumbers();
   // Selected work: every project with a case study, in content/projects.ts order.
-  const tiles = projects
-    .filter((p) => p.study)
-    .map((p) => ({
-      slug: p.slug,
-      name: p.name,
-      kind: p.kind,
-      year: p.year,
-      oneLiner: p.oneLiner,
-      cover: projectMedia(p.slug).cover,
-    }));
+  const tiles = projects.flatMap((p) => (p.study ? [{ slug: p.slug, name: p.name, caption: p.study.caption, cover: projectMedia(p.slug).cover }] : []));
 
   return (
     <main id="main">

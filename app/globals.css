@@ -514,27 +514,26 @@ html.pl-lock {
   }
 }
 
-/* M31 sticky deck: step between pinned cards and card height, phone then
-   desktop. The values come from lib/motion.ts (deck) as inline variables. */
-.deck {
-  --deck-step: var(--deck-step-sm);
-  --deck-card: var(--deck-card-sm);
+/* M31 rising pile: the section is (projects + 1) screens tall on phones,
+   (projects + 1.5) from md; the counts come from lib/motion.ts (pile). Cards
+   keep the original tile sizes: the content width on phones, 16vw (at least
+   210px) from md. */
+.pile {
+  height: calc(var(--pile-screens-sm) * 100dvh);
+}
+
+.pile-card {
+  width: calc(100% - 2 * var(--spacing-gutter));
 }
 
 @variant md {
-  .deck {
-    --deck-step: var(--deck-step-md);
-    --deck-card: var(--deck-card-md);
+  .pile {
+    height: calc(var(--pile-screens-md) * 100dvh);
   }
-}
 
-.deck-card {
-  height: var(--deck-card);
-}
-
-/* The strip that stays visible on a buried card: exactly one step tall. */
-.deck-strip {
-  height: var(--deck-step);
+  .pile-card {
+    width: max(16vw, 210px);
+  }
 }
 
 /* ---- Work layout ------------------------------------------------------------ */

@@ -92,31 +92,37 @@ export const statusCycle = 3;
 export const statement = { offset: 40, rotate: 25, opacity: 0.3 } as const;
 
 /**
- * M31 sticky deck: Home selected work, one poster card per project, stacked
- * as you scroll. Each project gets `slot` of scroll; its card (`card` tall)
- * pins at the nav band plus `step` per card above it, so every earlier card
- * keeps a `step`-high strip with its index, title and year. While the next
- * card travels in, the one under it scales to `scale` and a midnight shade
- * rises to `shade` over its body (not its strip, so the strips stay
- * readable). Once covered, a card turns to its resting tilt (alternating
- * minus, plus) over dur-pop with ease-pop; the top card stays straight. After
- * the last card pins the deck holds for `hold`, then leaves together. Only
- * the card at least `activeAt` of the way in counts as the top one. Phones
- * (below md) use the `sm` values.
+ * M31 rising pile: Home selected work. The section is (projects + `screens`)
+ * screens tall; a stage pins for all but the last of them, with the headline
+ * centred behind the cards. Section progress 0 to `start`: the headline alone.
+ * From `start` to `end`, each card rises from `from` (in dvh below its spot)
+ * to its resting spot in its own window; the windows are spread evenly and
+ * overlap by `overlap`, so the next card starts while the last one settles.
+ * `ease-out`; the card turns from 0 to its tilt as it rises. From `end` to
+ * 1 everything holds, then the section scrolls away.
+ *
+ * Desktop: the original tile size, in one centred row; each card overlaps the
+ * one before by `rowOverlap` of its width, tilted `tilts`, dropped `drops`
+ * px at a 1440px-wide screen (scaled with the width). Phones: the original
+ * full-width tiles, one column, offset `phone.offset` vw left and right,
+ * tilted `phone.tilt`, overlapped as deeply as it takes for the pile to fit
+ * one screen between the nav band and `phone.bottom` px from the bottom.
+ * Hover or focus: the card comes to the top, turns to 0 and scales to
+ * `hover.scale`, dur-fast, ease-pop.
  */
-export const deck = {
-  slot: "100dvh",
-  hold: "40dvh",
-  card: { sm: "74dvh", md: "80dvh" },
-  step: { sm: 20, md: 28 },
-  tilt: { sm: 0.8, md: 1.2 },
-  scale: 0.94,
-  shade: 0.45,
-  activeAt: 0.5,
-  tiltDuration: dur.pop,
-  tiltEase: ease.pop,
-  /** The "view project" arrow's nudge on hover, px. */
-  nudge: 6,
+export const pile = {
+  screens: { sm: 1, md: 1.5 },
+  start: 0.12,
+  end: 0.8,
+  overlap: 0.3,
+  from: 110,
+  ease: ease.out,
+  tilts: [-3, 1, -2, 4],
+  drops: [0, 96, 40, 64],
+  dropBase: 1440,
+  rowOverlap: 0.3,
+  phone: { tilt: 2, offset: 8, bottom: 24 },
+  hover: { scale: 1.03, duration: dur.fast, ease: ease.pop },
 } as const;
 
 /** M12 blur focus. */

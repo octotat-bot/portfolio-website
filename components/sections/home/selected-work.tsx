@@ -1,313 +1,231 @@
 "use client";
 
-// Home 5: selected work as a sticky deck (M31), on desktop and phones.
-// The headline and the note, then one poster card per project (from
-// content/projects.ts, in that order), each pinned by native sticky
-// positioning: card i sticks at the nav band plus i steps, so every earlier
-// card keeps a strip with its index, title and year, like a stack of posters.
+// Home 5: selected work as a rising pile (M31), desktop and phones.
+// The section is (projects + 1.5) screens tall on desktop, (projects + 1) on
+// phones. Inside it a stage pins (native sticky, top 0, one screen) with the
+// headline and the note centred behind the cards. Driven by Motion useScroll
+// on the section:
+//   0 to 0.12  the headline alone;
+//   0.12 to 0.8  each card rises from 110dvh below to its spot in its own
+//                window (spread evenly, overlapping by 30%), ease-out, turning
+//                from 0 to its tilt;
+//   0.8 to 1  everything holds, then the section scrolls away.
+// Transform only. Each card's shapes (G1, G3) wait to assemble until it has
+// landed, and stop when the section is off screen.
 //
-// Each project gets one screen of scroll (a zero-height marker, the sticky
-// card, then a spacer). The cards are siblings inside the deck, so each stays
-// pinned until the deck ends; their bottom margins line their release up, so
-// after the last card pins and the deck holds for 40dvh, they all leave
-// together.
+// The cards are the original ProjectTiles at their original sizes (16vw, at
+// least 210px, on desktop; the content width on phones). Desktop: one centred
+// row, each overlapping the one before by 30%, tilted -3, 1, -2, 4deg and
+// dropped 0, 96, 40, 64px (at 1440, scaled with the width). Phones: one
+// column, offset 8vw left and right, tilted -2 and 2deg, overlapping as deeply
+// as it takes to fit one screen. Each new card lands on top.
 //
-// While the next card travels in (Motion's page scroll against each card's
-// measured start), the card
-// under it scales to 0.94 from its top centre and a midnight shade rises over
-// its body (not its strip). Once covered, it turns to its resting tilt over
-// dur-pop, ease-pop: alternating minus and plus; the top card stays straight.
-// The strip's text is centred, where the tilts move it least, so it stays
-// readable between tilted neighbours.
-//
-// The whole card is one link, so a buried strip is clickable too. Only the top
-// card's shapes (G1-G3) move, and only it answers hover: the arrow nudges and
-// the title gets an underline. No scroll-jacking, no snap.
-// Reduced motion: the same sticky stacking, without scale, tilt or shade.
+// Hover or focus: the card comes to the top, turns to 0 and scales to 1.03
+// (dur-fast, ease-pop), and goes back on leave. The whole card links to its
+// project. As the section leaves, the stage fades at the nav line.
+// Reduced motion: no pin, no rise; the cards sit in their finished pile.
 
-import { animate, frame, motion, motionValue, useMotionValue, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "motion/react";
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { DitherField } from "@/components/motion/dither-field";
-import { DitherImage } from "@/components/motion/dither-image";
-import { NavFade } from "@/components/motion/nav-fade";
+import { animate, cubicBezier, frame, motion, useMotionValue, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "motion/react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { RevealText } from "@/components/motion/reveal-text";
-import { ShapeComposition } from "@/components/motion/shape-composition";
-import { TransitionLink } from "@/components/shell/wipe";
 import { Note } from "@/components/ui/note";
+import { ProjectTile } from "@/components/ui/project-tile";
 import { home } from "@/content/pages";
 import { MD_QUERY, useMedia, useReduced } from "@/lib/hooks";
-import { deck, dur, ease, navFade } from "@/lib/motion";
-import { projectComposition } from "@/lib/shapes";
+import { navFade, pile } from "@/lib/motion";
 import { tokens } from "@/lib/tokens";
 
-export type HomeTile = {
-  slug: string;
-  name: string;
-  kind: string;
-  year: string | null;
-  oneLiner: string;
-  cover: string | null;
-};
+export type HomeTile = { slug: string; name: string; caption: string; cover: string | null };
 
 const NAV_BAND = Number.parseFloat(tokens.size.tokens.find((t) => t.name === "nav-band")?.value ?? "");
 if (Number.isNaN(NAV_BAND)) throw new Error('tokens: size "nav-band" is missing');
-const pad = (n: number) => String(n).padStart(2, "0");
+const riseEase = cubicBezier(...pile.ease);
 
-function DeckCard({
-  tile,
-  index,
-  active,
-  shade,
-  reduced,
-}: {
-  tile: HomeTile;
-  index: number;
-  active: boolean;
-  shade: MotionValue<number>;
-  reduced: boolean;
-}) {
-  const [hover, setHover] = useState(false);
-  const [focus, setFocus] = useState(false);
-  const on = active && (hover || focus);
-  // Alternate midnight-raised and burgundy-deep. On burgundy-deep all text is
-  // ivory and the shapes use the burgundy surface (no claret on burgundy).
-  const raised = index % 2 === 0;
-  const quiet = raised ? "text-ash" : "text-ivory";
-  const comp = tile.cover ? null : projectComposition(tile.slug);
+type Spot = { x: number; y: number };
 
-  return (
-    <TransitionLink
-      href={`/work/${tile.slug}`}
-      className={`relative flex h-full flex-col border border-line ${raised ? "bg-midnight-raised" : "bg-burgundy-deep"}`}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      onFocus={() => setFocus(true)}
-      onBlur={() => setFocus(false)}
-    >
-      {/* The strip: what stays visible once the card is buried. */}
-      <span className={`deck-strip label flex shrink-0 items-center justify-center gap-4 ${quiet}`}>
-        <span>{pad(index + 1)}</span>
-        <span>{tile.name}</span>
-        {tile.year ? <span>{tile.year}</span> : null}
-      </span>
-
-      <span className="relative flex min-h-0 flex-1 flex-col gap-6 border-t border-line p-4 md:grid md:grid-cols-2 md:gap-10 md:p-10">
-        <span className="flex flex-col gap-4 md:justify-between">
-          <span className="flex flex-col gap-4">
-            <span className={`label ${quiet}`}>{tile.kind}</span>
-            <span
-              className={`poster-2 block text-ivory underline-offset-8 ${on ? "underline" : ""} ${raised ? "decoration-claret" : "decoration-ivory"}`}
-              style={{ textDecorationThickness: "4px" }}
-            >
-              {tile.name}
-            </span>
-            <span className="lede block max-w-measure text-ivory">{tile.oneLiner}</span>
-          </span>
-          <span className="label flex items-center gap-2 text-ivory">
-            View project
-            <motion.span
-              aria-hidden="true"
-              className="inline-block"
-              animate={{ x: on ? deck.nudge : 0 }}
-              transition={{ duration: dur.fast, ease: ease.out }}
-            >
-              →
-            </motion.span>
-          </span>
-        </span>
-        <span className="relative block min-h-0 flex-1 md:h-full">
-          {comp ? (
-            <ShapeComposition comp={comp} surface={raised ? "midnight" : "burgundy"} push paused={!active} className="absolute inset-0" />
-          ) : (
-            <DitherField still seed={index} className="absolute inset-0 block">
-              {tile.cover ? <DitherImage src={tile.cover} alt="" resolved={on} back="burgundy-deep" sizes="(min-width: 810px) 45vw, 90vw" /> : null}
-            </DitherField>
-          )}
-        </span>
-
-        {/* The shade over a card being covered: its body only, so the strip stays readable. */}
-        {reduced ? null : (
-          <motion.span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-midnight" style={{ opacity: shade }} />
-        )}
-      </span>
-    </TransitionLink>
-  );
+/** Each card's window in section progress: spread from `start` to `end`, overlapping by `overlap`. */
+function windows(n: number) {
+  const span = pile.end - pile.start;
+  const length = span / (1 + (1 - pile.overlap) * Math.max(0, n - 1));
+  return Array.from({ length: n }, (_, i) => {
+    const from = pile.start + i * length * (1 - pile.overlap);
+    return { from, to: from + length };
+  });
 }
 
-function DeckSlot({
+function PileCard({
   tile,
   index,
-  count,
-  arrivals,
-  marker,
-  card,
-  active,
+  spot,
   tilt,
+  window: w,
+  progress,
   reduced,
+  measure,
 }: {
   tile: HomeTile;
   index: number;
-  count: number;
-  arrivals: MotionValue<number>[];
-  marker: (el: HTMLDivElement | null) => void;
-  card: (el: HTMLDivElement | null) => void;
-  active: boolean;
+  spot: Spot | null;
   tilt: number;
+  window: { from: number; to: number };
+  progress: MotionValue<number>;
   reduced: boolean;
+  measure: (el: HTMLDivElement | null) => void;
 }) {
+  // 0 waiting below, 1 landed.
+  const rise = useTransform(progress, (p) => (reduced ? 1 : riseEase(Math.min(1, Math.max(0, (p - w.from) / (w.to - w.from))))));
+  // 0 resting, 1 lifted by hover or focus.
+  const lift = useMotionValue(0);
+  const y = useTransform(rise, (r) => `${(1 - r) * pile.from}dvh`);
+  const rotate = useTransform([rise, lift] as MotionValue<number>[], ([r, l]: number[]) => tilt * r * (1 - l));
+  const scale = useTransform(lift, (l) => 1 + (pile.hover.scale - 1) * l);
 
-  // How far the next card has come over this one.
-  const none = useMotionValue(0);
-  const next = arrivals[index + 1] ?? none;
-  const scale = useTransform(next, [0, 1], [1, deck.scale]);
-  const shade = useTransform(next, [0, 1], [0, deck.shade]);
-  const rotate = useMotionValue(0);
-  useEffect(() => {
-    if (reduced || index === count - 1) return;
-    let buried: boolean | null = null;
-    const check = (v: number) => {
-      const now = v >= 0.99;
-      if (now === buried) return;
-      buried = now;
-      animate(rotate, now ? tilt : 0, { duration: deck.tiltDuration, ease: deck.tiltEase });
-    };
-    check(next.get());
-    return next.on("change", check);
-  }, [next, reduced, index, count, tilt, rotate]);
+  const [up, setUp] = useState(false);
+  // Only re-renders when it lands or lifts off again, not per frame.
+  const [landed, setLanded] = useState(reduced);
+  const landedRef = useRef(landed);
+  const settle = (r: number) => {
+    const now = r >= 1;
+    if (now === landedRef.current) return;
+    landedRef.current = now;
+    setLanded(now);
+  };
+  useMotionValueEvent(rise, "change", settle);
+  useEffect(() => settle(rise.get()), [rise]);
 
-  const left = count - 1 - index;
+  const hover = (on: boolean) => {
+    setUp(on);
+    animate(lift, on ? 1 : 0, reduced ? { duration: 0 } : { duration: pile.hover.duration, ease: pile.hover.ease });
+  };
+
   return (
-    <>
-      <div ref={marker} aria-hidden="true" className="h-0" />
-      <motion.div
-        ref={card}
-        className="deck-card sticky"
-        style={{
-          top: `calc(var(--spacing-nav-band) + ${index} * var(--deck-step))`,
-          // Every card's margin box ends at the same place, so they release together.
-          marginBottom: `calc(${left} * var(--deck-step))`,
-        }}
-      >
-        <motion.div className="h-full origin-top" style={reduced ? undefined : { scale, rotate }}>
-          <DeckCard tile={tile} index={index} active={active} shade={shade} reduced={reduced} />
-        </motion.div>
-      </motion.div>
-      <div
-        aria-hidden="true"
-        style={{
-          height:
-            left === 0
-              ? "var(--deck-hold)"
-              : `calc(var(--deck-slot) - var(--deck-card) - ${left} * var(--deck-step))`,
-        }}
+    <motion.div
+      ref={measure}
+      className="pile-card absolute left-0 top-0"
+      style={{
+        x: spot?.x ?? 0,
+        top: spot?.y ?? 0,
+        y,
+        rotate,
+        scale,
+        zIndex: up ? 50 : index + 1,
+        visibility: spot ? "visible" : "hidden",
+      }}
+      onMouseEnter={() => hover(true)}
+      onMouseLeave={() => hover(false)}
+      onFocus={() => hover(true)}
+      onBlur={() => hover(false)}
+    >
+      <ProjectTile
+        href={`/work/${tile.slug}`}
+        name={tile.name}
+        caption={tile.caption}
+        cover={tile.cover}
+        index={index}
+        tilt={0}
+        hop={false}
+        paused={!landed}
+        sizes="(min-width: 810px) 16vw, 90vw"
       />
-    </>
+    </motion.div>
   );
 }
 
 export function SelectedWork({ tiles }: { tiles: HomeTile[] }) {
+  const section = useRef<HTMLElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
   const reduced = useReduced();
   const desktop = useMedia(MD_QUERY);
-  const step = desktop ? deck.step.md : deck.step.sm;
-  const tiltBy = desktop ? deck.tilt.md : deck.tilt.sm;
   const { headline, note } = home.selectedWork;
+  const n = tiles.length;
+  const { scrollYProgress } = useScroll({ target: section, offset: ["start start", "end end"] });
+  const spans = windows(n);
+  const tilts = tiles.map((_, i) =>
+    desktop ? pile.tilts[i % pile.tilts.length] : (i % 2 === 0 ? -1 : 1) * pile.phone.tilt,
+  );
 
-  // One arrival value per card: 0 when its top enters at the bottom of the
-  // screen, 1 when it pins. Shared, so each card can follow the one after it.
-  // Worked out from the page scroll and each card's start (a zero-height
-  // marker, measured on mount and whenever the page changes size), so a
-  // scroll frame does no layout reads.
-  const arrivals = useMemo(() => tiles.map(() => motionValue(0)), [tiles]);
-  const markers = useRef<(HTMLDivElement | null)[]>([]);
-  const starts = useRef<number[]>([]);
-  const { scrollY } = useScroll();
-  const update = () => {
-    const y = scrollY.get();
-    const h = window.innerHeight;
-    starts.current.forEach((start, i) => {
-      const pin = NAV_BAND + i * step;
-      arrivals[i].set(Math.min(1, Math.max(0, (y - (start - h)) / Math.max(1, h - pin))));
-    });
-  };
-  // Keep the nav clear once the deck has released: the whole deck fades as
-  // one layer (so no card turns see-through over the ones under it) while the
-  // top card rises from its pin to the end of the nav zone. While anything is
-  // pinned, nothing fades.
+  // Resting spots, worked out from the stage size and each card's real height
+  // (on mount and whenever the stage changes size), not per frame.
   const cards = useRef<(HTMLDivElement | null)[]>([]);
+  const [spots, setSpots] = useState<Spot[] | null>(null);
+  useLayoutEffect(() => {
+    const el = stage.current;
+    if (!el) return;
+    const place = () => {
+      const vw = el.clientWidth;
+      const vh = el.clientHeight;
+      const wide = window.matchMedia(MD_QUERY).matches;
+      const gutter = Number.parseFloat(getComputedStyle(el).getPropertyValue("--spacing-gutter")) || 16;
+      const sizes = cards.current.map((c) => ({ w: c?.offsetWidth ?? 0, h: c?.offsetHeight ?? 0 }));
+      if (!sizes.length || !sizes[0].w) return;
+      if (wide) {
+        const w = sizes[0].w;
+        const step = w * (1 - pile.rowOverlap);
+        const row = w + step * (n - 1);
+        const left = (vw - row) / 2;
+        const drops = sizes.map((_, i) => (pile.drops[i % pile.drops.length] * vw) / pile.dropBase);
+        const tall = Math.max(...sizes.map((s, i) => s.h + drops[i]));
+        const top = Math.max(NAV_BAND, (vh - tall) / 2);
+        setSpots(sizes.map((_, i) => ({ x: left + i * step, y: top + drops[i] })));
+      } else {
+        const offset = (pile.phone.offset * vw) / 100;
+        const last = sizes[n - 1].h;
+        const room = vh - NAV_BAND - pile.phone.bottom - last;
+        const step = n > 1 ? Math.max(0, room / (n - 1)) : 0;
+        setSpots(sizes.map((_, i) => ({ x: gutter + (i % 2 === 0 ? -offset : offset), y: NAV_BAND + i * step })));
+      }
+    };
+    place();
+    const observer = new ResizeObserver(place);
+    observer.observe(el);
+    cards.current.forEach((c) => c && observer.observe(c));
+    return () => observer.disconnect();
+  }, [n, desktop]);
+
+  // Keep the nav clear as the section leaves: the stage fades as one layer
+  // while its highest card rises from its spot to the end of the nav zone.
   const leave = useMotionValue(1);
+  const { scrollY } = useScroll();
   const clearNav = () => {
-    const last = cards.current[cards.current.length - 1];
-    if (!last) return;
-    const pin = NAV_BAND + (tiles.length - 1) * step;
-    const top = last.getBoundingClientRect().top;
-    leave.set(Math.min(1, Math.max(0, (top - navFade.end) / Math.max(1, pin - navFade.end))));
+    const el = stage.current;
+    if (!el || !spots) return;
+    const rest = Math.min(...spots.map((s) => s.y));
+    const top = el.getBoundingClientRect().top + rest;
+    // Over at least NavFade's own range, so a pile resting near the nav does not blink out.
+    const span = Math.max(rest - navFade.end, navFade.start - navFade.end);
+    leave.set(Math.min(1, Math.max(0, (top - (rest - span)) / span)));
   };
-  useMotionValueEvent(scrollY, "change", () => {
-    update();
-    frame.postRender(clearNav);
-  });
-  useEffect(() => {
-    const measure = () => {
-      starts.current = markers.current.map((m) => (m ? m.getBoundingClientRect().top + window.scrollY : 0));
-      update();
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(document.body);
-    window.addEventListener("resize", measure);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, arrivals]);
-  // The top card: the last one at least `activeAt` of the way in. Only it moves.
-  const [active, setActive] = useState(0);
-  useEffect(() => {
-    const update = () => {
-      let top = 0;
-      arrivals.forEach((a, i) => {
-        if (a.get() >= deck.activeAt) top = i;
-      });
-      setActive(top);
-    };
-    update();
-    const offs = arrivals.map((a) => a.on("change", update));
-    return () => offs.forEach((off) => off());
-  }, [arrivals]);
+  useMotionValueEvent(scrollY, "change", () => frame.postRender(clearNav));
 
   const vars = {
-    "--deck-step-sm": `${deck.step.sm}px`,
-    "--deck-step-md": `${deck.step.md}px`,
-    "--deck-card-sm": deck.card.sm,
-    "--deck-card-md": deck.card.md,
-    "--deck-slot": deck.slot,
-    "--deck-hold": deck.hold,
+    "--pile-screens-sm": n + pile.screens.sm,
+    "--pile-screens-md": n + pile.screens.md,
   } as CSSProperties;
 
   return (
-    <section className="deck overflow-x-clip px-4 pt-32 md:px-10" style={vars}>
-      <NavFade className="flex flex-col gap-10 pb-16">
-        <RevealText as="h2" text={headline} className="poster-1" />
-        <Note text={note} tilt={4} />
-      </NavFade>
-      <motion.div style={{ opacity: leave }}>
+    <section ref={section} className={reduced ? "" : "pile"} style={reduced ? undefined : vars}>
+      <motion.div
+        ref={stage}
+        className={`${reduced ? "relative" : "sticky top-0"} h-dvh overflow-clip`}
+        style={{ opacity: reduced ? 1 : leave }}
+      >
+        <div className="absolute inset-0 z-0 flex flex-col items-center justify-center gap-6 px-4 text-center md:px-10">
+          <RevealText as="h2" text={headline} className="poster-1" />
+          <Note text={note} tilt={4} />
+        </div>
         {tiles.map((tile, i) => (
-          <DeckSlot
+          <PileCard
             key={tile.slug}
             tile={tile}
             index={i}
-            count={tiles.length}
-            arrivals={arrivals}
-            marker={(el) => {
-              markers.current[i] = el;
-            }}
-            card={(el) => {
+            spot={spots?.[i] ?? null}
+            tilt={tilts[i]}
+            window={spans[i]}
+            progress={scrollYProgress}
+            reduced={reduced}
+            measure={(el) => {
               cards.current[i] = el;
             }}
-            active={i === active}
-            tilt={tiltBy * (i % 2 === 0 ? -1 : 1)}
-            reduced={reduced}
           />
         ))}
       </motion.div>

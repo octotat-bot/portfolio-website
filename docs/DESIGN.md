@@ -14,7 +14,7 @@ The reference is worksruthi.com. Take its kind, not its identity.
 | Poster-size condensed headlines with small mono labels | Its logo, photos, doodles and wording |
 | One loud colour in big flat fields | The "type your first name" hero |
 | Flat and square: no shadows, no rounded cards | The bracket links and the question list |
-| Letters that roll on hover, sections that pin, cards that stack | The handwritten quote and repeated-lines banner |
+| Letters that roll on hover, sections that pin, tiles that pile up | The handwritten quote and repeated-lines banner |
 | A full-colour wipe between pages | |
 
 ## Voice
@@ -76,7 +76,7 @@ Rules
 - Breakpoints: 810px and 1025px.
 - Nav is 56px: name at left, menu button (two ivory lines, `stroke` thick) at right. The menu is a full-screen takeover on `midnight-raised`: five poster-size links stacked at left, revealed by a circle that grows out of the menu button (M21 in `MOTION.md`).
 - Content is full-bleed. Headlines run edge to edge. There is no centred column.
-- Two layouts repeat: **pinned split** (text stays on one side while big things scroll on the other) and **sticky deck** (poster cards pin one under another, each leaving its title strip showing).
+- Two layouts repeat: **pinned split** (text stays on one side while big things scroll on the other) and **rising pile** (a headline stays pinned while poster tiles rise and land on top of each other).
 - Below 810px every split is one column and nothing pins sideways.
 
 ## Shape and texture

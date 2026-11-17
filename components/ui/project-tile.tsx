@@ -36,6 +36,12 @@ type Props = {
   forceActive?: boolean;
   /** The name rises in when it enters view (M03). */
   revealName?: boolean;
+  /** Resting tilt in degrees, instead of the alternating 3 to 5. */
+  tilt?: number;
+  /** The M14 hop on hover. Off when a parent moves the tile itself (M31). */
+  hop?: boolean;
+  /** Hold the shapes (G1, G3) still and unassembled (M31: until the tile lands). */
+  paused?: boolean;
 };
 
 export function ProjectTile({
@@ -48,11 +54,14 @@ export function ProjectTile({
   className = "",
   forceActive,
   revealName = false,
+  tilt: tiltProp,
+  hop = true,
+  paused = false,
 }: Props) {
   const [hover, setHover] = useState(false);
   const [focus, setFocus] = useState(false);
   const active = forceActive ?? (hover || focus);
-  const tilt = TILTS[index % TILTS.length];
+  const tilt = tiltProp ?? TILTS[index % TILTS.length];
   const comp = cover ? null : projectComposition(href.split("/").pop() ?? "");
   const nameBand = revealName ? (
     <RevealText as="span" text={name} className="poster-4 block text-ivory" />
@@ -72,13 +81,13 @@ export function ProjectTile({
       <motion.span
         className="block"
         initial={false}
-        animate={active ? { rotate: 0, y: -tileHop.lift } : { rotate: tilt, y: 0 }}
+        animate={active && hop ? { rotate: 0, y: -tileHop.lift } : { rotate: tilt, y: 0 }}
         transition={{ duration: tileHop.duration, ease: tileHop.ease }}
       >
         {comp ? (
           <span className="flex aspect-4/5 flex-col bg-midnight-raised">
             <span className="relative block min-h-0 flex-1 p-3">
-              <ShapeComposition comp={comp} />
+              <ShapeComposition comp={comp} paused={paused} />
             </span>
             <span className="block bg-burgundy px-3 pb-3 pt-2">{nameBand}</span>
           </span>

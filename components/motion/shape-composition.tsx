@@ -153,7 +153,10 @@ type Props = {
   fall?: boolean;
   /** Straighten any `crooked` piece. */
   checked?: boolean;
-  /** Freeze where it is (a buried card in the M31 deck). */
+  /**
+   * Hold still. Before it has started, it also waits to assemble until
+   * unpaused (an M31 card that has not landed yet).
+   */
   paused?: boolean;
   className?: string;
 };
@@ -178,7 +181,10 @@ export function ShapeComposition({
   const controlRef = useRef<{ run: () => void; stop: () => void } | null>(null);
   useEffect(() => {
     if (menuOpen || paused) controlRef.current?.stop();
-    else controlRef.current?.run();
+    else {
+      startRef.current?.();
+      controlRef.current?.run();
+    }
   }, [menuOpen, paused]);
   const svgRef = useRef<SVGSVGElement>(null);
   const groups = useRef<(SVGGElement | null)[]>([]);
@@ -320,7 +326,7 @@ export function ShapeComposition({
     const observer = new IntersectionObserver(
       ([entry]) => {
         visible = entry.isIntersecting;
-        if (visible && startedAt === null && entry.intersectionRatio >= cfg.startAt && clearRef.current) {
+        if (visible && startedAt === null && entry.intersectionRatio >= cfg.startAt && clearRef.current && !pausedRef.current) {
           startedAt = performance.now() / 1000;
         }
         if (visible) run();
@@ -331,7 +337,7 @@ export function ShapeComposition({
     observer.observe(svg);
     controlRef.current = { run, stop };
     startRef.current = () => {
-      if (startedAt !== null) return;
+      if (startedAt !== null || pausedRef.current) return;
       const r = svg.getBoundingClientRect();
       const shown = Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / Math.max(1, r.height);
       if (shown >= cfg.startAt) {

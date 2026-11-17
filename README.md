@@ -98,7 +98,7 @@ Add an entry to `projects` in `content/projects.ts`. The order of the list is th
 - **Without a `study`,** it appears in the "also built" list at the bottom of Work.
 - **With a `study`,** it gets a tile on Work and its own case study at `/work/<slug>`. Copy an existing entry, such as Repetite, and change every field. The next-project link at the bottom of each case study cycles through all of them.
 - **A project that is still in progress:** set `hasResults: false` and name one story block in `showWhileBuilding`. Its case study then shows only the lede and that block.
-- **Home's selected work** is a deck of every project with a `study`, in the order they appear in `content/projects.ts`. To change the order, move the entries.
+- **Home's selected work** is a pile of every project with a `study`, in the order they appear in `content/projects.ts` (the last one lands on top). To change the order, move the entries.
 
 ## Put a Lab item on the live site
 

@@ -75,7 +75,7 @@ Bottom-right label: designed and built by mukund mangla
 **Selected work**
 
 - Headline: THINGS I'VE BUILT
-- Cards (the sticky deck): every project with a case study, in `content/projects.ts` order: Repetite, Marginalia, Trailboard, BumpFix. Each shows its index, name, year, kind and one-liner
+- Tiles (the rising pile): every project with a case study, in `content/projects.ts` order: Repetite, Marginalia, Trailboard, BumpFix (captions under "Projects" below)
 - Note under the headline: my main one
 
 **Numbers**
