@@ -514,10 +514,27 @@ html.pl-lock {
   }
 }
 
-/* M13: each tile's x and width (desktop only; phones use the card stack). */
-.drift-tile {
-  left: var(--x-md);
-  width: var(--w-md);
+/* M31 sticky deck: step between pinned cards and card height, phone then
+   desktop. The values come from lib/motion.ts (deck) as inline variables. */
+.deck {
+  --deck-step: var(--deck-step-sm);
+  --deck-card: var(--deck-card-sm);
+}
+
+@variant md {
+  .deck {
+    --deck-step: var(--deck-step-md);
+    --deck-card: var(--deck-card-md);
+  }
+}
+
+.deck-card {
+  height: var(--deck-card);
+}
+
+/* The strip that stays visible on a buried card: exactly one step tall. */
+.deck-strip {
+  height: var(--deck-step);
 }
 
 /* ---- Work layout ------------------------------------------------------------ */

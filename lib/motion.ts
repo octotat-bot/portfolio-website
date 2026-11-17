@@ -92,30 +92,31 @@ export const statusCycle = 3;
 export const statement = { offset: 40, rotate: 25, opacity: 0.3 } as const;
 
 /**
- * M13 pinned title with drifting tiles, from 810px (phones use the card
- * stack). The section is 250vh; tiles start below the screen at different x
- * positions and rise at 0.8x to 1.4x.
- *
- * Timing: tile i's top passes the middle of the screen at `cross` of the
- * pin (25%, 45%, 65%, 85%). Its start is worked out from that and its speed,
- * so each spends about a fifth of the pin over the headline and at most two
- * are over it at once. Starts are in vh below the top of the screen.
- * Width: 16vw, never narrower than the longest project name needs.
+ * M31 sticky deck: Home selected work, one poster card per project, stacked
+ * as you scroll. Each project gets `slot` of scroll; its card (`card` tall)
+ * pins at the nav band plus `step` per card above it, so every earlier card
+ * keeps a `step`-high strip with its index, title and year. While the next
+ * card travels in, the one under it scales to `scale` and a midnight shade
+ * rises to `shade` over its body (not its strip, so the strips stay
+ * readable). Once covered, a card turns to its resting tilt (alternating
+ * minus, plus) over dur-pop with ease-pop; the top card stays straight. After
+ * the last card pins the deck holds for `hold`, then leaves together. Only
+ * the card at least `activeAt` of the way in counts as the top one. Phones
+ * (below md) use the `sm` values.
  */
-const DRIFT_TRAVEL = 260;
-/** Where a tile's top sits when it is centred on the headline, in vh. */
-const DRIFT_CENTRE = 35;
-const driftTile = (xMd: string, speed: number, cross: number) => ({
-  xMd,
-  speed,
-  start: Math.round(DRIFT_CENTRE + cross * DRIFT_TRAVEL * speed),
-});
-
-export const driftTiles = {
-  height: "250vh",
-  travel: DRIFT_TRAVEL,
-  tiles: [driftTile("10%", 1.0, 0.25), driftTile("62%", 1.4, 0.45), driftTile("30%", 0.8, 0.65), driftTile("76%", 1.2, 0.85)],
-  widthMd: "max(16vw, 210px)",
+export const deck = {
+  slot: "100dvh",
+  hold: "40dvh",
+  card: { sm: "74dvh", md: "80dvh" },
+  step: { sm: 20, md: 28 },
+  tilt: { sm: 0.8, md: 1.2 },
+  scale: 0.94,
+  shade: 0.45,
+  activeAt: 0.5,
+  tiltDuration: dur.pop,
+  tiltEase: ease.pop,
+  /** The "view project" arrow's nudge on hover, px. */
+  nudge: 6,
 } as const;
 
 /** M12 blur focus. */

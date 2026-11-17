@@ -153,6 +153,8 @@ type Props = {
   fall?: boolean;
   /** Straighten any `crooked` piece. */
   checked?: boolean;
+  /** Freeze where it is (a buried card in the M31 deck). */
+  paused?: boolean;
   className?: string;
 };
 
@@ -162,6 +164,7 @@ export function ShapeComposition({
   push = false,
   fall = false,
   checked = false,
+  paused = false,
   className = "",
 }: Props) {
   const checkedRef = useRef(checked);
@@ -170,11 +173,13 @@ export function ShapeComposition({
   const { open: menuOpen } = useMenu();
   const menuOpenRef = useRef(menuOpen);
   menuOpenRef.current = menuOpen;
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
   const controlRef = useRef<{ run: () => void; stop: () => void } | null>(null);
   useEffect(() => {
-    if (menuOpen) controlRef.current?.stop();
+    if (menuOpen || paused) controlRef.current?.stop();
     else controlRef.current?.run();
-  }, [menuOpen]);
+  }, [menuOpen, paused]);
   const svgRef = useRef<SVGSVGElement>(null);
   const groups = useRef<(SVGGElement | null)[]>([]);
   const reduced = useReduced();
@@ -302,7 +307,7 @@ export function ShapeComposition({
     };
 
     const run = () => {
-      if (running || !visible || startedAt === null || fallDone || menuOpenRef.current) return;
+      if (running || !visible || startedAt === null || fallDone || menuOpenRef.current || pausedRef.current) return;
       running = true;
       frame.update(tick, true);
     };

@@ -5,8 +5,7 @@ import { SelectedWork } from "@/components/sections/home/selected-work";
 import { Statement } from "@/components/sections/home/statement";
 import { WhatIBuild } from "@/components/sections/home/what-i-build";
 import { Ticker } from "@/components/ui/ticker";
-import { home } from "@/content/pages";
-import { getProject } from "@/content/projects";
+import { projects } from "@/content/projects";
 import { site } from "@/content/site";
 import { resolveNumbers } from "@/lib/live-numbers";
 import { projectMedia } from "@/lib/media";
@@ -19,11 +18,17 @@ export const revalidate = 86400;
 // (M01) and the footer come from the root layout.
 export default async function HomePage() {
   const numbers = await resolveNumbers();
-  const tiles = home.selectedWork.slugs.flatMap((slug) => {
-    const project = getProject(slug);
-    if (!project?.study) return [];
-    return [{ slug, name: project.name, caption: project.study.caption, cover: projectMedia(slug).cover }];
-  });
+  // Selected work: every project with a case study, in content/projects.ts order.
+  const tiles = projects
+    .filter((p) => p.study)
+    .map((p) => ({
+      slug: p.slug,
+      name: p.name,
+      kind: p.kind,
+      year: p.year,
+      oneLiner: p.oneLiner,
+      cover: projectMedia(p.slug).cover,
+    }));
 
   return (
     <main id="main">
