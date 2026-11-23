@@ -277,7 +277,7 @@ export function SkillPile() {
         {groups.map((g) => (
           <div key={g.label} className="flex flex-col gap-1">
             <dt className="label text-ivory">{g.label}</dt>
-            <dd className="meta text-ivory">{g.items.join(separator)}</dd>
+            <dd className="body text-ivory">{g.items.join(separator)}</dd>
           </div>
         ))}
       </dl>

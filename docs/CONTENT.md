@@ -254,24 +254,36 @@ Case study labels: kind · role · built with · when · status · links. Next-p
 
 ## About
 
-**Opener**: MAKE THE THING.
+Written in sentence case (the rest of the site stays lowercase).
+
+**Hero**
+
+- Label: ABOUT
+- Heading: I'M MUKUND.
+- Line: I build apps, agents and the things between.
+- Quick facts: 3rd-year CS & AI · Newton School of Technology · Open to internships
 
 **Bio**
 
-- Heading: HI, I'M MUKUND
-- Paragraph 1: i'm a third-year computer science and ai student at newton school of technology, graduating in 2028. (check: degree name)
-- Paragraph 2: i started with websites, moved to full apps, and now spend most of my time on the parts where software has to think. along the way i got picky about how things look and feel. (check)
+- Label: THE SHORT VERSION
+- Handwritten note: design it, build it, check it
+- Paragraph 1: I'm a third-year Computer Science & AI student at Newton School of Technology, class of 2028. I like taking an idea all the way: design it, build it, then check that it actually works.
+- Paragraph 2: Most of what I build sits where software has to think. Marginalia answers questions from a PDF and cites the exact page. RepoMind does the same for a whole codebase, down to the file and line. BumpFix repairs a project when a dependency update breaks it.
+- Paragraph 3: My main project is Repetite, an iPhone app that tracks training and food in one place. I built it because I was tired of juggling two apps, and it's in friends' hands now.
+- Paragraph 4: I've done two AI internships, at Mindenious and SkillOrbit. Next, I want one where I can ship real things with people better than me.
+
+**Numbers**: GitHub contributions this year (live), LeetCode problems solved (live), projects with a case study (counted from the projects), internships (counted from the timeline).
 
 **The road so far**
 
 | Year | Title | Text | Place |
 | --- | --- | --- | --- |
-| 2020 | FIRST LINE OF CODE | wrote my first line of code. | |
-| 2023 | PASSED CLASS 12 | finished school. | |
-| 2024 | STARTED COLLEGE | b.tech at newton school of technology. | [CAMPUS CITY] |
-| JUL 2026 | INTERNSHIP, MINDENIOUS | ai/ml intern for a month. built marginalia there. | remote |
-| AUG 2026 | INTERNSHIP, SKILLORBIT | ai intern. built a resume analyser as the final project. (check) | remote |
-| NOW | BUILDING REPETITE | got tired of two apps for one day, so i'm building my own. it's in friends' hands now. | |
+| 2020 | FIRST LINE OF CODE | Wrote my first line of code. | |
+| 2023 | PASSED CLASS 12 | Finished school. | |
+| 2024 | STARTED COLLEGE | B.Tech in Computer Science & AI at Newton School of Technology. | [CAMPUS CITY] |
+| JUL 2026 | INTERNSHIP, MINDENIOUS | AI/ML intern for a month. Built Marginalia there. | remote |
+| AUG 2026 | INTERNSHIP, SKILLORBIT | AI intern. Built a resume analyser as the final project. | remote |
+| NOW | BUILDING REPETITE | Got tired of using two apps for one day, so I'm building my own. It's in friends' hands now. | |
 
 **What i work with**
 
@@ -283,16 +295,14 @@ Case study labels: kind · role · built with · when · status · links. Next-p
   - backends: node.js / express / mongodb / docker / websockets
   - ai: python / pytorch / langchain / retrieval / vector databases
 
-**Things i believe** (check all six)
+**Things i believe**
 
-| No. | Line | Highlight |
+| No. | Line | Handwritten last word |
 | --- | --- | --- |
-| 001 | BUILD IT FOR YOURSELF FIRST | |
-| 002 | A DEMO IS NOT A PRODUCT | PRODUCT |
-| 003 | CHECK WHAT THE MODEL SAYS. THEN CHECK AGAIN | |
-| 004 | TUTORIALS END. PROJECTS DON'T | |
-| 005 | POLISH IS A FEATURE | FEATURE |
-| 006 | TELL ME IT'S BAD. I'D RATHER KNOW | |
+| 001 | BUILD IT FOR YOURSELF | first |
+| 002 | A DEMO IS NOT A | product |
+| 003 | POLISH IS A | feature |
+| 004 | TELL ME IT'S BAD. I'D RATHER | know |
 
 ## Lab
 

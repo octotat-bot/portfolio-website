@@ -64,12 +64,13 @@ One template for Repetite, Marginalia, Trailboard and BumpFix. Generated statica
 
 | # | Section | Layout | Components and motion |
 | --- | --- | --- | --- |
-| 1 | Opener | 100dvh burgundy dither field. MAKE THE / THING. in `poster-1`, centred, on two lines at every width | M08, M03, then M04 (shuffles through the scribble faces and settles on Anton) |
-| 2 | Bio | Midnight. Left: `poster-3` heading, and from 810px a small poster-shape composition in the empty space under it. Right: three short paragraphs in `lede` then `body` | M03, G1, G3 |
-| 3 | The road so far | Pinned year strip, six cards. Each card: year in `poster-1`, title in `poster-4`, two lines of `body`, a mono place label | M17 |
-| 4 | What i work with | Burgundy dither field, at least 100dvh. `poster-4` heading top-left. Skill words in `poster-3` drop and pile, filling about the lower 40% on desktop. Under the pile area on desktop, four mono stack lines (one per group), never covered by the floating pill | M18 |
-| 5 | Things i believe | Midnight. Numbered hairline list, number in `label`, line in `poster-4` | M03 per row, M11 on one word in two of the rows |
-| 6 | Footer | | |
+| 1 | Hero | At least 100dvh, midnight. Left: a mono ABOUT label, I'M MUKUND. in `poster-1`, one `lede` line (I build apps, agents and the things between.) and three quick facts as small outlined tags. Right (below on phones): the cut-out portrait (`public/me/menu.png`) standing on a burgundy dither field | M03 on the heading, M08 |
+| 2 | Bio | Midnight. Left: a mono label (THE SHORT VERSION) and a handwritten claret note. Right: four paragraphs in `lede`, sentence case | M10 on the note |
+| 3 | Numbers | A hairline-ruled row of four figures in `poster-1` with `label` captions: GitHub contributions this year and LeetCode problems solved (live, as on Home), projects with a case study, internships | M19 |
+| 4 | The road so far | Pinned year strip. Each card: year in `poster-1`, title in `poster-4`, a line in `lede`, a mono place label when there is one. Every card at full strength; one hairline joins them (down the side on phones); the year nearest the centre, and NOW always, in claret | M17 |
+| 5 | What i work with | Burgundy dither field, at least 100dvh. `poster-4` heading top-left. Skill words in `poster-3` drop and pile, filling about the lower 40% on desktop. Under the pile area on desktop, four stack lines in `body` (label in mono) (one per group), never covered by the floating pill | M18 |
+| 6 | Things i believe | Midnight. Numbered hairline list: number in `label`, the line in `poster-4`, ending on one word in the handwritten `note` face in claret | M03 per row |
+| 7 | Footer | | |
 
 ## Lab `/lab`
 
