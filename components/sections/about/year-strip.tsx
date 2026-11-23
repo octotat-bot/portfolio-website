@@ -2,10 +2,10 @@
 
 // About 3: the road so far. M17 year strip: from 810px the section pins for
 // 300vh and a row of six wide year cards moves sideways as you scroll down.
-// The card nearest the centre is at full opacity with its year in claret;
-// the others are at 0.4. The year's colour change is a crossfade between two
-// copies (opacity only). Each card: year in poster-1, title in poster-4, two
-// lines of body, a mono place label (left out while it is a blank).
+// Every card is at full strength; the card nearest the centre has its year in
+// claret (a crossfade between two copies, opacity only), and NOW always does.
+// One hairline joins the years (down the side on phones). Each card: year in poster-1, title in poster-4, a
+// line in `lede`, a mono place label (left out while it is a blank).
 // Below 810px, and with reduced motion: a normal vertical list.
 
 import { motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
@@ -20,15 +20,15 @@ import { yearStrip } from "@/lib/motion";
 
 function Card({ card, active }: { card: YearCard; active: boolean }) {
   return (
-    <article className="flex flex-col gap-3 border-t border-line pt-6">
+    <article className="flex flex-col gap-3 pt-6">
       <p className="poster-1 relative">
         <span className="text-ivory">{card.year}</span>
-        <span aria-hidden="true" className="year-on absolute inset-0 text-claret" style={{ opacity: active ? 1 : 0 }}>
+        <span aria-hidden="true" className="year-on absolute inset-0 text-claret" style={{ opacity: active || card.year === "NOW" ? 1 : 0 }}>
           {card.year}
         </span>
       </p>
       <h3 className="poster-4">{card.title}</h3>
-      <p className="body max-w-measure">{card.text}</p>
+      <p className="lede max-w-measure text-ivory">{card.text}</p>
       {card.place ? <Label>{card.place}</Label> : null}
     </article>
   );
@@ -36,7 +36,7 @@ function Card({ card, active }: { card: YearCard; active: boolean }) {
 
 function List() {
   return (
-    <ol className="flex flex-col gap-16">
+    <ol className="flex flex-col gap-16 border-l border-line pl-6">
       {about.road.map((card) => (
         <li key={card.year}>
           <NavFade>
@@ -95,14 +95,13 @@ function Strip() {
         </div>
         <motion.ol
           ref={strip}
-          className="year-strip flex w-max gap-16"
+          className="year-strip flex w-max gap-16 border-t border-line"
           style={{ x, ...cardWidth }}
         >
           {about.road.map((card, i) => (
             <li
               key={card.year}
-              className="year-card shrink-0 transition-opacity dur-fast"
-              style={{ opacity: i === active ? 1 : yearStrip.dim }}
+              className="year-card shrink-0"
             >
               <Card card={card} active={i === active} />
             </li>

@@ -329,7 +329,6 @@ Items. Mukund must confirm each one exists and that he wants it public before la
 | type | ANTON, GEIST, REENIE BEANIE |
 | movement | MOTION |
 | effects | PAPER SHADERS, SKIPER UI, REACT BITS |
-| made in | PALWAL, INDIA |
 
 Final typed note: thanks for scrolling
 
