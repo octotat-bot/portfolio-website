@@ -3,9 +3,9 @@
 import { useLenis } from "lenis/react";
 import { useAnimate } from "motion/react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useMemo, useRef, type ComponentProps, type ReactNode } from "react";
-import { useIsomorphicLayoutEffect, useReduced } from "@/lib/hooks";
+import { useIsomorphicLayoutEffect, usePath, useReduced } from "@/lib/hooks";
 import { setCurtain } from "@/lib/curtain";
 import { wipe } from "@/lib/motion";
 
@@ -45,7 +45,7 @@ const ARRIVAL_TIMEOUT = 8000;
 
 export function WipeProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePath();
   const reduced = useReduced();
   const lenis = useLenis();
   const [scope, animate] = useAnimate<HTMLDivElement>();

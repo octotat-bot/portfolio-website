@@ -111,7 +111,10 @@ export function Intro() {
     const html = document.documentElement;
     const mode = html.getAttribute("data-intro");
     if (mode === null) {
+      // No loader this time (or its marker was lost): let the page's
+      // entrances play anyway, so nothing waits for a loader that isn't there.
       setPhase("gone");
+      setCurtain("clear");
       return;
     }
     // The loader covers the page itself from here.

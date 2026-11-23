@@ -6,14 +6,14 @@
 // hairline, the copyright, and the ghost marquee (upside down).
 // Contact has the short footer: the copyright line only.
 
-import { usePathname } from "next/navigation";
 import { RollLink } from "@/components/ui/roll-link";
 import { footer as copy } from "@/content/pages";
 import { site } from "@/content/site";
 import { GhostMarquee } from "./ghost-marquee";
+import { usePath } from "@/lib/hooks";
 
 export function Footer() {
-  const pathname = usePathname();
+  const pathname = usePath();
 
   if (pathname === "/contact") {
     return (

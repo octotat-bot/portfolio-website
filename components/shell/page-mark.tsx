@@ -9,9 +9,8 @@
 // while the menu is open or the intro is showing. Reduced motion: it swaps.
 
 import { AnimatePresence, motion } from "motion/react";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useReduced } from "@/lib/hooks";
+import { usePath, useReduced } from "@/lib/hooks";
 import { ease, menu as m, menuPortrait as mp, shapes as cfg } from "@/lib/motion";
 import { halfPath, pageMarks, quarterPath, starPoints, type Kind } from "@/lib/shapes";
 import { color, tokens } from "@/lib/tokens";
@@ -35,7 +34,7 @@ function MarkShape({ kind }: { kind: Kind }) {
 }
 
 export function PageMark() {
-  const pathname = usePathname();
+  const pathname = usePath();
   const reduced = useReduced();
   const { open } = useMenu();
   const y = useUnderTicker();

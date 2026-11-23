@@ -12,10 +12,9 @@
 // Motion springs, so there is one animation engine.
 
 import { motion, useSpring } from "motion/react";
-import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { site } from "@/content/site";
-import { HOVER_QUERY, useMedia, useReduced } from "@/lib/hooks";
+import { HOVER_QUERY, useMedia, usePath, useReduced } from "@/lib/hooks";
 import { dur, ease, pill, spring } from "@/lib/motion";
 import { TransitionLink } from "./wipe";
 
@@ -25,7 +24,7 @@ const smoothstep = (a: number, b: number, v: number) => {
 };
 
 export function ContactPill() {
-  const pathname = usePathname();
+  const pathname = usePath();
   const reduced = useReduced();
   const canHover = useMedia(HOVER_QUERY);
   const ref = useRef<HTMLDivElement>(null);

@@ -23,13 +23,12 @@
 import { useLenis } from "lenis/react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { RollLink } from "@/components/ui/roll-link";
 import { RollText } from "@/components/ui/roll-text";
 import { a11y, menu as copy } from "@/content/pages";
 import { site } from "@/content/site";
-import { MD_QUERY, useMedia, useReduced } from "@/lib/hooks";
+import { MD_QUERY, useMedia, usePath, useReduced } from "@/lib/hooks";
 import type { Portrait } from "@/lib/media";
 import { dur, ease, menu as m, menuPortrait as mp, spring } from "@/lib/motion";
 import type { MenuKey } from "@/lib/shapes";
@@ -54,7 +53,7 @@ const MENU_KEYS: Record<string, MenuKey> = { "/": "home", "/work": "work", "/abo
 
 export function Menu({ portrait }: { portrait: Portrait | null }) {
   const { open, setOpen, closeInstantly, instant, buttonRef } = useMenu();
-  const pathname = usePathname();
+  const pathname = usePath();
   const reduced = useReduced();
   const desktop = useMedia(MD_QUERY);
   const lenis = useLenis();

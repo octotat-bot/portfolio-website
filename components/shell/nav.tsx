@@ -6,13 +6,13 @@
 // Text is ivory on every surface (decision 2: no blend mode).
 
 import { motion, useMotionValue, useMotionValueEvent, useScroll } from "motion/react";
-import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { a11y } from "@/content/pages";
 import { site } from "@/content/site";
 import { tokens } from "@/lib/tokens";
 import { useMenu } from "./menu-state";
 import { RollLink } from "@/components/ui/roll-link";
+import { usePath } from "@/lib/hooks";
 
 const px = (name: string) =>
   Number.parseFloat([...tokens.spacing.tokens, ...tokens.size.tokens].find((t) => t.name === name)?.value ?? "0");
@@ -25,7 +25,7 @@ const TICKER = px("ticker");
  * stays at the top once the ticker has scrolled away. Elsewhere it is at the top.
  */
 export function useUnderTicker() {
-  const pathname = usePathname();
+  const pathname = usePath();
   const onHome = pathname === "/";
   const { scrollY } = useScroll();
   const y = useMotionValue(onHome ? TICKER : 0);

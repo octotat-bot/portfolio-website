@@ -1,7 +1,23 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useState, useSyncExternalStore } from "react";
 import { breakpoint } from "./tokens";
+
+/**
+ * The current path, as the browser sees it. Use this, not usePathname, for
+ * anything rendered. On Vercel, when Home is regenerated on the server (it
+ * refreshes once a day for the live numbers), it renders with the path
+ * "/index" while the browser is at "/". Anything that depends on the path
+ * then differs between the server's HTML and the browser, React throws the
+ * server's page away, and with it the loader and the hero's entrance. So
+ * "/index" (and "/x/index") count as "/" (and "/x").
+ */
+export function usePath(): string {
+  const path = usePathname() ?? "/";
+  if (path === "/index") return "/";
+  return path.endsWith("/index") ? path.slice(0, -"/index".length) : path;
+}
 
 export const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
