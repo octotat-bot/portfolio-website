@@ -261,7 +261,6 @@ Case study labels: kind · role · built with · when · status · links. Next-p
 - Heading: HI, I'M MUKUND
 - Paragraph 1: i'm a third-year computer science and ai student at newton school of technology, graduating in 2028. (check: degree name)
 - Paragraph 2: i started with websites, moved to full apps, and now spend most of my time on the parts where software has to think. along the way i got picky about how things look and feel. (check)
-- Paragraph 3: i'm from palwal, haryana, where i also run a shop. that's where i learned that nothing you build matters until somebody actually uses it. (check: delete if you'd rather not mention the shop)
 
 **The road so far**
 
@@ -272,7 +271,7 @@ Case study labels: kind · role · built with · when · status · links. Next-p
 | 2024 | STARTED COLLEGE | b.tech at newton school of technology. | [CAMPUS CITY] |
 | JUL 2026 | INTERNSHIP, MINDENIOUS | ai/ml intern for a month. built marginalia there. | remote |
 | AUG 2026 | INTERNSHIP, SKILLORBIT | ai intern. built a resume analyser as the final project. (check) | remote |
-| NOW | BUILDING REPETITE | got tired of two apps for one day, so i'm building my own. it's in friends' hands now. | palwal, india |
+| NOW | BUILDING REPETITE | got tired of two apps for one day, so i'm building my own. it's in friends' hands now. | |
 
 **What i work with**
 
@@ -329,7 +328,6 @@ Items. Mukund must confirm each one exists and that he wants it public before la
 | type | ANTON, GEIST, REENIE BEANIE |
 | movement | MOTION |
 | effects | PAPER SHADERS, SKIPER UI, REACT BITS |
-| made in | PALWAL, INDIA |
 
 Final typed note: thanks for scrolling
 

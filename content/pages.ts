@@ -119,7 +119,6 @@ export const contact = {
     { small: "type", big: "ANTON, GEIST, REENIE BEANIE" },
     { small: "movement", big: "MOTION" },
     { small: "effects", big: "PAPER SHADERS, SKIPER UI, REACT BITS" },
-    { small: "made in", big: "PALWAL, INDIA" },
   ],
   finalNote: "thanks for scrolling",
 };

@@ -40,7 +40,7 @@ const road: YearCard[] = [
     year: "NOW",
     title: "BUILDING REPETITE",
     text: "got tired of two apps for one day, so i'm building my own. it's in friends' hands now.",
-    place: "palwal, india",
+    place: null,
   },
 ];
 
@@ -70,7 +70,6 @@ export const about = {
     paragraphs: [
       "i'm a third-year computer science and ai student at newton school of technology, graduating in 2028.",
       "i started with websites, moved to full apps, and now spend most of my time on the parts where software has to think. along the way i got picky about how things look and feel.",
-      "i'm from palwal, haryana, where i also run a shop. that's where i learned that nothing you build matters until somebody actually uses it.",
     ],
   },
 
