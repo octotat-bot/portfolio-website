@@ -92,7 +92,7 @@ export const site = {
   footer: {
     line: "i build apps, agents and the things between.",
     /** Shown upside down (turned 180 degrees) in the footer. */
-    ghostMarquee: "FUCK MEDIOCRITY",
+    ghostMarquee: "GOOD ENOUGH ISN'T.",
     copyright: "© 2026 Mukund Mangla",
   },
 
