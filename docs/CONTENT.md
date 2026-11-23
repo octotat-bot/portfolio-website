@@ -75,7 +75,7 @@ Bottom-right label: designed and built by mukund mangla
 **Selected work**
 
 - Headline: THINGS I'VE BUILT
-- Tiles (the rising pile): every project with a case study, in `content/projects.ts` order: Repetite, Marginalia, Trailboard, BumpFix (captions under "Projects" below)
+- Tiles (the rising pile): Repetite, Marginalia, RepoMind, BumpFix, in that order (`content/pages.ts` → `selectedWork.slugs`; captions under "Projects" below)
 - Note under the headline: my main one
 
 **Numbers**
@@ -100,7 +100,7 @@ Bottom-right label: designed and built by mukund mangla
 
 ## Projects
 
-Order on the Work page: Repetite, Marginalia, Trailboard, BumpFix, SmartResume, NexaBank. The first four have case studies.
+Order on the Work page: Repetite, Marginalia, Trailboard, BumpFix, RepoMind, SmartResume, NexaBank. The first five have case studies.
 
 ### Repetite
 
@@ -210,6 +210,34 @@ Story
 - **HOW I'LL KNOW IT WORKS**: [THE TEST: FOR EXAMPLE, N REAL UPGRADES, HOW MANY IT FIXES WITHOUT HELP]
 
 Until there are results, this page shows the lede, "where it is now", and nothing else.
+
+
+### RepoMind
+
+From the RepoMind repository's description and its cover image.
+
+| Field | Text |
+| --- | --- |
+| Slug | repomind |
+| Kind (tag) | AI tool |
+| Year | 2026 |
+| Status | [STATUS] |
+| Tile caption | ask a repo a question |
+| One-liner | ask questions about any github repo and get answers that cite exact files and line ranges. |
+| Role | design and build, solo (check) |
+| Built with | tree-sitter / faiss / ollama |
+| Links | https://github.com/octotat-bot/RepoMind · https://repomind-eight-mu.vercel.app |
+| Note | every answer cites its lines |
+
+Lede: understand any codebase in minutes, not weeks. import a repository, ask in plain english, and the answer comes from the code itself, with the exact file and lines it came from.
+
+Story
+
+- **HOW IT ANSWERS**: the code is split along its real boundaries with tree-sitter, so every piece is a whole function or class. a question finds the closest pieces with faiss, and the answer streams back citing the file and line range for each claim.
+- **LOCAL BY DEFAULT**: it runs on ollama on your own machine: no openai key, and nothing about the code leaves the laptop.
+- **SEEING THE SHAPE**: an architecture graph shows how the modules depend on each other, which makes dead code and circular dependencies easy to spot.
+
+One number: [REPOMIND_NUMBER] with caption [WHAT_IT_MEASURES]
 
 ### SmartResume
 
@@ -327,7 +355,7 @@ Final typed note: thanks for scrolling
 | Page | Title | Description |
 | --- | --- | --- |
 | Home | Mukund Mangla · apps, agents and the things between | Portfolio of Mukund Mangla, a computer science student who designs and builds web apps, iOS apps and AI tools. |
-| Work | Work · Mukund Mangla | Projects by Mukund Mangla: Repetite, Marginalia, Trailboard, BumpFix and more. |
+| Work | Work · Mukund Mangla | Projects by Mukund Mangla: Repetite, Marginalia, RepoMind, BumpFix and more. |
 | Case study | [Project name] · Mukund Mangla | The project's one-liner. |
 | About | About · Mukund Mangla | Who Mukund Mangla is, what he has built so far and what he works with. |
 | Lab | Lab · Mukund Mangla | Experiments, old builds and unfinished ideas. |

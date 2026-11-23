@@ -70,7 +70,7 @@ Pictures need no code and no entry in `content/`. Put files in `public/projects/
 | `shot-01.jpg`, `shot-02.jpg` … | Screens on the case study, in file-name order. JPG or PNG, any shape; phone screenshots keep their shape |
 | `demo.mp4` | A short silent video shown first on the case study. 10 to 30 seconds, under 8 MB |
 
-The slugs are `repetite`, `marginalia`, `trailboard`, `bumpfix`, `smartresume` and `nexabank`.
+The slugs are `repetite`, `marginalia`, `trailboard`, `bumpfix`, `repomind`, `smartresume` and `nexabank`.
 
 - One or two screens show full width.
 - Three or more become a gallery on desktop and a swipe carousel on phones.
@@ -98,7 +98,7 @@ Add an entry to `projects` in `content/projects.ts`. The order of the list is th
 - **Without a `study`,** it appears in the "also built" list at the bottom of Work.
 - **With a `study`,** it gets a tile on Work and its own case study at `/work/<slug>`. Copy an existing entry, such as Repetite, and change every field. The next-project link at the bottom of each case study cycles through all of them.
 - **A project that is still in progress:** set `hasResults: false` and name one story block in `showWhileBuilding`. Its case study then shows only the lede and that block.
-- **Home's selected work** is a pile of every project with a `study`, in the order they appear in `content/projects.ts` (the last one lands on top). To change the order, move the entries.
+- **Home's selected work** shows the projects listed in `content/pages.ts` → `home.selectedWork.slugs`, in that order (the last one lands on top). Each must have a `study`. To swap one, change its slug there.
 
 ## Put a Lab item on the live site
 

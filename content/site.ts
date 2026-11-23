@@ -107,7 +107,7 @@ export const site = {
     },
     work: {
       title: "Work · Mukund Mangla",
-      description: "Projects by Mukund Mangla: Repetite, Marginalia, Trailboard, BumpFix and more.",
+      description: "Projects by Mukund Mangla: Repetite, Marginalia, RepoMind, BumpFix and more.",
     },
     /** `%s` is the project name. The description is the project's one-liner. */
     caseStudy: { titleTemplate: "%s · Mukund Mangla" },

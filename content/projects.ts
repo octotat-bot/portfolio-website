@@ -186,6 +186,43 @@ export const projects: Project[] = [
     },
   },
   {
+    // From the RepoMind repository's description and its cover image.
+    slug: "repomind",
+    name: "RepoMind",
+    kind: "AI tool",
+    year: "2026",
+    oneLiner: "ask questions about any github repo and get answers that cite exact files and line ranges.",
+    builtWith: ["tree-sitter", "faiss", "ollama"],
+    links: {
+      repo: "https://github.com/octotat-bot/RepoMind",
+      live: "https://repomind-eight-mu.vercel.app",
+    },
+    study: {
+      status: null,
+      caption: "ask a repo a question",
+      role: "design and build, solo",
+      lede: "understand any codebase in minutes, not weeks. import a repository, ask in plain english, and the answer comes from the code itself, with the exact file and lines it came from.",
+      story: [
+        {
+          heading: "HOW IT ANSWERS",
+          body: "the code is split along its real boundaries with tree-sitter, so every piece is a whole function or class. a question finds the closest pieces with faiss, and the answer streams back citing the file and line range for each claim.",
+        },
+        {
+          heading: "LOCAL BY DEFAULT",
+          body: "it runs on ollama on your own machine: no openai key, and nothing about the code leaves the laptop.",
+        },
+        {
+          heading: "SEEING THE SHAPE",
+          body: "an architecture graph shows how the modules depend on each other, which makes dead code and circular dependencies easy to spot.",
+        },
+      ],
+      number: { value: null, caption: null },
+      mistake: null,
+      note: "every answer cites its lines",
+      hasResults: true,
+    },
+  },
+  {
     slug: "smartresume",
     name: "SmartResume",
     kind: "Web app",

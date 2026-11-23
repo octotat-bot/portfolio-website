@@ -71,7 +71,9 @@ export const home = {
 
   selectedWork: {
     headline: "THINGS I'VE BUILT",
-    /** Sits under the headline. The cards are every project with a case study, in content/projects.ts order. */
+    /** The projects in the pile, in order (the last lands on top). Each needs a case study in content/projects.ts. */
+    slugs: ["repetite", "marginalia", "repomind", "bumpfix"],
+    /** Sits under the headline. */
     note: "my main one",
   },
 
