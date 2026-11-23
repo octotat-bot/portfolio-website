@@ -100,7 +100,7 @@ export const projects: Project[] = [
     year: "2026",
     oneLiner: "ask a question about any pdf and get the answer from the document itself.",
     builtWith: [null],
-    links: { repo: "https://github.com/octotat-bot/Marginalia" },
+    links: { repo: "https://github.com/octotat-bot/Marginalia", live: "https://marginalia-main.streamlit.app" },
     study: {
       status: null,
       caption: "ask a pdf a question",
@@ -130,7 +130,7 @@ export const projects: Project[] = [
     year: null,
     oneLiner: "a whiteboard several people can draw on at the same time.",
     builtWith: ["yjs", "websockets", null],
-    links: { repo: null, live: null },
+    links: { repo: "https://github.com/octotat-bot/TrailBoard", live: null },
     study: {
       status: null,
       caption: "one whiteboard, many hands",
@@ -163,7 +163,7 @@ export const projects: Project[] = [
     year: "2026",
     oneLiner: "an agent that repairs your code after a dependency update breaks it.",
     builtWith: [null],
-    links: { repo: null },
+    links: { repo: "https://github.com/octotat-bot/Bumpfix" },
     study: {
       status: "still building",
       caption: "fixes what the update broke",

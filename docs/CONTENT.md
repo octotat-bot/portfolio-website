@@ -144,7 +144,7 @@ What went wrong: [ONE THING THAT BROKE OR HAD TO BE REBUILT, AND WHAT YOU CHANGE
 | One-liner | ask a question about any pdf and get the answer from the document itself. |
 | Role | design and build, during an internship at mindenious |
 | Built with | [STACK] |
-| Links | https://github.com/octotat-bot/Marginalia |
+| Links | https://github.com/octotat-bot/Marginalia · https://marginalia-main.streamlit.app |
 | Note | reads so you don't have to |
 
 Lede: built in a month during my internship at mindenious. you upload a pdf, ask something, and it answers from what the document actually says.
@@ -171,7 +171,7 @@ What went wrong: [ONE THING]
 | One-liner | a whiteboard several people can draw on at the same time. |
 | Role | design and build, solo |
 | Built with | yjs / websockets / [FRONTEND] |
-| Links | [REPO_URL] · [LIVE_URL] |
+| Links | https://github.com/octotat-bot/TrailBoard · [LIVE_URL] |
 | Note | no one overwrites anyone |
 
 Lede: a shared whiteboard where everyone's strokes show up for everyone else as they happen, and nobody's work gets overwritten.
@@ -198,7 +198,7 @@ What went wrong: [ONE THING]
 | One-liner | an agent that repairs your code after a dependency update breaks it. |
 | Role | design and build, solo |
 | Built with | [STACK] |
-| Links | [REPO_URL] |
+| Links | https://github.com/octotat-bot/Bumpfix |
 | Note | still building this |
 
 Lede: you update a package, forty things break, and you spend the afternoon reading a changelog. bumpfix is meant to do that afternoon for you.
