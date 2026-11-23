@@ -1,20 +1,20 @@
 "use client";
 
-// ProjectTile: a tilted 4:5 poster card for a project. A dithered burgundy
-// field, the dithered picture when there is one, the name in poster-4 and the
+// ProjectTile: a tilted 4:5 poster card for a project. The project's cover
+// as it is when there is one (else its shapes, or a dithered burgundy field), the name in poster-4 and the
 // caption typed onto an ivory strip in `meta`. Tilts 3 to 5 degrees,
 // alternating by index.
 // M14 tile hop: on hover or focus it rotates to 0 and lifts 10px (dur-pop,
-// ease-pop) and its picture clears (M15).
+// ease-pop).
 // Without a cover it shows the project's poster-shape composition (G1 then
 // G3) on midnight-raised, above the name band; a real cover replaces it.
 // The name sits on a solid burgundy band at the foot of the picture, so it
 // never lies over text inside a cover image or a composition.
 
 import { motion } from "motion/react";
+import Image from "next/image";
 import { useState } from "react";
 import { DitherField } from "@/components/motion/dither-field";
-import { DitherImage } from "@/components/motion/dither-image";
 import { ShapeComposition } from "@/components/motion/shape-composition";
 import { RevealText } from "@/components/motion/reveal-text";
 import { TransitionLink } from "@/components/shell/wipe";
@@ -91,9 +91,16 @@ export function ProjectTile({
             </span>
             <span className="block bg-burgundy px-3 pb-3 pt-2">{nameBand}</span>
           </span>
+        ) : cover ? (
+          // A real cover shows as it is: the project's own image, name and all.
+          <span className="relative block aspect-4/5 overflow-hidden bg-midnight-raised">
+            {/* Unoptimized: covers are small JPEGs already, and this way a replaced
+                cover shows at once instead of the optimiser's cached old copy. */}
+            <Image src={cover} alt="" fill sizes={sizes} unoptimized className="object-cover" />
+            <span className="absolute inset-x-0 bottom-0 block bg-burgundy px-3 pb-3 pt-2">{nameBand}</span>
+          </span>
         ) : (
           <DitherField still seed={index} className="block aspect-4/5">
-            {cover ? <DitherImage src={cover} alt="" resolved={active} back="burgundy-deep" sizes={sizes} /> : null}
             <span className="absolute inset-x-0 bottom-0 block bg-burgundy px-3 pb-3 pt-2">{nameBand}</span>
           </DitherField>
         )}

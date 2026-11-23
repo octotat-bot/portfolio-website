@@ -86,7 +86,7 @@ Rules
 - 1px `line` hairlines between rows. Nothing else has a border except ghost buttons and tags.
 - **Grain**: a fixed noise layer over the whole site, opacity about 0.2, blend mode overlay, jumping five times a second.
 - **Dither**: burgundy fields are not flat fills. They are a slow two-colour dither pattern (`midnight` and `burgundy`), which gives a printed look and moves slightly.
-- **Pictures** are shown dithered in two colours (`midnight` and `ivory`, or `burgundy-deep` and `ivory`) and resolve to full colour on hover or inside case studies.
+- **Project covers** on tiles are shown as they are, in full colour. **Case-study screens** are shown dithered in two colours (`midnight` and `ivory`) and resolve to full colour as they come into view.
 
 ## Shapes
 
