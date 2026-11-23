@@ -56,7 +56,7 @@ number: { value: 2300, caption: "foods in the built-in database" },
 
 ## Add a link
 
-- **A project's repository or live site:** `content/projects.ts`, in that project's `links` (`repo` or `live`). The link appears on its case study, and in the "also built" list for SmartResume and NexaBank.
+- **A project's repository or live site:** `content/projects.ts`, in that project's `links` (`repo` or `live`). The link appears on its case study, and in the "also built" list for SmartResume.
 - **GitHub or LinkedIn:** `content/site.ts`, in `links`.
 - **A Lab item:** `content/lab.ts`, in that item's `link`. The card shows the link's own address as its text.
 
@@ -70,7 +70,7 @@ Pictures need no code and no entry in `content/`. Put files in `public/projects/
 | `shot-01.jpg`, `shot-02.jpg` … | Screens on the case study, in file-name order. JPG or PNG, any shape; phone screenshots keep their shape |
 | `demo.mp4` | A short silent video shown first on the case study. 10 to 30 seconds, under 8 MB |
 
-The slugs are `repetite`, `marginalia`, `trailboard`, `bumpfix`, `repomind`, `smartresume` and `nexabank`.
+The slugs are `repetite`, `marginalia`, `trailboard`, `bumpfix`, `repomind` and `smartresume`.
 
 - One or two screens show full width.
 - Three or more become a gallery on desktop and a swipe carousel on phones.

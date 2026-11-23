@@ -100,7 +100,7 @@ Bottom-right label: designed and built by mukund mangla
 
 ## Projects
 
-Order on the Work page: Repetite, Marginalia, Trailboard, BumpFix, RepoMind, SmartResume, NexaBank. The first five have case studies.
+Order on the Work page: Repetite, Marginalia, Trailboard, BumpFix, RepoMind, SmartResume. The first five have case studies.
 
 ### Repetite
 
@@ -116,7 +116,7 @@ Repetite is his own app. Do not describe it as an AI product anywhere.
 | One-liner | an ios app that tracks your training and your food in one place. |
 | Role | design and build, solo (check) |
 | Built with | swiftui / healthkit / swiftdata |
-| Links | [REPO_URL] |
+| Links | https://github.com/octotat-bot/Repetite |
 | Note | started it for myself |
 
 Lede: i wanted one app for my workouts and my meals instead of two that don't talk to each other. so i built it.
@@ -249,17 +249,6 @@ One number: [REPOMIND_NUMBER] with caption [WHAT_IT_MEASURES]
 | One-liner | upload a resume, get a score, the keywords it's missing for a role, and what to fix. |
 | Built with | react / node / express / mongodb / gemini |
 | Links | https://github.com/octotat-bot/SmartResume · https://smartresume-rouge.vercel.app |
-
-### NexaBank
-
-| Field | Text |
-| --- | --- |
-| Slug | nexabank |
-| Kind (tag) | Web app |
-| Year | [YEAR] |
-| One-liner | a banking app with two roles, customer and admin, and proper sign-in. |
-| Built with | react / node / express / mongodb / jwt |
-| Links | [REPO_URL] |
 
 Case study labels: kind · role · built with · when · status · links. Next-project label: next.
 

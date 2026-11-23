@@ -63,7 +63,7 @@ export const projects: Project[] = [
     year: "2026",
     oneLiner: "an ios app that tracks your training and your food in one place.",
     builtWith: ["swiftui", "healthkit", "swiftdata"],
-    links: { repo: null },
+    links: { repo: "https://github.com/octotat-bot/Repetite" },
     study: {
       status: "in friends' hands, not on the app store yet",
       caption: "training and food, one ios app",
@@ -233,15 +233,6 @@ export const projects: Project[] = [
       repo: "https://github.com/octotat-bot/SmartResume",
       live: "https://smartresume-rouge.vercel.app",
     },
-  },
-  {
-    slug: "nexabank",
-    name: "NexaBank",
-    kind: "Web app",
-    year: null,
-    oneLiner: "a banking app with two roles, customer and admin, and proper sign-in.",
-    builtWith: ["react", "node", "express", "mongodb", "jwt"],
-    links: { repo: null },
   },
 ];
 

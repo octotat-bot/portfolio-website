@@ -14,7 +14,7 @@ What the site needs, where each file goes, and what to show until it exists. The
 | GitHub and LeetCode numbers | Fetched live (`lib/live-numbers.ts`), refreshed at most once a day; usernames and a last known count in `content/site.ts` | Whole numbers | If a fetch fails, the last known count shows. The Numbers section is hidden until both figures have values |
 | Email, resume link | `content/site.ts` | | Email button and resume link are hidden |
 
-Project slugs: `repetite`, `marginalia`, `trailboard`, `bumpfix`, `repomind`, `smartresume`, `nexabank`. Covers so far: Repetite, Marginalia, BumpFix and RepoMind, cropped to 4:5 from the wide originals in `assets/project-originals/`.
+Project slugs: `repetite`, `marginalia`, `trailboard`, `bumpfix`, `repomind`, `smartresume`. Covers so far: Repetite, Marginalia, BumpFix and RepoMind, cropped to 4:5 from the wide originals in `assets/project-originals/`.
 
 Adding a photo later must need no code change: the tile and case study check whether the file exists (or a flag in the project's data entry) and switch from placeholder to picture.
 
