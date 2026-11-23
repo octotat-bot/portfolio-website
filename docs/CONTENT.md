@@ -267,12 +267,12 @@ Case study labels: kind · role · built with · when · status · links. Next-p
 
 | Year | Title | Text | Place |
 | --- | --- | --- | --- |
+| 2020 | FIRST LINE OF CODE | wrote my first line of code. | |
+| 2023 | PASSED CLASS 12 | finished school. | |
 | 2024 | STARTED COLLEGE | b.tech at newton school of technology. | [CAMPUS CITY] |
-| JUN 2026 | STARTED REPETITE | got tired of two apps for one day. began building my own. | on my own phone |
 | JUL 2026 | INTERNSHIP, MINDENIOUS | ai/ml intern for a month. built marginalia there. | remote |
 | AUG 2026 | INTERNSHIP, SKILLORBIT | ai intern. built a resume analyser as the final project. (check) | remote |
-| NOW | BUILDING BUMPFIX | an agent that fixes code after updates. repetite is in friends' hands. | palwal, india |
-| NEXT | AN INTERNSHIP | somewhere i can ship real things with people better than me. | [WHERE YOU'D LIKE] |
+| NOW | BUILDING REPETITE | got tired of two apps for one day, so i'm building my own. it's in friends' hands now. | palwal, india |
 
 **What i work with**
 

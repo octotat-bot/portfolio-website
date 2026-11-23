@@ -71,11 +71,3 @@ export function menuPortrait(): Portrait | null {
   const size = imageSize(path);
   return size ? { src: "/me/menu.png", ...size } : null;
 }
-
-/** Covers that exist, in Work order (for the cursor trail). */
-export function existingCovers(slugs: string[]): string[] {
-  return slugs.flatMap((slug) => {
-    const cover = projectMedia(slug).cover;
-    return cover ? [cover] : [];
-  });
-}

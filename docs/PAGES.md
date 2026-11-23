@@ -40,7 +40,6 @@ Seven routes. Each page has one idea, one or two burgundy moments, and at most t
 | # | Section | Layout | Components and motion |
 | --- | --- | --- | --- |
 | 1 | Word wall | Fixed, behind everything, from 88px down (the top `nav-band` stays clear for the nav) to the bottom of the screen | M16 |
-| 1b | Cursor trail | Desktop only, once at least two covers exist. Project covers drop behind the pointer over empty page area | M30 |
 | 2 | Tiles | Starts one screen down. Two columns on desktop with the right column offset 30vh lower; one column on phones. One ProjectTile per project with a case study (five: Repetite, Marginalia, Trailboard, BumpFix, RepoMind), larger than on Home (min 320px wide), each with a tag Label and year under it. Below 810px the tiles become a card stack A tile with no cover shows its project's poster-shape composition (G1, G3) above the name band; a real cover replaces it | M14, M15, M03 on names, M27 on phones |
 | 3 | Also built | Hairline list on midnight: name in `poster-4`, one line in `body`, RollLink at right | M03 per row |
 | 4 | Footer | | |

@@ -233,20 +233,6 @@ export const cardStack = { top: 136, scale: 0.92 } as const;
 /** M16 word wall: px of sideways drift per px scrolled. */
 export const wordWall = { drift: 0.25 } as const;
 
-/** M30 image cursor trail. */
-export const cursorTrail = {
-  /** A new picture each time the pointer has travelled this far, px. */
-  step: 80,
-  width: 160,
-  /** How long each picture stays after landing, s. */
-  stay: 0.6,
-  max: 5,
-  from: 0.9,
-  out: 0.85,
-  /** At least this many covers before the trail runs. */
-  minCovers: 2,
-} as const;
-
 /** M28 screen gallery: how far each column travels across the section, as a share of the screen height. */
 export const gallery = { columns: [0.35, -0.25, 0.5] } as const;
 

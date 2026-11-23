@@ -69,7 +69,7 @@ Checks: with no photos and no numbers the page still looks finished; only one pi
 
 ### Phase 3: Work and case studies
 
-- Work index: word wall (M16), image cursor trail (M30), tiles, card stack on phones (M27), "also built" list.
+- Work index: word wall (M16), tiles, card stack on phones (M27), "also built" list.
 - One case-study template rendered for Repetite, Marginalia, Trailboard and BumpFix from `content/projects.ts`: progress line (M29), header band, facts, story, proof with placeholders and the gallery (M28), number and mistake, note, next project.
 - BumpFix shows only its lede and "where it is now" until it has results.
 

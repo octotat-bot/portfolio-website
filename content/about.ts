@@ -6,17 +6,23 @@ export type Belief = { number: string; line: string; highlight?: string };
 
 const road: YearCard[] = [
   {
+    year: "2020",
+    title: "FIRST LINE OF CODE",
+    text: "wrote my first line of code.",
+    place: null,
+  },
+  {
+    year: "2023",
+    title: "PASSED CLASS 12",
+    text: "finished school.",
+    place: null,
+  },
+  {
     year: "2024",
     title: "STARTED COLLEGE",
     text: "b.tech at newton school of technology.",
     // Blank: the campus city.
     place: null,
-  },
-  {
-    year: "JUN 2026",
-    title: "STARTED REPETITE",
-    text: "got tired of two apps for one day. began building my own.",
-    place: "on my own phone",
   },
   {
     year: "JUL 2026",
@@ -32,16 +38,9 @@ const road: YearCard[] = [
   },
   {
     year: "NOW",
-    title: "BUILDING BUMPFIX",
-    text: "an agent that fixes code after updates. repetite is in friends' hands.",
+    title: "BUILDING REPETITE",
+    text: "got tired of two apps for one day, so i'm building my own. it's in friends' hands now.",
     place: "palwal, india",
-  },
-  {
-    year: "NEXT",
-    title: "AN INTERNSHIP",
-    text: "somewhere i can ship real things with people better than me.",
-    // Blank: where you'd like it to be.
-    place: null,
   },
 ];
 
